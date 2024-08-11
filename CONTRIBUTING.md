@@ -6,13 +6,19 @@ This guide explains the process for contributing to the SwiftPulseHub project. P
 1. Open Terminal or Git Bash on your local machine.
 2. Navigate to the directory where you want to clone the repository.
 3. Clone the repository using the following command:
-   'git clone https://github.com/Noobmaster169/SwiftPulseHub.git'
+   ```bash
+   git clone https://github.com/Noobmaster169/SwiftPulseHub.git
+   ```
 
 ## Step 2: Create Your Own Branch
 1. Navigate to the repository directory:
-   'cd SwiftPulseHub'
+   ```bash
+   cd SwiftPulseHub
+   ```
 2. Create and switch to your own branch:
-   'git checkout -b <your-branch-name>'
+   ```bash
+   git checkout -b <your-branch-name>
+   ```
    Replace `<your-branch-name>` with your name or identifier (e.g., `Mario`).
 
 ## Step 3: Work on Your Branch
@@ -20,24 +26,40 @@ This guide explains the process for contributing to the SwiftPulseHub project. P
 
 ## Step 4: Commit Your Changes
 1. Stage the changes:
-   'git add .'
+   ```bash
+   git add .
+   ```
 2. Commit the changes:
-   'git commit -m "Your commit message"'
+   ```bash
+   git commit -m "Your commit message"
+   ```
 
 ## Step 5: Pull the Latest Changes from `dev` Branch and Handle Conflicts
 1. Switch to the `dev` branch:
-   'git checkout dev'
+   ```bash
+   git checkout dev
+   ```
 2. Pull the latest changes from the remote `dev` branch:
-   'git pull origin dev'
+   ```bash
+   git pull origin dev
+   ```
 3. Switch back to your own branch:
-   'git checkout <your-branch-name>'
+   ```bash
+   git checkout <your-branch-name>
+   ```
 4. Merge the latest `dev` branch into your branch:
-   'git merge dev'
+   ```bash
+   git merge dev
+   ```
    - If there are merge conflicts, resolve them in your code editor.
    - After resolving conflicts, stage the changes:
-     'git add .'
+     ```bash
+     git add .
+     ```
    - Commit the resolved changes:
-     'git commit -m "Resolved merge conflicts"'
+     ```bash
+     git commit -m "Resolved merge conflicts"
+     ```
 
 ## Step 6: Push Your Code to `dev` Branch
 1. Switch to the `dev` branch:
