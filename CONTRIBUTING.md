@@ -33,8 +33,18 @@ This guide explains the process for contributing to the SwiftPulseHub project. P
    ```bash
    git commit -m "Your commit message"
    ```
+## Step 5: Push Your Code to Your Individual Branch
+1. Make sure you are on your individual branch (e.g., `Mario`):
+   ```bash
+   git checkout <your-branch-name>
+   ```
+2. Push your changes to the remote branch:
+   ```bash
+   git push origin <your-branch-name>
+   ```
 
-## Step 5: Pull the Latest Changes from `dev` Branch and Handle Conflicts
+
+## Step 6: Pull the Latest Changes from `dev` Branch and Handle Conflicts
 1. Switch to the `dev` branch:
    ```bash
    git checkout dev
@@ -61,7 +71,7 @@ This guide explains the process for contributing to the SwiftPulseHub project. P
      git commit -m "Resolved merge conflicts"
      ```
 
-## Step 6: Push Your Code to `dev` Branch
+## Step 7: Push Your Code to `dev` Branch
 1. Switch to the `dev` branch:
    ```bash
    git checkout dev
