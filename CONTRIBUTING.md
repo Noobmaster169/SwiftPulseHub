@@ -41,11 +41,17 @@ This guide explains the process for contributing to the SwiftPulseHub project. P
 
 ## Step 6: Push Your Code to `dev` Branch
 1. Switch to the `dev` branch:
-   ```bash git checkout dev```
+   ```bash
+   git checkout dev
+   ```
 2. Merge your branch into `dev`:
-   ```bash git merge <your-branch-name>```
+   ```bash
+   git merge <your-branch-name>
+   ```
 3. Push the changes to the remote `dev` branch:
-   ```bash git push origin dev```
+   ```bash
+   git push origin dev
+   ```
 
 ## Important Notes:
 - Always pull the latest `dev` branch and resolve any conflicts before pushing your code.
