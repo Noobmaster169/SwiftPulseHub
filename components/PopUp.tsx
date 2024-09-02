@@ -7,13 +7,12 @@ import { IoMdClose } from "react-icons/io";
 
 
 type ModalProps = {
-  data: any;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
 };
 
-const PopUp = ({ data, isOpen, setIsOpen, children } : ModalProps) => {
+const PopUp = ({isOpen, setIsOpen, children } : ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   
@@ -27,7 +26,7 @@ const PopUp = ({ data, isOpen, setIsOpen, children } : ModalProps) => {
       right: 'auto',
       height:"80%",
       width: "90%",
-      padding: "10px",
+      padding: "30px",
       borderRadius: "30px",
       maxWidth: '800px',
       bottom: 'auto',
@@ -46,9 +45,9 @@ const PopUp = ({ data, isOpen, setIsOpen, children } : ModalProps) => {
         onRequestClose={() => setIsOpen(false)}
         style={customStyles as Styles}
       >
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between text-white">
             <div></div>
-            <div className="m-16" onClick={()=>setIsOpen(false)}><IoMdClose height="2em" width="2em"/></div>
+            <div className="bg-black text-white" onClick={()=>setIsOpen(false)}><IoMdClose/></div>
         </div>
         <div className="flex flex-col items-center justify-center">
             {children}
