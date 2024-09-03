@@ -1,3 +1,8 @@
+/**
+ * Renders a pop-up window that displays detailed information about an individual task. It includes various sections
+ * such as task title, description, assigned personnel, progress status, edit history, and tags.
+ */
+
 import React from "react";
 
 export default function Home() {
