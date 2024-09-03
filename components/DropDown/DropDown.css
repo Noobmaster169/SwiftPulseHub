@@ -1,0 +1,47 @@
+@import 'antd/dist/reset.css';
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+/* Custom style for input elements */
+.custom-input {
+  background-color: #f0f0f0; 
+  border-radius: 4px; 
+  border: 1px solid #d9d9d9; 
+}
+
+/* Custom style for select elements */
+.ant-select-selector {
+  background-color: #f0f0f0 !important; 
+  border-radius: 4px; 
+  border: 1px solid #d9d9d9; 
+}
+
+
+.ant-select-selection-item {
+  color: #000; 
+}
+  
+
+/* Custom style for text area */
+.custom-textarea {
+    background-color: #f0f0f0; 
+    border-radius: 4px; 
+    border: 1px solid #d9d9d9; 
+    width: 100%; 
+    max-width: 600px; 
+    min-width: 400px; 
+  }
+  
