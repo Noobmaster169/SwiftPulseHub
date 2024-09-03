@@ -1,19 +1,20 @@
 "use client";
 import Image from "next/image";
 import { title } from "process";
-import {useState} from 'react';
-import PopUp from '@/components/PopUp';
+import { useState } from "react";
+import PopUp from "@/components/PopUp";
+import AddTaskPage from "@/components/AddTask";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const bounty = {
     title: "Bounty Title",
     description: "Description",
-  }
+  };
 
   const openModal = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -50,6 +51,7 @@ export default function Home() {
           <p>Example Data</p>
         </div>
       </PopUp>
+      <AddTaskPage />
     </main>
   );
 }
