@@ -5,10 +5,10 @@
 
 import React from "react";
 
-export default function IndividualTaskInfo() {
+const IndividualTaskInfo = ()=> {
   return (
-    <main className={"flex min-h-screen flex-col items-center justify-center bg-gray-100 text-black"}>
-      <div className="bg-white rounded-lg shadow-lg p-6 w-1/2">
+    <div className="w-full">
+      <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="bg-purple-500 text-white rounded-full h-10 w-10 flex items-center justify-center">
@@ -82,6 +82,8 @@ export default function IndividualTaskInfo() {
           </ul>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
+
+export default IndividualTaskInfo;

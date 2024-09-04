@@ -1,7 +1,12 @@
+"use client";
+
 const BacklogCard = () => {
     return (
-      <main className="flex min-h-screen flex-col items-start justify-start p-24 relative">
+      <div className="flex min-h-screen flex-col items-start justify-start p-24 relative">
         {/*  "PRODUCT BACKLOG" title*/}
+        <div className="h-16 bg-gray-400">
+          Hi
+        </div>
         <div className="absolute top-15 left-18 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md">
           PRODUCT BACKLOG
         </div>
@@ -27,16 +32,16 @@ const BacklogCard = () => {
   
         {/* Single-Column Table */}
         <div className="z-10 w-full max-w-5xl flex items-center justify-center font-mono text-sm mt-4">
-          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="py-4 px-4 border-b border-gray-300 dark:border-gray-700 text-left">Tasks</th>
+                <th className="py-4 px-4 border-b border-gray-300 text-left">Tasks</th>
               </tr>
             </thead>
             <tbody>
               {Array.from({ length: 4 }, (_, i) => (  // Changed length from 10 to 4
                 <tr key={i} className="relative">
-                  <td className="relative py-8 px-8 border-b border-gray-300 dark:border-gray-700 text-left">
+                  <td className="relative py-8 px-8 border-b border-gray-300 text-left">
                     <div className="flex items-center justify-between">
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
@@ -79,7 +84,7 @@ const BacklogCard = () => {
             </tbody>
           </table>
         </div>
-      </main>
+      </div>
     );
   }
   
