@@ -4,6 +4,7 @@ import { useState } from "react";
 import PopUp from "@/components/PopUp";
 import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
+import DropDown from "@/components/DropDown/DropDown";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,6 +54,10 @@ export default function Home() {
           <p>Example Data</p>
         </div>
       </PopUp>
+      <section className="w-full mt-10">
+        <h2 className="text-xl font-bold mb-4">Task Form</h2>
+        <DropDown /> {/* Adding your DropDown component */}
+      </section>
       <AddTaskPage />
       <div className="w-full max-w-5xl mt-8">
         <BacklogCard /> {/* Add BacklogCard component here */}

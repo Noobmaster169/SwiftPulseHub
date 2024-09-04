@@ -7,10 +7,10 @@ import { Form, Input, Button, Select } from "antd";
 
 const { TextArea } = Input;
 
-function App() {
+function DropDown() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="DropDown">
+      <header className="DropDown-header">
         <Form
           labelCol={{ span: 9 }}   // Adjusts the width of the label
           wrapperCol={{ span: 14 }} // Adjusts the width of the input field
@@ -58,4 +58,4 @@ function App() {
   );
 }
 
-export default App;
+export default DropDown;
