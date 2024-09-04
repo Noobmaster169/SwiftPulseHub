@@ -5,6 +5,7 @@ import PopUp from "@/components/PopUp";
 import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import DropDown from "@/components/DropDown/DropDown";
+import IndividualTaskInfo from "@components/popUpTaskDetail";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,10 +50,7 @@ export default function Home() {
         </div>
       </div>
       <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-        <div className="m-6 bg-white p-4 rounded-lg w-full">
-          <h1 className="text-2xl font-bold">Example Data</h1>
-          <p>Example Data</p>
-        </div>
+        <IndividualTaskInfo /> {/** Add Pop Up task detail */}
       </PopUp>
       <section className="w-full mt-10">
         <h2 className="text-xl font-bold mb-4">Task Form</h2>
