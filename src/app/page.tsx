@@ -35,7 +35,7 @@ export default function Home() {
         <h2 className="text-xl font-bold mb-4">Task Form</h2>
         {/*<DropDown /> {/* Adding your DropDown component */}
       </section>
-      {/*<AddTaskPage />*/}
+      <AddTaskPage />
     </main>
   );
 }

@@ -31,7 +31,7 @@ const BacklogCard = () => {
   
   
         {/* Single-Column Table */}
-        <div className="z-10 w-full max-w-5xl flex items-center justify-center font-mono text-sm mt-4">
+        <div className="z-10 w-full flex items-center justify-center font-mono text-sm mt-4">
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>

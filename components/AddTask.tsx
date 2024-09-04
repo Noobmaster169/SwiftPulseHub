@@ -39,7 +39,6 @@ const AddTaskPage = () => {
       priority,
       tags,
     });
-    router.push("/tasks"); // Redirect to tasks page after adding a task
   };
 
   return (
