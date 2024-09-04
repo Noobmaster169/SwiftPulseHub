@@ -5,8 +5,7 @@ import PopUp from "@/components/PopUp";
 import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import DropDown from "@/components/DropDown/DropDown";
-import IndividualTaskInfo from "@components/popUpTaskDetail";
-
+import IndividualTaskInfo from "@/components/popUpTaskDetail";
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const bounty = {
