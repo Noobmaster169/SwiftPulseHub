@@ -24,9 +24,14 @@ const BacklogCard = () => {
               Tags
             </button>
           </div>
-          <button className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400">
-            Add Task
-          </button>
+          <div className="space-x-4">
+            <button className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400">
+              Delete Task
+            </button>
+            <button className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400">
+              Add Task
+            </button>
+          </div>
         </div>
   
   
