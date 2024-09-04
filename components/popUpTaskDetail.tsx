@@ -5,7 +5,7 @@
 
 import React from "react";
 
-export default function individualTaskInfo() {
+export default function IndividualTaskInfo() {
   return (
     <main className={"flex min-h-screen flex-col items-center justify-center bg-gray-100 text-black"}>
       <div className="bg-white rounded-lg shadow-lg p-6 w-1/2">
