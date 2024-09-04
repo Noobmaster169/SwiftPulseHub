@@ -28,7 +28,6 @@ const AddTaskPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your form submission logic here
     console.log({
       taskName,
       description,

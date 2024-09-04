@@ -24,7 +24,10 @@ export default function Home() {
         <BacklogCard /> {/* Add BacklogCard component here */}
       </div>
       <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <button onClick={openModal} className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button
+          onClick={openModal}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
           Open Pop Up
         </button>
       </div>
