@@ -6,6 +6,7 @@ import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import DropDown from "@/components/DropDown/DropDown";
+import NavBar  from "@/components/NavigatorBar";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,9 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="w-full flex min-h-screen ">
+    <NavBar />
+    <div className="flex-1 flex flex-col items-center justify-between p-24 ml-64">
       <div className="w-full mt-8">
         <BacklogCard /> {/* Add BacklogCard component here */}
       </div>
@@ -39,6 +42,7 @@ export default function Home() {
         {/*<DropDown /> {/* Adding your DropDown component */}
       </section>
       <AddTaskPage />
+      </div>
     </main>
   );
 }
