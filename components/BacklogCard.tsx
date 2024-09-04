@@ -58,7 +58,7 @@ const BacklogCard = () => {
                       </div>
                       {/* adding task Progress and Mark */}
                       <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-100 text-gray-800">3/10</span>
+                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">3/10</span>
                         <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
                           i % 3 === 0
                             ? 'bg-blue-200 text-blue-800'
