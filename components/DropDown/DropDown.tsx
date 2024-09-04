@@ -4,8 +4,24 @@ import "antd/dist/reset.css";
 import "./DropDown.css";
 import React from "react"; 
 import { Form, Input, Button, Select } from "antd";
+import type {FormProps} from 'antd';
 
 const { TextArea } = Input;
+
+type FieldType = {
+  task_name?: string;
+  description?: string;
+  //..........
+};
+
+const onFinish: FormProps<FieldType>['onFinish'] = (values:FieldType) => {
+  alert("Finished");
+  console.log('Success:', values);
+};
+
+const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
+  alert('Form Submission Failed');
+};
 
 function App() {
   return (
@@ -14,8 +30,10 @@ function App() {
         <Form
           labelCol={{ span: 9 }}   // Adjusts the width of the label
           wrapperCol={{ span: 14 }} // Adjusts the width of the input field
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
-          <Form.Item label="Task name" name="task name">
+          <Form.Item label="Task name" name="task_name">
             <Input className="custom-input" />
           </Form.Item>
 
