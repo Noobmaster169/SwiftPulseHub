@@ -28,7 +28,6 @@ const AddTaskPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your form submission logic here
     console.log({
       taskName,
       description,
@@ -39,7 +38,6 @@ const AddTaskPage = () => {
       priority,
       tags,
     });
-    router.push("/tasks"); // Redirect to tasks page after adding a task
   };
 
   return (
