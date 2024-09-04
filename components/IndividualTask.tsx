@@ -4,6 +4,8 @@
  */
 
 import React from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { IoMdArrowDropup } from "react-icons/io";
 
 const IndividualTaskInfo = ()=> {
   return (
@@ -16,8 +18,8 @@ const IndividualTaskInfo = ()=> {
             </div>
             <h2 className="text-2xl font-semibold ml-4 ">Important task 1</h2>
           </div>
-          <button className="text-gray-400 hover:text-gray-600 mr-2">
-            (Edit button)
+          <button className="text-gray-400 hover:text-gray-600 mb-2 mr-4">
+            <FaRegEdit size={20}/>
           </button>
         </div>
 
@@ -56,7 +58,7 @@ const IndividualTaskInfo = ()=> {
           <div className="flex justify between mb-2 gap-2">
             <h3 className="text-lg font-semibold">Edit history</h3>
             <button className="text-sm text-gray-400 hover:text-gray-600">
-              (drop-down/up button)
+            <IoMdArrowDropup size={22}/>
             </button>
           </div>
             
