@@ -1,6 +1,19 @@
 "use client";
+import {SetStateAction, useState} from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import MiniPopUp from "./MiniPopUp";
+import ProceedDelete from "./ProceedDelete";
+
 
 const BacklogCard = () => {
+
+    const [isInvisible, SetIsInvisible] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+
+    // const openModal = () => { 
+    //   setIsOpen(!isOpen);
+    // };
+
     return (
       <div className="flex min-h-screen flex-col items-start justify-start p-24 relative">
         {/*  "PRODUCT BACKLOG" title*/}
@@ -25,7 +38,10 @@ const BacklogCard = () => {
             </button>
           </div>
           <div className="space-x-4">
-            <button className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400">
+            <button 
+              className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400"
+              onClick={() => SetIsInvisible(!isInvisible)}
+            >
               Delete Task
             </button>
             <button className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400">
@@ -62,17 +78,28 @@ const BacklogCard = () => {
                         )}
                       </div>
                       {/* adding task Progress and Mark */}
-                      <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">3/10</span>
-                        <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
-                          i % 3 === 0
-                            ? 'bg-blue-200 text-blue-800'
-                            : i % 3 === 1
-                            ? 'bg-yellow-200 text-yellow-800'
-                            : 'bg-green-200 text-green-800'
-                        }`}>
-                          {i % 3 === 0 ? 'Not Started' : i % 3 === 1 ? 'In Progress' : 'Complete'}
-                        </span>
+                      <div className= {isInvisible? 'invisible':''}>
+                        <div className = "flex items-center space-x-2">
+                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">3/10</span>
+                          <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
+                            i % 3 === 0
+                              ? 'bg-blue-200 text-blue-800'
+                              : i % 3 === 1
+                              ? 'bg-yellow-200 text-yellow-800'
+                              : 'bg-green-200 text-green-800'
+                          }`}>
+                            {i % 3 === 0 ? 'Not Started' : i % 3 === 1 ? 'In Progress' : 'Complete'}
+                          </span>
+                        </div>
+                      </div>
+                      {/**Delete icon */}
+                      <div className = "flex items-center space-x-2">
+                        <button className= {isInvisible? '':'invisible'}>
+                          <AiOutlineDelete size={20} onClick={() => setIsOpen(true)}/>
+                        </button>
+                        <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
+                          <ProceedDelete/>
+                        </MiniPopUp>
                       </div>
                       {/* Triangle */}
                       <div className={`absolute top-0 right-0 w-0 h-0 border-t-[40px] border-l-[40px] ${
@@ -83,6 +110,7 @@ const BacklogCard = () => {
                           : 'border-t-green-500'
                       } border-transparent`}></div>
                     </div>
+                    
                   </td>
                 </tr>
               ))}

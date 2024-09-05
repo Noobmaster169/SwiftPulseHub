@@ -11,7 +11,7 @@ type ModalProps = {
   children: ReactNode;
 };
 
-const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
+const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -23,8 +23,8 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       top: "50%",
       left: "50%",
       right: "auto",
-      height: "40%",
-      width: "50%",
+      height: "20%",
+      width: "20%",
       padding: "30px",
       borderRadius: "30px",
       maxWidth: "800px",
@@ -58,4 +58,4 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   );
 };
 
-export default PopUp;
+export default MiniPopUp;
