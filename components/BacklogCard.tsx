@@ -29,10 +29,10 @@ const BacklogCard = () => {
         description : "My Example Description 1",
         type        : "Story",
         status      : "Not Started",
-        storyPoint  : "5",
+        storyPoint  : "8",
         assignedTo  : "Mario",
         finishedBy  : "2024-09-20",
-        priority    : "High",
+        priority    : "Urgent",
         tags        : ["Tag1", "Tag2", "Tag3"]
       },
       {
@@ -50,11 +50,11 @@ const BacklogCard = () => {
         taskName    : "My Example Task 3",
         description : "My Example Description 3",
         type        : "Story",
-        status      : "In Progress",
+        status      : "Completed",
         storyPoint  : "6",
         assignedTo  : "Shanwu",
         finishedBy  : "2024-09-22",
-        priority    : "Medum",
+        priority    : "Medium",
         tags        : ["Tag1", "Tag2", "Tag3"]
       },
     ]
@@ -85,7 +85,7 @@ const BacklogCard = () => {
           </div>
           <div className="space-x-4">
             <button 
-              className={`px-4 py-2 ${isInvisible?`bg-red-500 text-white`:`bg-gray-300 text-gray-700`} font-semibold rounded-md shadow-md active:ring active:ring-red-600 hover:bg-gray-400`}
+              className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-400"
               onClick={() => SetIsInvisible(!isInvisible)}
             >
               Delete Task
@@ -106,35 +106,46 @@ const BacklogCard = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 4 }, (_, i) => (  // Changed length from 10 to 4
-                <tr key={i} className="relative hover:bg-gray-100" onClick={()=>{openTask(mokcupData[0])}}>
+              {mokcupData.map((task, i) => (
+                <tr key={i} className="relative hover:bg-gray-100" onClick={()=>{openTask(task)}}>
                   <td className="relative py-8 px-8 border-b border-gray-300 text-left">
                     <div className="flex items-center justify-between">
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
-                        <div className="text-lg font-bold">Task {i + 1}</div>
-                        <div className="text-sm text-gray-600">Assigned to: Shanwu</div>
+                        <div className="text-lg font-bold">{task.taskName}</div>
+                        <div className="text-sm text-gray-600">Assigned to: {task.assignedTo}</div>
                         {/* the tags */}
-                        {i === 0 && (
-                          <div className="flex space-x-2 mt-2">
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Tag1#</span>
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Tag2#</span>
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Tag3#</span>
-                          </div>
-                        )}
+                        {task.tags && (
+                        <div className="flex space-x-2 mt-2">
+                          {task.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                index % 3 === 0
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : index % 3 === 1
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       </div>
                       {/* adding task Progress and Mark */}
                       <div className= {isInvisible? 'invisible':''}>
                         <div className = "flex items-center space-x-2">
-                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">3/10</span>
+                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint}</span>
                           <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
-                            i % 3 === 0
+                            task.status === 'Not Started'
                               ? 'bg-blue-200 text-blue-800'
-                              : i % 3 === 1
+                              : task.status === 'In Progress'
                               ? 'bg-yellow-200 text-yellow-800'
                               : 'bg-green-200 text-green-800'
                           }`}>
-                            {i % 3 === 0 ? 'Not Started' : i % 3 === 1 ? 'In Progress' : 'Complete'}
+                            {task.status}
                           </span>
                         </div>
                       </div>
@@ -149,10 +160,10 @@ const BacklogCard = () => {
                       </div>
                       {/* Triangle */}
                       <div className={`absolute top-0 right-0 w-0 h-0 border-t-[40px] border-l-[40px] ${
-                        i % 3 === 0
+                        task.priority === 'Urgent'
                           ? 'border-t-red-500'
-                          : i % 3 === 1
-                          ? 'border-t-yellow-500'
+                          : task.priority === 'Medium'
+                          ? 'border-t-orange-500'
                           : 'border-t-green-500'
                       } border-transparent`}></div>
                     </div>
@@ -165,7 +176,7 @@ const BacklogCard = () => {
         </div>
       </div>
       <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
-          <IndividualTaskInfo taskData={mokcupData[0]}/> {/** Add Pop Up task detail */}
+          {currentTask && <IndividualTaskInfo taskData={currentTask} />} {/** Add Pop Up task detail */}
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage/>
