@@ -28,6 +28,7 @@ const AddTaskPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    alert("Form Submitted");
     console.log({
       taskName,
       description,
@@ -41,8 +42,8 @@ const AddTaskPage = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Add Task</h1>
+    <div className="w-3/4">
+      <h1 className="text-xl font-semibold">Add Task</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task name:</label>
@@ -124,7 +125,7 @@ const AddTaskPage = () => {
               onChange={(e) => setTagInput(e.target.value)}
             />
             <button type="button" onClick={handleAddTag}>
-              Add Tag
+              Add
             </button>
           </div>
           <div className="tags-list">
@@ -139,7 +140,7 @@ const AddTaskPage = () => {
           </div>
         </div>
 
-        <button type="submit">Confirm</button>
+        <button type="submit">Create Task</button>
       </form>
 
       <style jsx>{`

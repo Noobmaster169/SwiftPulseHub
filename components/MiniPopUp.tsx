@@ -25,7 +25,7 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       right: "auto",
       height: "20%",
       width: "20%",
-      padding: "30px",
+      padding: "20px",
       borderRadius: "30px",
       maxWidth: "800px",
       bottom: "auto",
@@ -45,15 +45,7 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
     >
-      <div className="flex flex-row justify-end text-white">
-        <div></div>
-        <div className="text-gray-800 hover:text-gray-400 mb:3" onClick={() => setIsOpen(false)}>
-          <IoMdClose />
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-start h-full">
-        {children}
-      </div>
+      {children}
     </Modal>
   );
 };

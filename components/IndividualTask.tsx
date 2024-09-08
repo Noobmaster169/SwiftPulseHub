@@ -6,8 +6,14 @@
 import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { IoMdArrowDropup } from "react-icons/io";
+import {TaskData} from "@/utils/interface";
 
-const IndividualTaskInfo = ()=> {
+
+interface IndividualTaskInfoProps {
+  taskData: TaskData;
+}
+
+const IndividualTaskInfo = ({taskData}: IndividualTaskInfoProps)=> {
   return (
     <div className="w-full">
       <div className="p-4">
@@ -16,7 +22,7 @@ const IndividualTaskInfo = ()=> {
             <div className="bg-purple-500 text-white rounded-full h-10 w-10 flex items-center justify-center">
               JQ
             </div>
-            <h2 className="text-2xl font-semibold ml-4 ">Important task 1</h2>
+            <h2 className="text-2xl font-semibold ml-4 ">{taskData.taskName? taskData.taskName : "Title Not Found"}</h2>
           </div>
           <button className="text-gray-400 hover:text-gray-600 mb-2 mr-4">
             <FaRegEdit size={20}/>

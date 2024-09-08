@@ -1,27 +1,24 @@
 import React, {useState} from "react";
 
-const ProceedDelete = () => {
 
-    const [isOpen, setIsOpen] = useState(false);
-    const openModal = () => {
-        setIsOpen(!isOpen);
-      };
+type ModalProps = {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ProceedDelete = ({ isOpen, setIsOpen}: ModalProps) => {
+    
+    const deleteTask= () =>{
+        setIsOpen(false);
+    }
     
     return (
-        <div className="w-full h-screen flex items-center justify-center">
-        <ul className="list-none">
-            <li>
-            <span className="text-2xl text-red-500"> Delete Task ? </span>
-            </li>
-            <hr className="mt-2 border-t border-gray-300" /> {/* Separator line */}
-            <li>
-            <div className="grid grid-cols-3 justify-items-center">
-                <button className="inline-block" onClick={() => setIsOpen(false)}>Cancel</button>
-                <div className="h-8 border-l border-gray-300 mx-2" /> {/* Vertical line */}
-                <button className="inline-block" onClick={() => setIsOpen(false)}>Delete</button>
+        <div className="h-full flex flex-col justify-between">
+            <div className="text-center text-2xl text-red-500"> Delete Task ?</div>
+            <div className="flex flex-row justify-between mx-10">
+                <button className="bg-gray-200 hover:bg-gray-300 px-5 py-2 rounded-lg" onClick={() => setIsOpen(false)}>Cancel</button>
+                <button className="bg-gray-200 hover:bg-gray-300 px-5 py-2 rounded-lg" onClick={deleteTask}>Delete</button>
             </div>
-            </li>
-        </ul>
         </div>
     );
 }

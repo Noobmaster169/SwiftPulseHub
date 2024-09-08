@@ -1,9 +1,4 @@
-interface TaskData {
-    name?: string;
-    description?: string;
-    status?: string;
-    assigned?: string;
-}
+import { TaskData } from './interface';
 
 /* Update a Task to the Database */
 export async function updateTask(id:string, newData:TaskData) {
@@ -56,6 +51,29 @@ export async function addTask(data:TaskData) {
 
 /* Delete a Task from the Database */
 export async function deleteTask(id:string) {
+    try {
+        const res = await fetch('/api/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id }),
+        });
+
+        if (res.ok) {
+            alert('Task deleted successfully!');
+        } else {
+            const errorData = await res.json();
+            alert(`Failed to delete task: ${errorData.error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+    }
+}
+
+/* Fetch the list of Tasks from the Database */
+export async function fetchTask(id:string) {
     try {
         const res = await fetch('/api/delete', {
             method: 'DELETE',
