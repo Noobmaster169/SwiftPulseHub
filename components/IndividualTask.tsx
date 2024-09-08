@@ -8,7 +8,6 @@ import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { IoMdArrowDropup } from "react-icons/io";
 
-
 interface IndividualTaskInfoProps {
   taskData: TaskData;
 }
@@ -60,7 +59,7 @@ const IndividualTaskInfo= ({taskData}:IndividualTaskInfoProps)=> {
               </p>
             </div>
             <div>
-              <p><strong>Storypoint: </strong> <span className="inline-block bg-red-300 text-black rounded-full px-3 py-1 text-sm font-semibold">{taskData.storyPoint?taskData.storyPoint:0} / 10</span></p>
+              <p><strong>Storypoint: </strong> <span className="inline-block bg-red-300 text-black rounded-full px-3 py-1 text-sm font-semibold">{taskData.storyPoint?taskData.storyPoint:0}</span></p>
             </div>
             <div>
               <p><strong>Type: </strong>{taskData.type?taskData.type:'story'}</p>

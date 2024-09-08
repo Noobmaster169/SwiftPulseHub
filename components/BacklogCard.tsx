@@ -22,8 +22,14 @@ const BacklogCard = () => {
       setCurrentTask(task);
       setTaskOpen(true);
     }
+
+    const deleteTask = (taskToDelete: TaskData) => {
+      setMockupData(data => data.map(task => 
+          task === taskToDelete ? { ...task, isDeleted: true } : task
+      ));
+    };
  
-    const mokcupData: TaskData[]= [
+    const [mockupData, setMockupData] = useState<TaskData[]>([
       {
         taskName    : "My Example Task 1",
         description : "My Example Description 1",
@@ -33,7 +39,8 @@ const BacklogCard = () => {
         assignedTo  : "Mario",
         finishedBy  : "2024-09-20",
         priority    : "Urgent",
-        tags        : ["Tag1", "Tag2", "Tag3"]
+        tags        : ["Tag1", "Tag2", "Tag3"],
+        isDeleted   : false
       },
       {
         taskName    : "My Example Task 2",
@@ -44,7 +51,8 @@ const BacklogCard = () => {
         assignedTo  : "Shanwu",
         finishedBy  : "2024-09-22",
         priority    : "Low",
-        tags        : ["Tag1", "Tag2", "Tag3"]
+        tags        : ["Tag1", "Tag2", "Tag3"],
+        isDeleted   : false
       },
       {
         taskName    : "My Example Task 3",
@@ -55,9 +63,10 @@ const BacklogCard = () => {
         assignedTo  : "Shanwu",
         finishedBy  : "2024-09-22",
         priority    : "Medium",
-        tags        : ["Tag1", "Tag2", "Tag3"]
+        tags        : ["Tag1", "Tag2", "Tag3"],
+        isDeleted   : false
       },
-    ]
+    ])
 
     return (
       <>
@@ -106,7 +115,9 @@ const BacklogCard = () => {
               </tr>
             </thead>
             <tbody>
-              {mokcupData.map((task, i) => (
+              {mockupData
+              .filter((task) => !task.isDeleted)
+              .map((task, i) => (
                 <tr key={i} className="relative hover:bg-gray-100" onClick={()=>{openTask(task)}}>
                   <td className="relative py-8 px-8 border-b border-gray-300 text-left">
                     <div className="flex items-center justify-between">
@@ -152,10 +163,15 @@ const BacklogCard = () => {
                       {/**Delete icon */}
                       <div className = "flex items-center space-x-2">
                         <button className= {isInvisible? '':'invisible'}>
-                          <AiOutlineDelete size={20} onClick={()=>{setIsOpen(true)}}/>
+                          <AiOutlineDelete size={20} onClick={()=>{setIsOpen(true), setCurrentTask(task)}}/>
                         </button>
                         <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-                          <ProceedDelete isOpen={isOpen} setIsOpen={setIsOpen}/>
+                          <ProceedDelete 
+                            taskToDelete={currentTask} 
+                            isOpen={isOpen} 
+                            setIsOpen={setIsOpen}
+                            deleteTask = {deleteTask}
+                          />
                         </MiniPopUp>
                       </div>
                       {/* Triangle */}

@@ -30,7 +30,8 @@ export default function Home() {
       assignedTo  : "Mario",
       finishedBy  : "2024-09-20",
       priority    : "High",
-      tags        : ["Tag1", "Tag2", "Tag3"]
+      tags        : ["Tag1", "Tag2", "Tag3"],
+      isDeleted   : false,
     },
     {
       taskName    : "My Example Task 2",
@@ -41,7 +42,8 @@ export default function Home() {
       assignedTo  : "Shanwu",
       finishedBy  : "2024-09-22",
       priority    : "Low",
-      tags        : ["Tag1", "Tag2", "Tag3"]
+      tags        : ["Tag1", "Tag2", "Tag3"],
+      isDeleted   : false,
     },
     {
       taskName    : "My Example Task 3",
@@ -52,7 +54,8 @@ export default function Home() {
       assignedTo  : "Shanwu",
       finishedBy  : "2024-09-22",
       priority    : "Medum",
-      tags        : ["Tag1", "Tag2", "Tag3"]
+      tags        : ["Tag1", "Tag2", "Tag3"],
+      isDeleted   : false,
     },
   ]
 
