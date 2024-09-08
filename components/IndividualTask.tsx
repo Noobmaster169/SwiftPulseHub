@@ -27,7 +27,7 @@ const IndividualTaskInfo= ({taskData}:IndividualTaskInfoProps)=> {
             <h2 className="text-2xl font-semibold ml-4 ">{taskData.taskName?taskData.taskName:'Unknown task name'}</h2>
           </div>
           <button className="text-gray-400 hover:text-gray-600 mb-2 mr-4">
-            <FaRegEdit size={20}/>
+            <FaRegEdit size={20} />
           </button>
         </div>
 
@@ -46,7 +46,18 @@ const IndividualTaskInfo= ({taskData}:IndividualTaskInfoProps)=> {
 
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div>
-              <p><strong>Progress status: </strong> <span className="inline-block bg-blue-300 text-black rounded-full px-3 py-1 text-sm font-semibold">{taskData.status?taskData.status:'not started'}</span></p>
+              <p><strong>Progress status: </strong> 
+                <span 
+                  className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${
+                    taskData.status?.toLowerCase() === "not started" || !taskData.status
+                    ? 'bg-blue-200 text-blue-800'
+                    : taskData.status?.toLowerCase() === "in progress"
+                    ? 'bg-yellow-200 text-yellow-800'
+                    : 'bg-green-200 text-green-800'
+                  }`}>
+                  {taskData.status?taskData.status:'not started'}
+                </span>
+              </p>
             </div>
             <div>
               <p><strong>Storypoint: </strong> <span className="inline-block bg-red-300 text-black rounded-full px-3 py-1 text-sm font-semibold">{taskData.storyPoint?taskData.storyPoint:0} / 10</span></p>
@@ -55,7 +66,7 @@ const IndividualTaskInfo= ({taskData}:IndividualTaskInfoProps)=> {
               <p><strong>Type: </strong>{taskData.type?taskData.type:'story'}</p>
             </div>
             <div>
-              <p><strong>Priority: </strong>{taskData.priority?taskData.priority:'not important'}</p>
+              <p><strong>Priority: </strong>{taskData.priority?taskData.priority:'low'}</p>
             </div>
           </div>
           
