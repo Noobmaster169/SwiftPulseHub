@@ -42,8 +42,8 @@ const AddTaskPage = () => {
   };
 
   return (
-    <div className="w-full p-4">
-      <h1 className="text-2xl font-semibold mb-4">Add Task</h1>
+    <div className="container">
+      <h1>Add Task</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task name:</label>
@@ -125,7 +125,7 @@ const AddTaskPage = () => {
               onChange={(e) => setTagInput(e.target.value)}
             />
             <button type="button" onClick={handleAddTag}>
-              Add
+              Add Tag
             </button>
           </div>
           <div className="tags-list">
@@ -201,6 +201,7 @@ const AddTaskPage = () => {
         }
         button {
           padding: 8px 16px;
+          background-color: #8a4af3;
           color: white;
           border: none;
           border-radius: 4px;
