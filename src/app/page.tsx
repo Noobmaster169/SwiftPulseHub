@@ -60,7 +60,10 @@ export default function Home() {
   ];
 
   return (
-    <main className="w-full flex min-h-screen ">
+    <main
+      className="w-full flex min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/background/background1.jpg')" }}
+    >
       <NavBar />
       <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
         <div className="w-full">
