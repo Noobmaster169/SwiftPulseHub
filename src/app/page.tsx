@@ -6,8 +6,8 @@ import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import DropDown from "@/components/DropDown/DropDown";
-import NavBar  from "@/components/NavigatorBar";
-import {TaskData} from "@/utils/interface";
+import NavBar from "@/components/NavigatorBar";
+import { TaskData } from "@/utils/interface";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,69 +20,52 @@ export default function Home() {
     setIsOpen(!isOpen);
   };
 
-  const mokcupData: TaskData[]= [
+  const mokcupData: TaskData[] = [
     {
-      taskName    : "My Example Task 1",
-      description : "My Example Description 1",
-      type        : "Story",
-      status      : "Not Started",
-      storyPoint  : "5",
-      assignedTo  : "Mario",
-      finishedBy  : "2024-09-20",
-      priority    : "High",
-      tags        : ["Tag1", "Tag2", "Tag3"],
-      isDeleted   : false,
+      taskName: "My Example Task 1",
+      description: "My Example Description 1",
+      type: "Story",
+      status: "Not Started",
+      storyPoint: "5",
+      assignedTo: "Mario",
+      finishedBy: "2024-09-20",
+      priority: "High",
+      tags: ["Tag1", "Tag2", "Tag3"],
+      isDeleted: false,
     },
     {
-      taskName    : "My Example Task 2",
-      description : "My Example Description 2",
-      type        : "Story",
-      status      : "In Progress",
-      storyPoint  : "3",
-      assignedTo  : "Shanwu",
-      finishedBy  : "2024-09-22",
-      priority    : "Low",
-      tags        : ["Tag1", "Tag2", "Tag3"],
-      isDeleted   : false,
+      taskName: "My Example Task 2",
+      description: "My Example Description 2",
+      type: "Story",
+      status: "In Progress",
+      storyPoint: "3",
+      assignedTo: "Shanwu",
+      finishedBy: "2024-09-22",
+      priority: "Low",
+      tags: ["Tag1", "Tag2", "Tag3"],
+      isDeleted: false,
     },
     {
-      taskName    : "My Example Task 3",
-      description : "My Example Description 3",
-      type        : "Story",
-      status      : "In Progress",
-      storyPoint  : "6",
-      assignedTo  : "Shanwu",
-      finishedBy  : "2024-09-22",
-      priority    : "Medum",
-      tags        : ["Tag1", "Tag2", "Tag3"],
-      isDeleted   : false,
+      taskName: "My Example Task 3",
+      description: "My Example Description 3",
+      type: "Story",
+      status: "In Progress",
+      storyPoint: "6",
+      assignedTo: "Shanwu",
+      finishedBy: "2024-09-22",
+      priority: "Medum",
+      tags: ["Tag1", "Tag2", "Tag3"],
+      isDeleted: false,
     },
-  ]
-
+  ];
 
   return (
     <main className="w-full flex min-h-screen ">
-    <NavBar />
-    <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
-      <div className="w-full">
-        <BacklogCard /> {/* Add BacklogCard component here */}
-      </div>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <button
-          onClick={openModal}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Open Pop Up
-        </button>
-      </div>
-      <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-        <IndividualTaskInfo taskData={mokcupData[0]}/> {/** Add Pop Up task detail */}
-      </PopUp>
-      <section className="w-full mt-10">
-        <h2 className="text-xl font-bold mb-4">Task Form</h2>
-        {/*<DropDown /> {/* Adding your DropDown component */}
-      </section>
-      <AddTaskPage />
+      <NavBar />
+      <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
+        <div className="w-full">
+          <BacklogCard /> {/* Add BacklogCard component here */}
+        </div>
       </div>
     </main>
   );
