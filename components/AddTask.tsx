@@ -17,7 +17,7 @@ const AddTaskPage = () => {
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
-      setTags([...tags, tagInput]);
+      setTags([...tags, ...tagInput.split(",").map((tag) => tag.trim())]);
       setTagInput("");
     }
   };
