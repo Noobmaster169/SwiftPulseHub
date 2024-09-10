@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
+import {TaskData} from "@/utils/interface";
 
-const AddTaskPage = () => {
+interface AddTaskProps{
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+
+const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
   const router = useRouter();
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
@@ -17,7 +24,7 @@ const AddTaskPage = () => {
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
-      setTags([...tags, tagInput]);
+      setTags([...tags, ...tagInput.split(",").map((tag) => tag.trim())]);
       setTagInput("");
     }
   };
@@ -26,25 +33,30 @@ const AddTaskPage = () => {
     setTags(tags.filter((t) => t !== tag));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your form submission logic here
-    console.log({
+    const data: TaskData = {
       taskName,
       description,
       type,
-      storyPoint,
+      status: "Not Started",
+      storyPoint: storyPoint.toString(),
       assignedTo,
       finishedBy,
       priority,
       tags,
-    });
-    router.push("/tasks"); // Redirect to tasks page after adding a task
+    };
+    try{
+      await addTask(data);
+      setIsOpen(false);
+    }catch(e){
+      alert("Error adding task");
+    }
   };
 
   return (
-    <div className="container">
-      <h1>Add Task</h1>
+    <div className="w-full p-4">
+      <h1 className="text-2xl font-semibold mb-4">Add Task</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task name:</label>
@@ -111,22 +123,27 @@ const AddTaskPage = () => {
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label>Add tag:</label>
+          <label>Tag(s):</label>
           <div className="tags-input">
             <input
               type="text"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
             />
-            <button type="button" onClick={handleAddTag}>
-              Add Tag
+            <button
+              type="button"
+              onClick={handleAddTag}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add
             </button>
           </div>
           <div className="tags-list">
@@ -141,7 +158,21 @@ const AddTaskPage = () => {
           </div>
         </div>
 
-        <button type="submit">Confirm</button>
+        <div className="flex justify-center space-x-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={() => router.back()}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Create Task
+          </button>
+        </div>
       </form>
 
       <style jsx>{`
@@ -188,7 +219,6 @@ const AddTaskPage = () => {
         }
         button {
           padding: 8px 16px;
-          background-color: #8a4af3;
           color: white;
           border: none;
           border-radius: 4px;

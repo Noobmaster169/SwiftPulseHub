@@ -11,7 +11,7 @@ type ModalProps = {
   children: ReactNode;
 };
 
-const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
+const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -23,9 +23,9 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       top: "50%",
       left: "50%",
       right: "auto",
-      height: "80%",
-      width: "90%",
-      padding: "30px",
+      height: "20%",
+      width: "20%",
+      padding: "20px",
       borderRadius: "30px",
       maxWidth: "800px",
       bottom: "auto",
@@ -33,31 +33,21 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       transform: "translate(-50%, -50%)",
       backgroundColor: "#f9f9f9",
       border: "none",
-      //overflow:"hidden",
+      overflow:"hidden",
       //boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
     },
   };
 
   return (
-    
     <Modal
       isOpen={isOpen}
       ariaHideApp={false}
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
-    ><div className="z-50">
-      <div className="flex flex-row justify-end text-white">
-        <div></div>
-        <div className="text-gray-800 hover:text-gray-400 mb:3" onClick={() => setIsOpen(false)}>
-          <IoMdClose />
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-start h-full">
-        {children}
-      </div></div>
+    >
+      {children}
     </Modal>
-    
   );
 };
 
-export default PopUp;
+export default MiniPopUp;

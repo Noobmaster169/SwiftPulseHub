@@ -1,6 +1,6 @@
 "use client";
 
-import "antd/dist/reset.css";
+//import "antd/dist/reset.css";
 import "./DropDown.css";
 import React from "react"; 
 import { Form, Input, Button, Select } from "antd";
@@ -23,10 +23,10 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
   alert('Form Submission Failed');
 };
 
-function App() {
+function DropDown() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="DropDown">
+      <header className="DropDown-header">
         <Form
           labelCol={{ span: 9 }}   // Adjusts the width of the label
           wrapperCol={{ span: 14 }} // Adjusts the width of the input field
@@ -76,4 +76,4 @@ function App() {
   );
 }
 
-export default App;
+export default DropDown;
