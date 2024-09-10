@@ -158,7 +158,7 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-center space-x-4">
           <button
             type="button"
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"

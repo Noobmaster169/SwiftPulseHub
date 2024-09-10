@@ -8,38 +8,32 @@ import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { IoMdArrowDropup } from "react-icons/io";
 import EditTask from "./EditTask";
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
 interface IndividualTaskInfoProps {
   taskData: TaskData;
+  setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const colour = ["bg-purple-400", "bg-blue-300", "bg-red-500", "bg-yellow-400 "];
 
-const IndividualTaskInfo = ({ taskData }: IndividualTaskInfoProps) => {
+const IndividualTaskInfo = ({ taskData, setEditOpen, setTaskOpen }: IndividualTaskInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedTaskData, setUpdatedTaskData] = useState(taskData);
 
   const handleEdit = () => {
-    setIsEditing(true);
+    setEditOpen(true);
+    setTaskOpen(false);
   };
 
-  const handleSave = (updatedTask: TaskData) => {
-    setUpdatedTaskData(updatedTask);
-    setIsEditing(false);
-    // TODO: Save the updated task data to the database
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
 
   return (
     <div className="w-full">
       {isEditing ? (
         <EditTask
           taskData={updatedTaskData}
-          onSave={handleSave}
-          onCancel={handleCancel}
+          setEditOpen={setEditOpen}
         />
       ) : (
         <div className="p-4">

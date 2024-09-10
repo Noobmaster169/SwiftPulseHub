@@ -13,6 +13,8 @@ import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [databases, setDatabases] = useState<string[]>([]);
+  const [taskOpen, setTaskOpen] = useState<boolean>(false);
+  const [createOpen, setCreateOpen] = useState<boolean>(false);
   const bounty = {
     title: "Bounty Title",
     description: "Description",
@@ -79,9 +81,12 @@ export default function Home() {
       <NavBar />
       <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
         <div className="w-full">
-          <BacklogCard /> {/* Add BacklogCard component here */}
+          <BacklogCard taskOpen={taskOpen} setTaskOpen={setTaskOpen} createOpen={createOpen} setCreateOpen={setCreateOpen}/> {/* Add BacklogCard component here */}
         </div>
       </div>
+      <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
+          <AddTaskPage setIsOpen={setCreateOpen}/>
+      </PopUp>
     </main>
   );
 }

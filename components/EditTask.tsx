@@ -1,13 +1,24 @@
+import { updateTask } from "@/utils/database";
 import { TaskData } from "@/utils/interface";
 import { useState } from "react";
 
 interface EditTaskProps {
   taskData: TaskData;
-  onSave: (updatedTask: TaskData) => void;
-  onCancel: () => void;
+  setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditTask = ({ taskData, onSave, onCancel }: EditTaskProps) => {
+const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
+  const handleSave = async () => {
+    console.log("Saving Tasks");
+    console.log(updatedTask);
+    await updateTask(updatedTask);
+    setEditOpen(false);
+  };
+
+  const handleCancel = () => {
+    setEditOpen(false);
+  };
+  
   const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
 
   const handleChange = (
@@ -15,10 +26,6 @@ const EditTask = ({ taskData, onSave, onCancel }: EditTaskProps) => {
     value: string | string[] | number
   ) => {
     setUpdatedTask((prevTask) => ({ ...prevTask, [field]: value }));
-  };
-
-  const handleSave = () => {
-    onSave(updatedTask);
   };
 
   return (
@@ -78,7 +85,7 @@ const EditTask = ({ taskData, onSave, onCancel }: EditTaskProps) => {
         <select
           id="status"
           value={updatedTask.status}
-          onChange={(e) => handleChange("status", e.target.value)}
+          onChange={(e) => {}/*handleChange("status", e.target.value)*/}
           className="w-full border border-gray-300 rounded px-3 py-2"
         >
           <option value="not started">Not Started</option>
@@ -147,7 +154,7 @@ const EditTask = ({ taskData, onSave, onCancel }: EditTaskProps) => {
           Save
         </button>
         <button
-          onClick={onCancel}
+          onClick={handleCancel}
           className="border border-gray-300 rounded px-4 py-2"
         >
           Cancel

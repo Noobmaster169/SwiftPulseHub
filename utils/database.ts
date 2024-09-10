@@ -1,26 +1,21 @@
 import { TaskData } from './interface';
 
 /* Update a Task to the Database */
-export async function updateTask(id:string, newData:TaskData) {
-    const data = {
-        id,
-        ...newData,
-    };
+export async function updateTask(newData:TaskData) {
     try {
         const res = await fetch('/api/edit', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(newData),
         });
-
-        if (res.ok) {
-            alert('Task updated successfully!');
-        } else {
-            const errorData = await res.json();
-            alert(`Failed to add task: ${errorData.error}`);
-        }
+        // if (res.ok) {
+        //     alert('Task updated successfully!');
+        // } else {
+        //     const errorData = await res.json();
+        //     alert(`Failed to add task: ${errorData.error}`);
+        // }
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred');
@@ -37,12 +32,12 @@ export async function addTask(data:TaskData) {
             },
             body: JSON.stringify(data),
         });
-        if (res.ok) {
-            alert('Task added successfully!');
-        } else {
-            const errorData = await res.json();
-            alert(`Failed to add task: ${errorData.error}`);
-        }
+        // if (res.ok) {
+        //     alert('Task added successfully!');
+        // } else {
+        //     const errorData = await res.json();
+        //     alert(`Failed to add task: ${errorData.error}`);
+        // }
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred');
@@ -60,12 +55,12 @@ export async function deleteTask(id:string) {
             body: JSON.stringify({ id }),
         });
 
-        if (res.ok) {
-            alert('Task deleted successfully!');
-        } else {
-            const errorData = await res.json();
-            alert(`Failed to delete task: ${errorData.error}`);
-        }
+        // if (res.ok) {
+        //     alert('Task deleted successfully!');
+        // } else {
+        //     const errorData = await res.json();
+        //     alert(`Failed to delete task: ${errorData.error}`);
+        // }
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred');
@@ -75,10 +70,7 @@ export async function deleteTask(id:string) {
 /* Fetch the list of Tasks from the Database */
 export async function fetchTask() {
     try {
-        console.log("Fetching Data From Database");
-        const response = await fetch('/api/database');
-        console.log("Response Received")
-                
+        const response = await fetch('/api/database');       
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);
         }
@@ -86,6 +78,6 @@ export async function fetchTask() {
         return data.databases;
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred');
+        //alert('An error occurred');
     }
 }

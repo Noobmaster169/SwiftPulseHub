@@ -12,13 +12,15 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ error: 'No data provided' }, {status: 400});
     }
     const data = await req.json();
-    const {id, ...newData} = data;
-    console.log(data);
+    const {_id, ...newData} = data;
+    console.log("Updating data with id:", _id);
+    console.log(newData);
     try {
       const result = await client.db("tasks").collection("tasks").updateOne(
-        {_id: new ObjectId(id)},
+        {_id: new ObjectId(_id)},
         {$set: newData}
       );
+      console.log("Result:", result);
       return NextResponse.json({status: 200})
     } catch (error) {
       return NextResponse.json({ error: 'Unable to add data' }, {status: 500});

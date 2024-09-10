@@ -7,33 +7,49 @@ import {TaskData} from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
+import EditTask from "@/components/EditTask";
 import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
-const BacklogCard = () => {
+type BacklogCardProps = {
+  taskOpen: boolean;
+  setTaskOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  createOpen: boolean;
+  setCreateOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const BacklogCard = ({taskOpen, setTaskOpen, createOpen, setCreateOpen}: BacklogCardProps) => {
     const [database, setDatabase] = useState<any>([]);
     const [isInvisible, SetIsInvisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-    const [taskOpen, setTaskOpen] = useState(false);
-    const [createOpen, setCreateOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState<boolean>(false);
+    
     const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
 
     useEffect(() => {
       setIsLoading(true);
       const getDatabase = async ()=>{
           const data: TaskData[] = await fetchTask();
-          const modified_data = data.map((task: TaskData) => {return {...task, isDeleted: false}});
+          let modified_data = data.map((task: TaskData) => {return {...task, isDeleted: false}});
+          if(!modified_data){
+            modified_data = [];
+          }
           setDatabase(modified_data);
           setIsLoading(false);
       }
       getDatabase();
-    }, [createOpen, isOpen]);
+    }, [createOpen, isOpen, editOpen]);
 
     const openTask = (task: TaskData) => {
       // Don't open task information if in deleting process
       if(isInvisible){return}
       setCurrentTask(task);
       setTaskOpen(true);
+    }
+
+    const editTask = ()=>{
+      setEditOpen(true);
+      setTaskOpen(false);
     }
 
     const runDeleteTask = async (taskToDelete: TaskData) => {
@@ -171,10 +187,13 @@ const BacklogCard = () => {
         </div>
       </div>
       <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
-          {currentTask && <IndividualTaskInfo taskData={currentTask} />} {/** Add Pop Up task detail */}
+          {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen}/>} {/** Add Pop Up task detail */}
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage setIsOpen={setCreateOpen}/>
+      </PopUp>
+      <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
+          {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen}/>}
       </PopUp>
       </>
     );
