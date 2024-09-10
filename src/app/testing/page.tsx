@@ -1,3 +1,7 @@
+export default function Temp(){
+    return <div>Empty</div>;''
+}
+
 // "use client";
 // import { useEffect, useState } from 'react';
 // import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
