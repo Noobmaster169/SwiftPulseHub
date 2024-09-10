@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import Link from 'next/link';
 import { useState } from 'react';
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -15,7 +14,7 @@ const links = [
 export default function NavBar() {
     const [dropdown, setDropdown] = useState<boolean>(false);
     return (
-        <nav className="h-full w-64 p-6 dark:bg-gray-900 fixed top-0 left-0 z-50 border-r-2 border-white">
+        <nav className="h-full w-64 p-6 fixed top-0 left-0 z-50 border-r-2 border-white bg-white bg-opacity-30 backdrop-blur-lg dark:bg-gray-700 dark:bg-opacity-30 dark:backdrop-blur-lg">
             <div className="flex flex-col h-full justify-center">
                 <button
                     className="md:hidden p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
