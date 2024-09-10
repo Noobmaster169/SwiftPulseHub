@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { updateTask, addTask, deleteTask } from '@/utils/database';
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
 export default function DatabaseList() {
     const [databases, setDatabases] = useState<string[]>([]);
@@ -16,13 +16,14 @@ export default function DatabaseList() {
                 }
 
                 const data = await response.json();
+                console.log("Data:", data.databases);
                 setDatabases(data.databases);
             } catch (error: any) {
                 setError(error.message);
             }
         };
 
-        fetchDatabases();
+        fetchDatabases();   1
     }, []);
 
     if (error) {
@@ -36,8 +37,16 @@ export default function DatabaseList() {
 
     async function add(){
         const data = {
-            name: "Task4",
-            description: "This is a task",
+            taskName    : "My Example Task 1",
+            description : "My Example Description 1",
+            type        : "Story",
+            status      : "Not Started",
+            storyPoint  : "5",
+            assignedTo  : "Mario",
+            finishedBy  : "2024-09-20",
+            priority    : "High",
+            tags        : ["Tag1", "Tag2", "Tag3"],
+            isDeleted   : false,
         };
         await addTask(data);
     }
@@ -54,12 +63,12 @@ export default function DatabaseList() {
 
     return (
         <>
-        <button className="w-32 h-8 bg-blue-500" onClick={remove}>Add Task</button>
+        <button className="w-32 h-8 bg-blue-500" onClick={add}>Add Task</button>
         <div>
             <h1>Databases</h1>
             <ul>
                 {databases.map((db, index) => (
-                    <li key={index}>{db}</li>
+                    <li key={index}>{JSON.stringify(db)}</li>
                 ))}
             </ul>
         </div></>

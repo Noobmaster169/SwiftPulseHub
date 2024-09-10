@@ -8,5 +8,5 @@ export interface TaskData {
     finishedBy? : string;
     priority?   : string;
     tags?       : string[];
-    isDeleted   : boolean
+    isDeleted?  : boolean
 }

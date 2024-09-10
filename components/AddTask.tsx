@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
+import {TaskData} from "@/utils/interface";
 
-const AddTaskPage = () => {
+interface AddTaskProps{
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+
+const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
   const router = useRouter();
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
@@ -26,19 +33,25 @@ const AddTaskPage = () => {
     setTags(tags.filter((t) => t !== tag));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Form Submitted");
-    console.log({
+    const data: TaskData = {
       taskName,
       description,
       type,
-      storyPoint,
+      status: "Not Started",
+      storyPoint: storyPoint.toString(),
       assignedTo,
       finishedBy,
       priority,
       tags,
-    });
+    };
+    try{
+      await addTask(data);
+      setIsOpen(false);
+    }catch(e){
+      alert("Error adding task");
+    }
   };
 
   return (
@@ -110,9 +123,10 @@ const AddTaskPage = () => {
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
           </select>
         </div>
 

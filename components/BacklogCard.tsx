@@ -1,5 +1,5 @@
 "use client";
-import {SetStateAction, useState} from "react";
+import {SetStateAction, useState, useEffect} from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import MiniPopUp from "./MiniPopUp";
 import ProceedDelete from "./ProceedDelete";
@@ -7,14 +7,27 @@ import {TaskData} from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
 const BacklogCard = () => {
-
-    const [isInvisible, SetIsInvisible] = useState(false)
+    const [database, setDatabase] = useState<any>([]);
+    const [isInvisible, SetIsInvisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [taskOpen, setTaskOpen] = useState(false);
     const [createOpen, setCreateOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
+
+    useEffect(() => {
+      setIsLoading(true);
+      const getDatabase = async ()=>{
+          const data: TaskData[] = await fetchTask();
+          const modified_data = data.map((task: TaskData) => {return {...task, isDeleted: false}});
+          setDatabase(modified_data);
+          setIsLoading(false);
+      }
+      getDatabase();
+    }, [createOpen, isOpen]);
 
     const openTask = (task: TaskData) => {
       // Don't open task information if in deleting process
@@ -23,51 +36,15 @@ const BacklogCard = () => {
       setTaskOpen(true);
     }
 
-    const deleteTask = (taskToDelete: TaskData) => {
-      setMockupData(data => data.map(task => 
-          task === taskToDelete ? { ...task, isDeleted: true } : task
-      ));
+    const runDeleteTask = async (taskToDelete: TaskData) => {
+      const taskData:any = taskToDelete;
+      try{
+        await deleteTask(taskData._id);
+      }catch(e){
+        console.log(e);
+      }
     };
  
-    const [mockupData, setMockupData] = useState<TaskData[]>([
-      {
-        taskName    : "My Example Task 1",
-        description : "My Example Description 1",
-        type        : "Story",
-        status      : "Not Started",
-        storyPoint  : "8/10",
-        assignedTo  : "Mario",
-        finishedBy  : "2024-09-20",
-        priority    : "Urgent",
-        tags        : ["Tag1", "Tag2", "Tag3"],
-        isDeleted   : false
-      },
-      {
-        taskName    : "My Example Task 2",
-        description : "My Example Description 2",
-        type        : "Story",
-        status      : "In Progress",
-        storyPoint  : "3/10",
-        assignedTo  : "Shanwu",
-        finishedBy  : "2024-09-22",
-        priority    : "Low",
-        tags        : ["Tag1", "Tag2", "Tag3"],
-        isDeleted   : false
-      },
-      {
-        taskName    : "My Example Task 3",
-        description : "My Example Description 3",
-        type        : "Story",
-        status      : "Completed",
-        storyPoint  : "6/10",
-        assignedTo  : "Shanwu",
-        finishedBy  : "2024-09-22",
-        priority    : "Medium",
-        tags        : ["Tag1", "Tag2", "Tag3"],
-        isDeleted   : false
-      },
-    ])
-
     return (
       <>
       <div className="flex min-h-screen flex-col items-start justify-start p-8 relative">
@@ -111,13 +88,13 @@ const BacklogCard = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="py-4 px-4 border-b border-gray-300 text-left">Tasks</th>
+                <th className="py-4 px-4 border-b border-gray-300 text-left">{isLoading? "Loading Tasks..." : "Tasks"}</th>
               </tr>
             </thead>
-            <tbody>
-              {mockupData
-              .filter((task) => !task.isDeleted)
-              .map((task, i) => (
+            <tbody>      
+              {!isLoading && database
+              .filter((task:any) => !task.isDeleted)
+              .map((task:any, i:number) => (
                 <tr key={i} className="relative hover:bg-gray-100" onClick={()=>{openTask(task)}}>
                   <td className="relative py-8 px-8 border-b border-gray-300 text-left">
                     <div className="flex items-center justify-between">
@@ -128,7 +105,7 @@ const BacklogCard = () => {
                         {/* the tags */}
                         {task.tags && (
                         <div className="flex space-x-2 mt-2">
-                          {task.tags.map((tag, index) => (
+                          {task.tags.map((tag:any, index:number) => (
                             <span
                               key={index}
                               className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -170,7 +147,7 @@ const BacklogCard = () => {
                             taskToDelete={currentTask} 
                             isOpen={isOpen} 
                             setIsOpen={setIsOpen}
-                            deleteTask = {deleteTask}
+                            deleteTask = {runDeleteTask}
                           />
                         </MiniPopUp>
                       </div>
@@ -178,8 +155,10 @@ const BacklogCard = () => {
                       <div className={`absolute top-0 right-0 w-0 h-0 border-t-[40px] border-l-[40px] ${
                         task.priority === 'Urgent'
                           ? 'border-t-red-500'
-                          : task.priority === 'Medium'
+                          : task.priority === 'High'
                           ? 'border-t-orange-500'
+                          : task.priority === 'Medium'
+                          ? 'border-t-yellow-500'
                           : 'border-t-green-500'
                       } border-transparent`}></div>
                     </div>
@@ -195,7 +174,7 @@ const BacklogCard = () => {
           {currentTask && <IndividualTaskInfo taskData={currentTask} />} {/** Add Pop Up task detail */}
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
-          <AddTaskPage/>
+          <AddTaskPage setIsOpen={setCreateOpen}/>
       </PopUp>
       </>
     );

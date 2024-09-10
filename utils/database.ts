@@ -73,22 +73,17 @@ export async function deleteTask(id:string) {
 }
 
 /* Fetch the list of Tasks from the Database */
-export async function fetchTask(id:string) {
+export async function fetchTask() {
     try {
-        const res = await fetch('/api/delete', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-        });
-
-        if (res.ok) {
-            alert('Task deleted successfully!');
-        } else {
-            const errorData = await res.json();
-            alert(`Failed to delete task: ${errorData.error}`);
+        console.log("Fetching Data From Database");
+        const response = await fetch('/api/database');
+        console.log("Response Received")
+                
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
         }
+        const data:any = await response.json();
+        return data.databases;
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred');

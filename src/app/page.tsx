@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopUp from "@/components/PopUp";
 import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
@@ -8,9 +8,11 @@ import IndividualTaskInfo from "@/components/IndividualTask";
 import DropDown from "@/components/DropDown/DropDown";
 import NavBar  from "@/components/NavigatorBar";
 import {TaskData} from "@/utils/interface";
+import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const [databases, setDatabases] = useState<string[]>([]);
   const bounty = {
     title: "Bounty Title",
     description: "Description",
@@ -19,6 +21,16 @@ export default function Home() {
   const openModal = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const getDatabase = async ()=>{
+        const data = await fetchTask();
+        console.log(data);
+        setDatabases(data);
+    }
+    console.log("Getting Database");
+    getDatabase();
+  }, []);
 
   const mokcupData: TaskData[]= [
     {
@@ -67,23 +79,8 @@ export default function Home() {
       <div className="w-full">
         <BacklogCard /> {/* Add BacklogCard component here */}
       </div>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <button
-          onClick={openModal}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Open Pop Up
-        </button>
-      </div>
-      <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-        <IndividualTaskInfo taskData={mokcupData[0]}/> {/** Add Pop Up task detail */}
-      </PopUp>
-      <section className="w-full mt-10">
-        <h2 className="text-xl font-bold mb-4">Task Form</h2>
-        {/*<DropDown /> {/* Adding your DropDown component */}
-      </section>
-      <AddTaskPage />
-      </div>
+    
+    </div>
     </main>
   );
 }

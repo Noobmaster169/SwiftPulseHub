@@ -64,7 +64,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         await createListing(client);
 
         // Get the list of databases
-        const databases = await listDatabases(client);
+        //const databases = await listDatabases(client);
+        const databases = await client.db("tasks").collection("tasks").find({}).toArray();
+
 
         // Return the list of databases as JSON
         return NextResponse.json({ databases });
