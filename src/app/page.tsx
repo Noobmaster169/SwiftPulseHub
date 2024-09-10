@@ -76,7 +76,7 @@ export default function Home() {
   return (
     <main
       className="w-full flex min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/background/background1.jpg')" }}
+      style={{ backgroundImage: "url('/background/background1.png')" }}
     >
       <NavBar />
       <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">

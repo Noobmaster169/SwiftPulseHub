@@ -6,7 +6,6 @@
 import { TaskData } from "@/utils/interface";
 import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
-import { IoMdArrowDropup } from "react-icons/io";
 import EditTask from "./EditTask";
 import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 
@@ -124,39 +123,6 @@ const IndividualTaskInfo = ({ taskData, setEditOpen, setTaskOpen }: IndividualTa
                 {taskData.priority ? taskData.priority : "low"}
               </p>
             </div>
-          </div>
-
-          <div className="mt-6 ">
-            <div className="flex justify between mb-2 gap-2">
-              <h3 className="text-lg font-semibold">Edit history</h3>
-              <button className="text-sm text-gray-400 hover:text-gray-600">
-                <IoMdArrowDropup size={22} />
-              </button>
-            </div>
-
-            <ul className="list-none mb-6">
-              <li className="flex justify-start items-center bg-purple-100 p-2 rounded mb-1 gap-3">
-                <div className="ml-1.5 bg-purple-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
-                  V
-                </div>
-                <span className="text-sm">
-                  Edited by Vanessa at 9.00am today
-                </span>
-              </li>
-              <li className="flex justify-start items-center bg-purple-100 p-2 rounded mb-1 gap-3">
-                <div className="ml-1.5 bg-purple-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
-                  S
-                </div>
-                <span className="text-sm">Edited by Shanwu at 2.20pm</span>
-              </li>
-              <li className="flex justify-start items-center bg-purple-100 p-2 rounded mb-1 gap-3">
-                <div className="ml-1.5 bg-purple-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
-                  JQ
-                </div>
-                <span className="text-sm">Edited by Jia Qian at 6.45pm</span>{" "}
-                {/* Adjusted margin-left */}
-              </li>
-            </ul>
           </div>
         </div>
       )}

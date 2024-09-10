@@ -65,9 +65,6 @@ const BacklogCard = ({taskOpen, setTaskOpen, createOpen, setCreateOpen}: Backlog
       <>
       <div className="flex min-h-screen flex-col items-start justify-start p-8 relative">
         {/*  "PRODUCT BACKLOG" title*/}
-        <div className="h-16 bg-gray-400">
-          Hi
-        </div>
         <div className="absolute top-15 left-18 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md">
           PRODUCT BACKLOG
         </div>
