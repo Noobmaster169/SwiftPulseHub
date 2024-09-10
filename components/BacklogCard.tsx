@@ -166,11 +166,11 @@ const BacklogCard = ({taskOpen, setTaskOpen, createOpen, setCreateOpen}: Backlog
                       </div>
                       {/* Triangle */}
                       <div className={`absolute top-0 right-0 w-0 h-0 border-t-[40px] border-l-[40px] ${
-                        task.priority === 'Urgent'
+                        task.priority.toLowerCase() === 'urgent'
                           ? 'border-t-red-500'
-                          : task.priority === 'High'
+                          : task.priority.toLowerCase() === 'high'
                           ? 'border-t-orange-500'
-                          : task.priority === 'Medium'
+                          : task.priority.toLowerCase() === 'medium'
                           ? 'border-t-yellow-500'
                           : 'border-t-green-500'
                       } border-transparent`}></div>
