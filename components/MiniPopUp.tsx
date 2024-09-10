@@ -34,7 +34,7 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       backgroundColor: "#f9f9f9",
       border: "none",
       overflow:"hidden",
-      boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
+      //boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
     },
   };
 

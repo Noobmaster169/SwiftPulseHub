@@ -24,7 +24,7 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
-      setTags([...tags, tagInput]);
+      setTags([...tags, ...tagInput.split(",").map((tag) => tag.trim())]);
       setTagInput("");
     }
   };
@@ -55,8 +55,8 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
   };
 
   return (
-    <div className="w-3/4">
-      <h1 className="text-xl font-semibold">Add Task</h1>
+    <div className="w-full p-4">
+      <h1 className="text-2xl font-semibold mb-4">Add Task</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task name:</label>
@@ -131,14 +131,18 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
         </div>
 
         <div className="form-group">
-          <label>Add tag:</label>
+          <label>Tag(s):</label>
           <div className="tags-input">
             <input
               type="text"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
             />
-            <button type="button" onClick={handleAddTag}>
+            <button
+              type="button"
+              onClick={handleAddTag}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
               Add
             </button>
           </div>
@@ -154,7 +158,21 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
           </div>
         </div>
 
-        <button type="submit">Create Task</button>
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={() => router.back()}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Create Task
+          </button>
+        </div>
       </form>
 
       <style jsx>{`
@@ -201,7 +219,6 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
         }
         button {
           padding: 8px 16px;
-          background-color: #8a4af3;
           color: white;
           border: none;
           border-radius: 4px;
