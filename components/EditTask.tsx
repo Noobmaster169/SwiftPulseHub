@@ -20,6 +20,27 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   };
 
   const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
+  const [tagInput, setTagInput] = useState("");
+
+  const handleAddTag = () => {
+    if (tagInput && !(updatedTask.tags ?? []).includes(tagInput)) {
+      setUpdatedTask((prevTask) => ({
+        ...prevTask,
+        tags: [
+          ...(prevTask.tags ?? []),
+          ...tagInput.split(",").map((tag) => tag.trim()),
+        ],
+      }));
+      setTagInput("");
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setUpdatedTask((prevTask) => ({
+      ...prevTask,
+      tags: (prevTask.tags ?? []).filter((t) => t !== tag),
+    }));
+  };
 
   const handleChange = (
     field: keyof TaskData,
@@ -141,13 +162,32 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         <label htmlFor="tags" className="block mb-1">
           Tags
         </label>
-        <input
-          type="text"
-          id="tags"
-          value={updatedTask.tags?.join(", ")}
-          onChange={(e) => handleChange("tags", e.target.value.split(", "))}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
+        <div className="tags-input">
+          <input
+            type="text"
+            id="tags"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          <button
+            type="button"
+            onClick={handleAddTag}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Add
+          </button>
+        </div>
+        <div className="tags-list">
+          {(updatedTask.tags ?? []).map((tag) => (
+            <span key={tag} className="tag">
+              {tag}{" "}
+              <button type="button" onClick={() => handleRemoveTag(tag)}>
+                &times;
+              </button>
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="flex justify-end">

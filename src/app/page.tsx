@@ -6,9 +6,9 @@ import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import DropDown from "@/components/DropDown/DropDown";
-import NavBar  from "@/components/NavigatorBar";
-import {TaskData} from "@/utils/interface";
-import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
+import NavBar from "@/components/NavigatorBar";
+import { TaskData } from "@/utils/interface";
+import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,16 +25,16 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const getDatabase = async ()=>{
-        const data = await fetchTask();
-        console.log(data);
-        setDatabases(data);
-    }
+    const getDatabase = async () => {
+      const data = await fetchTask();
+      console.log(data);
+      setDatabases(data);
+    };
     console.log("Getting Database");
     getDatabase();
   }, []);
 
-  const mokcupData: TaskData[]= [
+  const mokcupData: TaskData[] = [
     {
       taskName: "My Example Task 1",
       description: "My Example Description 1",
@@ -42,7 +42,7 @@ export default function Home() {
       status: "Not Started",
       storyPoint: "5",
       assignedTo: "Mario",
-      finishedBy: "2024-09-20",
+      projectStage: "planning",
       priority: "High",
       tags: ["Tag1", "Tag2", "Tag3"],
       isDeleted: false,
@@ -54,7 +54,7 @@ export default function Home() {
       status: "In Progress",
       storyPoint: "3",
       assignedTo: "Shanwu",
-      finishedBy: "2024-09-22",
+      projectStage: "planning",
       priority: "Low",
       tags: ["Tag1", "Tag2", "Tag3"],
       isDeleted: false,
@@ -66,7 +66,7 @@ export default function Home() {
       status: "In Progress",
       storyPoint: "6",
       assignedTo: "Shanwu",
-      finishedBy: "2024-09-22",
+      projectStage: "planning",
       priority: "Medum",
       tags: ["Tag1", "Tag2", "Tag3"],
       isDeleted: false,
@@ -81,11 +81,17 @@ export default function Home() {
       <NavBar />
       <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
         <div className="w-full">
-          <BacklogCard taskOpen={taskOpen} setTaskOpen={setTaskOpen} createOpen={createOpen} setCreateOpen={setCreateOpen}/> {/* Add BacklogCard component here */}
+          <BacklogCard
+            taskOpen={taskOpen}
+            setTaskOpen={setTaskOpen}
+            createOpen={createOpen}
+            setCreateOpen={setCreateOpen}
+          />{" "}
+          {/* Add BacklogCard component here */}
         </div>
       </div>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
-          <AddTaskPage setIsOpen={setCreateOpen}/>
+        <AddTaskPage setIsOpen={setCreateOpen} />
       </PopUp>
     </main>
   );
