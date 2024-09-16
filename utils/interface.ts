@@ -10,3 +10,10 @@ export interface TaskData {
     tags?       : string[];
     isDeleted?  : boolean;
 }
+
+export interface SprintData {
+    sprintName: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+}

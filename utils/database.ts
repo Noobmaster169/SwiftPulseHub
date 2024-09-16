@@ -1,4 +1,4 @@
-import { TaskData } from './interface';
+import { TaskData, SprintData } from './interface';
 
 /* Update a Task to the Database */
 export async function updateTask(newData:TaskData) {
@@ -79,5 +79,26 @@ export async function fetchTask() {
     } catch (error) {
         console.error('Error:', error);
         //alert('An error occurred');
+    }
+}
+
+/* Add a Sprint to the Database */
+export async function addSprint(data: SprintData) {
+    try {
+        const res = await fetch('/api/database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(`Failed to add sprint: ${errorData.error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
     }
 }
