@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
-import {TaskData} from "@/utils/interface";
+import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
+import { TaskData } from "@/utils/interface";
 
-interface AddTaskProps{
+interface AddTaskProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
+const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const router = useRouter();
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
@@ -21,6 +20,7 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
   const [priority, setPriority] = useState("medium");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [projectStage, setProjectStage] = useState("planning");
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
@@ -42,14 +42,14 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
       status: "Not Started",
       storyPoint: storyPoint.toString(),
       assignedTo,
-      finishedBy,
+      projectStage,
       priority,
       tags,
     };
-    try{
+    try {
       await addTask(data);
       setIsOpen(false);
-    }catch(e){
+    } catch (e) {
       alert("Error adding task");
     }
   };
@@ -109,14 +109,16 @@ const AddTaskPage = ({setIsOpen}: AddTaskProps) => {
         </div>
 
         <div className="form-group">
-          <label>Finished by:</label>
-          <input
-            type="date"
-            value={finishedBy}
-            onChange={(e) => setFinishedBy(e.target.value)}
-          />
+          <label>Project Stage:</label>
+          <select
+            value={projectStage}
+            onChange={(e) => setProjectStage(e.target.value)}
+          >
+            <option value="planning">Planning</option>
+            <option value="implementation">Implementation</option>
+            <option value="testing">Testing</option>
+          </select>
         </div>
-
         <div className="form-group">
           <label>Priority:</label>
           <select

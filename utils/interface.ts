@@ -5,8 +5,8 @@ export interface TaskData {
     status?     : string;
     storyPoint? : string;
     assignedTo? : string;
-    finishedBy? : string;
+    projectStage?: string; 
     priority?   : string;
     tags?       : string[];
-    isDeleted?  : boolean
+    isDeleted?  : boolean;
 }

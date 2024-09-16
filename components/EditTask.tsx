@@ -7,7 +7,7 @@ interface EditTaskProps {
   setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
+const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   const handleSave = async () => {
     console.log("Saving Tasks");
     console.log(updatedTask);
@@ -18,7 +18,7 @@ const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
   const handleCancel = () => {
     setEditOpen(false);
   };
-  
+
   const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
 
   const handleChange = (
@@ -67,25 +67,13 @@ const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="finishedBy" className="block mb-1">
-          Finished By
-        </label>
-        <input
-          type="date"
-          id="finishedBy"
-          value={updatedTask.finishedBy}
-          onChange={(e) => handleChange("finishedBy", e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-      <div className="mb-4">
         <label htmlFor="status" className="block mb-1">
           Status
         </label>
         <select
           id="status"
           value={updatedTask.status}
-          onChange={(e) => {}/*handleChange("status", e.target.value)*/}
+          onChange={(e) => {} /*handleChange("status", e.target.value)*/}
           className="w-full border border-gray-300 rounded px-3 py-2"
         >
           <option value="not started">Not Started</option>
@@ -120,6 +108,21 @@ const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
         </select>
       </div>
       <div className="mb-4">
+        <label htmlFor="projectStage" className="block mb-1">
+          Project Stage
+        </label>
+        <select
+          id="projectStage"
+          value={updatedTask.projectStage}
+          onChange={(e) => handleChange("projectStage", e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+        >
+          <option value="planning">Planning</option>
+          <option value="implementation">Implementation</option>
+          <option value="testing">Testing</option>
+        </select>
+      </div>
+      <div className="mb-4">
         <label htmlFor="priority" className="block mb-1">
           Priority
         </label>
@@ -146,6 +149,7 @@ const EditTask = ({ taskData, setEditOpen}: EditTaskProps) => {
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
+
       <div className="flex justify-end">
         <button
           onClick={handleSave}

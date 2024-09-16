@@ -7,7 +7,7 @@ import { TaskData } from "@/utils/interface";
 import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import EditTask from "./EditTask";
-import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
+import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 
 interface IndividualTaskInfoProps {
   taskData: TaskData;
@@ -17,7 +17,11 @@ interface IndividualTaskInfoProps {
 
 const colour = ["bg-purple-400", "bg-blue-300", "bg-red-500", "bg-yellow-400 "];
 
-const IndividualTaskInfo = ({ taskData, setEditOpen, setTaskOpen }: IndividualTaskInfoProps) => {
+const IndividualTaskInfo = ({
+  taskData,
+  setEditOpen,
+  setTaskOpen,
+}: IndividualTaskInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedTaskData, setUpdatedTaskData] = useState(taskData);
 
@@ -26,14 +30,10 @@ const IndividualTaskInfo = ({ taskData, setEditOpen, setTaskOpen }: IndividualTa
     setTaskOpen(false);
   };
 
-
   return (
     <div className="w-full">
       {isEditing ? (
-        <EditTask
-          taskData={updatedTaskData}
-          setEditOpen={setEditOpen}
-        />
+        <EditTask taskData={updatedTaskData} setEditOpen={setEditOpen} />
       ) : (
         <div className="p-4">
           <div className="flex items-center justify-between">
@@ -80,8 +80,8 @@ const IndividualTaskInfo = ({ taskData, setEditOpen, setTaskOpen }: IndividualTa
               {taskData.assignedTo}
             </p>
             <p>
-              <strong>Finished by: </strong>
-              {taskData.finishedBy}
+              <strong>Project Stage: </strong>
+              {taskData.projectStage}
             </p>
           </div>
 
