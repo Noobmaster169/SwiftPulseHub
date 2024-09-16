@@ -21,16 +21,23 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
 
   const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
   const [tagInput, setTagInput] = useState("");
+  const [availableTags, setAvailableTags] = useState<string[]>([
+    "UI",
+    "API",
+    "Backend",
+    "Frontend",
+    "Bug",
+    "Enhancement",
+  ]);
 
   const handleAddTag = () => {
     if (tagInput && !(updatedTask.tags ?? []).includes(tagInput)) {
+      const newTags = tagInput.split(",").map((tag) => tag.trim());
       setUpdatedTask((prevTask) => ({
         ...prevTask,
-        tags: [
-          ...(prevTask.tags ?? []),
-          ...tagInput.split(",").map((tag) => tag.trim()),
-        ],
+        tags: [...(prevTask.tags ?? []), ...newTags],
       }));
+      setAvailableTags([...availableTags, ...newTags]);
       setTagInput("");
     }
   };
@@ -169,7 +176,32 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
+            list="tagOptions"
+            onSelect={(e) => {
+              const selectedTag = e.currentTarget.value;
+              if (
+                selectedTag &&
+                !(updatedTask.tags ?? []).includes(selectedTag)
+              ) {
+                setUpdatedTask((prevTask) => ({
+                  ...prevTask,
+                  tags: [...(prevTask.tags ?? []), selectedTag],
+                }));
+                setTagInput("");
+              }
+            }}
           />
+          <datalist id="tagOptions">
+            {availableTags
+              .filter(
+                (tag) =>
+                  tag.toLowerCase().includes(tagInput.toLowerCase()) &&
+                  !(updatedTask.tags ?? []).includes(tag)
+              )
+              .map((tag) => (
+                <option key={tag} value={tag} />
+              ))}
+          </datalist>
           <button
             type="button"
             onClick={handleAddTag}

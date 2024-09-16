@@ -21,10 +21,20 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [projectStage, setProjectStage] = useState("planning");
+  const [availableTags, setAvailableTags] = useState<string[]>([
+    "UI",
+    "API",
+    "Backend",
+    "Frontend",
+    "Bug",
+    "Enhancement",
+  ]);
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
-      setTags([...tags, ...tagInput.split(",").map((tag) => tag.trim())]);
+      const newTags = tagInput.split(",").map((tag) => tag.trim());
+      setTags([...tags, ...newTags]);
+      setAvailableTags([...availableTags, ...newTags]);
       setTagInput("");
     }
   };
@@ -139,7 +149,26 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
               type="text"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
+              list="tagOptions"
+              onSelect={(e) => {
+                const selectedTag = e.currentTarget.value;
+                if (selectedTag && !tags.includes(selectedTag)) {
+                  setTags([...tags, selectedTag]);
+                  setTagInput("");
+                }
+              }}
             />
+            <datalist id="tagOptions">
+              {availableTags
+                .filter(
+                  (tag) =>
+                    tag.toLowerCase().includes(tagInput.toLowerCase()) &&
+                    !tags.includes(tag)
+                )
+                .map((tag) => (
+                  <option key={tag} value={tag} />
+                ))}
+            </datalist>
             <button
               type="button"
               onClick={handleAddTag}
