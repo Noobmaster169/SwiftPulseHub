@@ -97,8 +97,9 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
 
         <div className="w-1/2 flex items-center justify-center">
           <Calendar
-            value={[startDate, endDate]}
-            onChange={(dates: Date[]) => {
+            value={[startDate, endDate] as [Date, Date]}
+            onChange={(value) => {
+              const dates = value as [Date, Date];
               setStartDate(dates[0]);
               setEndDate(dates[1] || dates[0]);
             }}
