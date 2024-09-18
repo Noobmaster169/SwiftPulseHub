@@ -188,16 +188,16 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
 
         {/* Single-Column Table */}
         <div className="w-full flex items-center justify-center font-mono text-sm mt-4">
-          <table className="min-w-full bg-white border border-gray-200">
+          <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <thead>
               <tr>
-                <th className="py-4 px-4 border-b border-gray-300 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
+                <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
               </tr>
             </thead>
             <tbody>
               {!isLoading && sortedAndFilteredTasks.map((task: TaskData, i: number) => (
                 <tr key={i} className="relative hover:bg-gray-100" onClick={() => { openTask(task) }}>
-                  <td className="relative py-8 px-8 border-b border-gray-300 text-left">
+                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
@@ -224,22 +224,18 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                         )}
                       </div>
                       {/* adding task Progress and Mark */}
-                      <div className={isInvisible ? 'invisible' : ''}>
-                        <div className="flex items-center space-x-2">
-                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span>
-                          <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
-                            task.status === 'Not Started'
-                              ? 'bg-blue-200 text-blue-800'
-                              : task.status === 'In Progress'
-                                ? 'bg-yellow-200 text-yellow-800'
-                                : 'bg-green-200 text-green-800'
-                          }`}>
-                            {task.status}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Delete icon */}
                       <div className="flex items-center space-x-2">
+                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span>
+                        <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
+                          task.status === 'Not Started'
+                            ? 'bg-blue-200 text-blue-800'
+                            : task.status === 'In Progress'
+                              ? 'bg-yellow-200 text-yellow-800'
+                              : 'bg-green-200 text-green-800'
+                        }`}>
+                          {task.status}
+                        </span>
+                      {/* Delete icon */}
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
                         </button>
