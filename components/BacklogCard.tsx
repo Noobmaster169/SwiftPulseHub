@@ -202,7 +202,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
                         <div className="text-lg font-bold">{task.taskName}</div>
-                        <div className="text-sm text-gray-600">Assigned to: {task.assignedTo}</div>
+                        <div className="text-sm text-gray-600">Assigned to: {task.assignedTo? task.assignedTo : "NONE"}</div>
                         {/* the tags */}
                         {task.tags && (
                           <div className="flex space-x-2 mt-2">
@@ -226,7 +226,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                       {/* adding task Progress and Mark */}
                       <div className={isInvisible ? 'invisible' : ''}>
                         <div className="flex items-center space-x-2">
-                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint}</span>
+                          <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span>
                           <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
                             task.status === 'Not Started'
                               ? 'bg-blue-200 text-blue-800'
