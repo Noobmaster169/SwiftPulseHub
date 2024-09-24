@@ -9,7 +9,6 @@ import DropDown from "@/components/DropDown/DropDown";
 import NavBar from "@/components/NavigatorBar";
 import { TaskData } from "@/utils/interface";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
-import CreateSprint from "@/components/CreateSprint";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +19,6 @@ export default function Home() {
     title: "Bounty Title",
     description: "Description",
   };
-  const [createSprintOpen, setCreateSprintOpen] = useState<boolean>(false);
-
   const openModal = () => {
     setIsOpen(!isOpen);
   };
@@ -87,24 +84,11 @@ export default function Home() {
             setTaskOpen={setTaskOpen}
             createOpen={createOpen}
             setCreateOpen={setCreateOpen}
-          />{" "}
-          {/* Add BacklogCard component here */}
+          />
         </div>
       </div>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
         <AddTaskPage setIsOpen={setCreateOpen} />
-      </PopUp>
-      <div className="fixed bottom-4 right-4">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => setCreateSprintOpen(true)}
-        >
-          Create Sprint
-        </button>
-      </div>
-
-      <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
-        <CreateSprint setIsOpen={setCreateSprintOpen} />
       </PopUp>
     </main>
   );
