@@ -1,10 +1,13 @@
 "use client";
 import { SetStateAction, useState, useEffect } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineLock, AiOutlineUnlock } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import PopUp from "@/components/PopUp";
 import CreateSprint from "@/components/CreateSprint";
 import { SprintData } from "@/utils/interface";
+import IndividualTaskInfo from "./IndividualTask";
+import SprintPage from "./IndividualSprint";
+import Link from "next/link";
 
 type SprintBoardProps = {
   sprintOpen: boolean;
@@ -73,20 +76,20 @@ const SprintBoard = ({
   const mockupData: SprintData[] = [
     {
       sprintName: "Sprint 1",
-      startDate: new Date("2023-10-01T10:00:00Z"),
-      endDate: new Date("2023-10-15T10:00:00Z"),
+      startDate: new Date("2024-09-01T00:00:00Z"),
+      endDate: new Date("2024-09-15T23:59:59Z"),
       status: "Completed",
     },
     {
       sprintName: "Sprint 2",
-      startDate: new Date("2023-10-16T10:00:00Z"),
-      endDate: new Date("2023-10-30T10:00:00Z"),
+      startDate: new Date("2024-09-16T00:00:00Z"),
+      endDate: new Date("2024-10-01T23:59:59Z"),
       status: "In Progress",
     },
     {
       sprintName: "Sprint 3",
-      startDate: new Date("2023-11-01T10:00:00Z"),
-      endDate: new Date("2023-11-15T10:00:00Z"),
+      startDate: new Date("2024-10-02T00:00:00Z"),
+      endDate: new Date("2024-10-15T23:59:59Z"),
       status: "Not Started",
     },
   ];
@@ -131,77 +134,104 @@ const SprintBoard = ({
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <thead>
               <tr>
-                {/* <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th> */}
+                {/* <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Sprint..." : "Sprint"}</th> */}
               </tr>
             </thead>
             <tbody>
-              {mockupData.map((sprint: SprintData, i: number) => (
-                <tr
-                  key={i}
-                  className="relative hover:bg-gray-100"
-                  onClick={() => {
-                    openSprint(sprint);
-                  }}
-                >
-                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
-                    <div className="flex items-center justify-between">
-                      {/* task Name and Assigned To which member */}
-                      <div className="flex-1">
-                        <div className="text-lg font-bold">
-                          {sprint.sprintName}
+              {mockupData.map((sprint: SprintData, i: number) => {
+                const today = new Date();
+                const start = sprint.startDate;
+                const end = sprint.endDate;
+                const isActive: boolean = today >= start && today <= end;
+                const isCompleted: boolean = today >= end;
+                return (
+                  <tr
+                    key={i}
+                    className={`relative ${isActive?`hover:bg-gray-100`:``}`}
+                    onClick={() => {
+                      isActive ? ``: isCompleted ? `` : openSprint(sprint);
+                      
+                      {/**attemped to link to another page for editSprint feature*/}
+                      // isActive? ``: isCompleted? ``: window.location.href = `/individualSprint?sprintData=${encodeURIComponent(JSON.stringify(sprint))}`;;
+                    }}
+                  >
+                    <td className={`relative py-8 px-8 border-b border-gray-500 text-left `}>
+                      <div className="flex items-center justify-between">
+                        {/* task Name and Assigned To which member */}
+                        <div className="flex-1">
+                          <div className={`flex items-center text-lg font-bold `}>
+                            <div className= {`${isActive? `` :`opacity-30`}`}>
+                              {sprint.sprintName} 
+                            </div>
+                            
+                            {isActive? <AiOutlineUnlock className="ml-3"/> : isCompleted? ``:<AiOutlineLock className="ml-3"/>}
+                          </div>
+                          <table className="w-60">
+                              <tbody>
+                                <tr>
+                                  <td className="text-sm text-black">
+                                    Start from:
+                                  </td>
+                                  <td className="text-sm text-black">
+                                    {start.toLocaleDateString()} ({start.toLocaleDateString(undefined, { weekday: 'short' })})
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td className="text-sm text-black">
+                                    Ends by:
+                                  </td>
+                                  <td className="text-sm text-black">
+                                    {end.toLocaleDateString()} ({end.toLocaleDateString(undefined, { weekday: 'short' })})
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                         </div>
-                        <div className="text-sm text-black">
-                          Start from: {sprint.startDate.toDateString()}
-                        </div>
-                        <div className="text-sm text-black">
-                          Ends by: {sprint.endDate.toDateString()}
+                        {/* adding task Progress and Mark */}
+                        <div className="flex items-center space-x-3">
+                          {/* <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span> */}
+                          <span
+                            className={`px-3 py-1 text-sm font-semibold rounded-md ${
+                              sprint.status === "Not Started"
+                                ? "bg-blue-200 text-blue-800"
+                                : sprint.status === "In Progress"
+                                ? "bg-yellow-200 text-yellow-800"
+                                : "bg-green-200 text-green-800"
+                            }`}
+                          >
+                            {sprint.status}
+                          </span>
+                          <button>
+                            {isDeleting 
+                            ? <AiOutlineDelete size={20} color="red" />
+                            : ``
+                            }
+                          </button>
+                          {/* <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
+                            <ProceedDelete
+                              taskToDelete={currentSprint}
+                              isOpen={isOpen}
+                              setIsOpen={setIsOpen}
+                              deleteTask={runDeleteTask}
+                            />
+                          </MiniPopUp> */}
                         </div>
                       </div>
-                      {/* adding task Progress and Mark */}
-                      <div className="flex items-center space-x-3">
-                        {/* <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span> */}
-                        <span
-                          className={`px-3 py-1 text-sm font-semibold rounded-md ${
-                            sprint.status === "Not Started"
-                              ? "bg-blue-200 text-blue-800"
-                              : sprint.status === "In Progress"
-                              ? "bg-yellow-200 text-yellow-800"
-                              : "bg-green-200 text-green-800"
-                          }`}
-                        >
-                          {sprint.status}
-                        </span>
-                        <button>
-                          {isDeleting ? (
-                            <AiOutlineDelete size={20} color="red" />
-                          ) : (
-                            <AiOutlineEdit size={22} />
-                          )}
-                        </button>
-                        {/* <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-                          <ProceedDelete
-                            taskToDelete={currentSprint}
-                            isOpen={isOpen}
-                            setIsOpen={setIsOpen}
-                            deleteTask={runDeleteTask}
-                          />
-                        </MiniPopUp> */}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                  )}
+              )}
             </tbody>
           </table>
         </div>
       </div>
       {/** pop-up views for each sprint or any other features required */}
       {/** pop-up for each sprint */}
-      {/* <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}> 
-        {currentSprint && 
-        <IndividualTaskInfo taskData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />
-        }
-      </PopUp> */}
+      <PopUp isOpen={sprintOpen} setIsOpen={setSprintOpen}> 
+        {currentSprint &&
+        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} />
+        } 
+      </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
         <CreateSprint setIsOpen={setCreateOpen} />
       </PopUp>
