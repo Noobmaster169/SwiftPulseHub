@@ -87,24 +87,11 @@ export default function Home() {
             setTaskOpen={setTaskOpen}
             createOpen={createOpen}
             setCreateOpen={setCreateOpen}
-          />{" "}
-          {/* Add BacklogCard component here */}
+          />
         </div>
       </div>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
         <AddTaskPage setIsOpen={setCreateOpen} />
-      </PopUp>
-      <div className="fixed bottom-4 right-4">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => setCreateSprintOpen(true)}
-        >
-          Create Sprint
-        </button>
-      </div>
-
-      <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
-        <CreateSprint setIsOpen={setCreateSprintOpen} />
       </PopUp>
     </main>
   );

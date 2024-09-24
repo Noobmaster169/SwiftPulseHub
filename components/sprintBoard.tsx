@@ -13,14 +13,20 @@ type SprintBoardProps = {
   setCreateOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: SprintBoardProps) => {
+const SprintBoard = ({
+  sprintOpen,
+  setSprintOpen,
+  createOpen,
+  setCreateOpen,
+}: SprintBoardProps) => {
   const [isDeleting, SetIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [currentSprint, setCurrentSprint] = useState<SprintData | null>(null);
   const [dateSort, setDateSort] = useState<string | null>(null);
-  const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
+  const [showPriorityDropdown, setShowPriorityDropdown] =
+    useState<boolean>(false);
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
 
   // useEffect(() => {
@@ -67,20 +73,20 @@ const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: S
   const mockupData: SprintData[] = [
     {
       sprintName: "Sprint 1",
-      startDate: new Date('2023-10-01T10:00:00Z'),
-      endDate: new Date('2023-10-15T10:00:00Z'),
+      startDate: new Date("2023-10-01T10:00:00Z"),
+      endDate: new Date("2023-10-15T10:00:00Z"),
       status: "Completed",
     },
     {
       sprintName: "Sprint 2",
-      startDate: new Date('2023-10-16T10:00:00Z'),
-      endDate: new Date('2023-10-30T10:00:00Z'),
+      startDate: new Date("2023-10-16T10:00:00Z"),
+      endDate: new Date("2023-10-30T10:00:00Z"),
       status: "In Progress",
     },
     {
       sprintName: "Sprint 3",
-      startDate: new Date('2023-11-01T10:00:00Z'),
-      endDate: new Date('2023-11-15T10:00:00Z'),
+      startDate: new Date("2023-11-01T10:00:00Z"),
+      endDate: new Date("2023-11-15T10:00:00Z"),
       status: "Not Started",
     },
   ];
@@ -99,16 +105,19 @@ const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: S
             <div className="relative">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-                onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
+                onClick={() => setCreateOpen(true)}
               >
-                Create new sprint
+                Create New Sprint
               </button>
-              
             </div>
             <div className="relative">
               <button
-                className= {`px-4 py-2 font-semibold rounded-md shadow-md hover:ring hover:ring-red-500 
-                              active:bg-red-400 active:text-white ${isDeleting? `bg-red-500 hover:bg-red-600`: `bg-gray-200 text-gray-700 hover:bg-gray-300`}`}
+                className={`px-4 py-2 font-semibold rounded-md shadow-md hover:ring hover:ring-red-500 
+                              active:bg-red-400 active:text-white ${
+                                isDeleting
+                                  ? `bg-red-500 hover:bg-red-600`
+                                  : `bg-gray-200 text-gray-700 hover:bg-gray-300`
+                              }`}
                 onClick={() => SetIsDeleting(!isDeleting)}
               >
                 Delete sprint
@@ -127,33 +136,47 @@ const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: S
             </thead>
             <tbody>
               {mockupData.map((sprint: SprintData, i: number) => (
-                <tr key={i} className="relative hover:bg-gray-100" 
-                onClick={() => { openSprint(sprint) }}
+                <tr
+                  key={i}
+                  className="relative hover:bg-gray-100"
+                  onClick={() => {
+                    openSprint(sprint);
+                  }}
                 >
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
-                        <div className="text-lg font-bold">{sprint.sprintName}</div>
-                        <div className="text-sm text-black">Start from: {sprint.startDate.toDateString()}</div>
-                        <div className="text-sm text-black">Ends by: {sprint.endDate.toDateString()}</div>
+                        <div className="text-lg font-bold">
+                          {sprint.sprintName}
+                        </div>
+                        <div className="text-sm text-black">
+                          Start from: {sprint.startDate.toDateString()}
+                        </div>
+                        <div className="text-sm text-black">
+                          Ends by: {sprint.endDate.toDateString()}
+                        </div>
                       </div>
                       {/* adding task Progress and Mark */}
                       <div className="flex items-center space-x-3">
                         {/* <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span> */}
-                        <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
-                          sprint.status === 'Not Started'
-                            ? 'bg-blue-200 text-blue-800'
-                            : sprint.status === 'In Progress'
-                              ? 'bg-yellow-200 text-yellow-800'
-                              : 'bg-green-200 text-green-800'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 text-sm font-semibold rounded-md ${
+                            sprint.status === "Not Started"
+                              ? "bg-blue-200 text-blue-800"
+                              : sprint.status === "In Progress"
+                              ? "bg-yellow-200 text-yellow-800"
+                              : "bg-green-200 text-green-800"
+                          }`}
+                        >
                           {sprint.status}
                         </span>
                         <button>
-                          {isDeleting
-                          ?<AiOutlineDelete size={20} color="red"/>
-                          :<AiOutlineEdit size={22}/>}
+                          {isDeleting ? (
+                            <AiOutlineDelete size={20} color="red" />
+                          ) : (
+                            <AiOutlineEdit size={22} />
+                          )}
                         </button>
                         {/* <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
                           <ProceedDelete
@@ -167,8 +190,7 @@ const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: S
                     </div>
                   </td>
                 </tr>
-              ))
-              }
+              ))}
             </tbody>
           </table>
         </div>
@@ -184,10 +206,10 @@ const SprintBoard = ({ sprintOpen, setSprintOpen, createOpen, setCreateOpen }: S
         <CreateSprint setIsOpen={setCreateOpen} />
       </PopUp>
       {/* <PopUp isOpen={editOpen} setIsOpen={setEditOpen}> */}
-        {/* {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />} */}
+      {/* {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />} */}
       {/* </PopUp> */}
     </>
   );
-}
+};
 
 export default SprintBoard;
