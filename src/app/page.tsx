@@ -5,10 +5,10 @@ import PopUp from "@/components/PopUp";
 import AddTaskPage from "@/components/AddTask";
 import BacklogCard from "@/components/BacklogCard";
 import IndividualTaskInfo from "@/components/IndividualTask";
-import DropDown from "@/components/DropDown/DropDown";
 import NavBar from "@/components/NavigatorBar";
 import { TaskData } from "@/utils/interface";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
+import HorizontalNavbar from "@/components/HorizontalNavBar";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,23 +73,26 @@ export default function Home() {
   ];
 
   return (
-    <main
-      className="w-full flex min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/background/background1.png')" }}
-    >
-      <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
-        <div className="w-full">
-          <BacklogCard
-            taskOpen={taskOpen}
-            setTaskOpen={setTaskOpen}
-            createOpen={createOpen}
-            setCreateOpen={setCreateOpen}
-          />
+    <>
+    <HorizontalNavbar />
+      <main
+        className="w-full flex min-h-screen bg-cover bg-center"
+        style={{ backgroundImage: "url('/background/background1.png')" }}
+      >
+        <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
+          <div className="w-full">
+            <BacklogCard
+              taskOpen={taskOpen}
+              setTaskOpen={setTaskOpen}
+              createOpen={createOpen}
+              setCreateOpen={setCreateOpen}
+            />
+          </div>
         </div>
-      </div>
-      <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
-        <AddTaskPage setIsOpen={setCreateOpen} />
-      </PopUp>
-    </main>
+        <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
+          <AddTaskPage setIsOpen={setCreateOpen} />
+        </PopUp>
+      </main>
+    </>
   );
 }
