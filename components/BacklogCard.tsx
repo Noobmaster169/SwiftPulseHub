@@ -34,11 +34,11 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   useEffect(() => {
     setIsLoading(true);
     const getDatabase = async () => {
-      const data: TaskData[] = await fetchTask();
-      let modified_data = data.map((task: TaskData) => ({ ...task, isDeleted: false }));
-      if (!modified_data) {
-        modified_data = [];
+      let data: TaskData[] = await fetchTask();
+      if (!data) {
+        data = [];
       }
+      const modified_data = data.map((task: TaskData) => ({ ...task, isDeleted: false }));
       setDatabase(modified_data);
       setIsLoading(false);
 

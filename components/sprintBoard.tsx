@@ -28,8 +28,7 @@ const SprintBoard = ({
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [currentSprint, setCurrentSprint] = useState<SprintData | null>(null);
   const [dateSort, setDateSort] = useState<string | null>(null);
-  const [showPriorityDropdown, setShowPriorityDropdown] =
-    useState<boolean>(false);
+  const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
 
   // useEffect(() => {
