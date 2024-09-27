@@ -32,7 +32,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true);
+    if(database.length == 0){
+      setIsLoading(true);
+    }
     const getDatabase = async () => {
       let data: TaskData[] = await fetchTask();
       if (!data) {

@@ -10,10 +10,9 @@ type ModalProps = {
 };
 
 const ProceedDelete = ({taskToDelete, isOpen, setIsOpen, deleteTask}: ModalProps) => {
-    
-    const handleDelete= () =>{
+    const handleDelete= async() =>{
         if (taskToDelete) {
-            deleteTask(taskToDelete);
+            await deleteTask(taskToDelete);
         }
         setIsOpen(false);
     }

@@ -67,20 +67,20 @@ import { TaskData, SprintData } from './interface';
 //     }
 // }
 
-// /* Fetch the list of Tasks from the Database */
-// export async function fetchTask() {
-//     try {
-//         const response = await fetch('/api/database');       
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
-//         const data:any = await response.json();
-//         return data.databases;
-//     } catch (error) {
-//         console.error('Error:', error);
-//         //alert('An error occurred');
-//     }
-// }
+/* Fetch the list of Tasks from the Database */
+export async function fetchSprint() {
+    try {
+        const response = await fetch('/api/sprint');       
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        const data:any = await response.json();
+        return data.databases;
+    } catch (error) {
+        console.error('Error:', error);
+        //alert('An error occurred');
+    }
+}
 
 // /* Add a Sprint to the Database */
 // export async function addSprint(data: SprintData) {

@@ -8,6 +8,7 @@ import { SprintData } from "@/utils/interface";
 import IndividualTaskInfo from "./IndividualTask";
 import SprintPage from "./IndividualSprint";
 import Link from "next/link";
+import {fetchSprint} from '@/utils/sprint';
 
 type SprintBoardProps = {
   sprintOpen: boolean;
@@ -31,26 +32,26 @@ const SprintBoard = ({
   const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const getDatabase = async () => {
-  //     const data: TaskData[] = await fetchTask();
-  //     let modified_data = data.map((task: TaskData) => ({ ...task, isDeleted: false }));
-  //     if (!modified_data) {
-  //       modified_data = [];
-  //     }
-  //     setDatabase(modified_data);
-  //     setIsLoading(false);
+  const [database, setDatabase] = useState<SprintData[]>([]);
 
-  //     // Extract unique tags from tasks
-  //     const tags = new Set<string>();
-  //     modified_data.forEach(task => {
-  //       task.tags?.forEach(tag => tags.add(tag));
-  //     });
-  //     setAvailableTags(Array.from(tags));
-  //   };
-  //   getDatabase();
-  // }, [createOpen, isOpen, editOpen]);
+  useEffect(() => {
+    if(database.length == 0){
+      setIsLoading(true);
+    }
+    const getDatabase = async () => {
+      let data: SprintData[] = await fetchSprint();
+      if (!data) {
+        data = [];
+      }
+      const modified_data = data.map((task: SprintData) => ({ ...task, isDeleted: false }));
+      console.log(modified_data);
+      setDatabase(modified_data);
+      setIsLoading(false);
+    };
+    getDatabase();
+  }, [createOpen, isOpen, editOpen]);
+
+
 
   const openSprint = (sprint: SprintData) => {
     if (isDeleting) return;

@@ -58,15 +58,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const client = new MongoClient(uri);
 
     try {
-        // Connect to the MongoDB cluster
-        await client.connect();
-        await findOneListingByName(client, "Working Website");
-        await createListing(client);
-
-        // Get the list of databases
-        //const databases = await listDatabases(client);
+        //console.log("Getting Database")
         const databases = await client.db("tasks").collection("tasks").find({}).toArray();
-
+        //console.log(databases);
 
         // Return the list of databases as JSON
         return NextResponse.json({ databases });
@@ -74,7 +68,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to connect to the database' }, { status: 500 });
-    } finally {
-        await client.close();
-    }
+    } 
 }
