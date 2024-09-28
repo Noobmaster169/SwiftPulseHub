@@ -138,10 +138,10 @@ const SprintBoard = ({
               </tr>
             </thead>
             <tbody>
-              {mockupData.map((sprint: SprintData, i: number) => {
+              {database.map((sprint: SprintData, i: number) => {
                 const today = new Date();
-                const start = sprint.startDate;
-                const end = sprint.endDate;
+                const start = new Date(sprint.startDate);
+                const end = new Date(sprint.endDate);
                 const isActive: boolean = today >= start && today <= end;
                 const isCompleted: boolean = today >= end;
                 return (

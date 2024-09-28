@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { addSprint } from "@/utils/database";
+import { addSprint } from "@/utils/sprint";
 import { SprintData } from "@/utils/interface";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";

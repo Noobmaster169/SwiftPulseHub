@@ -59,7 +59,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     try {
         // Get the list of databases
-        //const databases = await listDatabases(client);
         const databases = await client.db("tasks").collection("sprints").find({}).toArray();
 
         // Return the list of databases as JSON
@@ -67,8 +66,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to connect to the database' }, { status: 500 });
-    } 
-    // finally {
-    //     await client.close();
-    // }
+    }
 }

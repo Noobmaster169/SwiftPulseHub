@@ -14,6 +14,9 @@ const SprintPage = ({
 }: IndividualSprintInfoProps) => {
     // const [isEditing, setIsEditing] = useState(false);
     // const [updatedTaskData, setUpdatedTaskData] = useState(sprintData);
+    const startDate = new Date(sprintData.startDate);
+    const endDate = new Date(sprintData.endDate);
+
     return (
     <main className="flex flex-col items-center min-h-screen p-8">
         {/* Header Section */}
@@ -31,7 +34,7 @@ const SprintPage = ({
                     <strong>Start from:</strong>
                 </td>
                 <td className="text-sm text-black">
-                    {sprintData.startDate.toLocaleDateString()}
+                    {startDate.toLocaleDateString()}
                 </td>
             </tr>
             <tr>
@@ -39,7 +42,7 @@ const SprintPage = ({
                     <strong>Ends by:</strong>
                 </td>
                 <td className="text-sm text-black">
-                    {sprintData.endDate.toLocaleDateString()}
+                    {endDate.toLocaleDateString()}
                 </td>
             </tr>
             <tr>
