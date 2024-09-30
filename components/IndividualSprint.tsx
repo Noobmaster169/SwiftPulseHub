@@ -82,7 +82,9 @@ const SprintPage = ({
         {sprintData.status == "Not Started" ?
             <SprintTasks sprintData={sprintData} assignedTasks={assignedTasks} updateTasks={updateTasks}/>
             : 
-            /** Kanban Board Component Here */
+            <div>
+                Kanban Board Component Here
+            </div>
         }
     </div>
     );
