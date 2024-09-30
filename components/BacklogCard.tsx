@@ -26,10 +26,11 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
   const [prioritySort, setPrioritySort] = useState<string | null>(null);
   const [dateSort, setDateSort] = useState<string | null>(null);
-  const [filterTag, setFilterTag] = useState<string>("");
+  const [filterTags, setFilterTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
+  const [showTagDropdown, setShowTagDropdown] = useState<boolean>(false);
 
   useEffect(() => {
     if(database.length == 0){
@@ -75,7 +76,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   };
 
   const sortedAndFilteredTasks = database
-    .filter((task: TaskData) => !task.isDeleted && (filterTag === "" || task.tags?.includes(filterTag)))
+    .filter((task: TaskData) => !task.isDeleted && (filterTags.length === 0 || filterTags.some(tag => task.tags?.includes(tag))))
     .sort((a: TaskData, b: TaskData) => {
       const priorityOrder = ["low", "medium", "high", "urgent"];
       const priorityComparison = priorityOrder.indexOf(a.priority?.toLowerCase() || "") - priorityOrder.indexOf(b.priority?.toLowerCase() || "");
@@ -164,16 +165,35 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 </div>
               )}
             </div>
-            <select
-              className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-              value={filterTag}
-              onChange={(e) => setFilterTag(e.target.value)}
-            >
-              <option value="">All Tags</option>
-              {availableTags.map((tag, index) => (
-                <option key={index} value={tag}>{tag}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
+                onClick={() => setShowTagDropdown(!showTagDropdown)}
+              >
+                Tags
+              </button>
+              {showTagDropdown && (
+                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                  {availableTags.map((tag, index) => (
+                    <label key={index} className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
+                      <input
+                        type="checkbox"
+                        value={tag}
+                        checked={filterTags.includes(tag)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFilterTags([...filterTags, tag]);
+                          } else {
+                            setFilterTags(filterTags.filter(t => t !== tag));
+                          }
+                        }}
+                      />
+                      <span>{tag}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <div className="space-x-4">
             <button
