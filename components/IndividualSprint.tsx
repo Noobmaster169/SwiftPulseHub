@@ -1,19 +1,22 @@
-import { SprintData } from "@/utils/interface";
-import React, { useState } from "react";
+import { SprintData, TaskData } from "@/utils/interface";
+import React, { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import SprintTasks from "./SprintTasks";
 import {fetchSprint, updateSprint} from '@/utils/sprint';
 
 interface IndividualSprintInfoProps {
     sprintData: SprintData;
+    isLocked: boolean;
     setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setTaskOpen: React.Dispatch<React.SetStateAction<boolean>>;
     assignedTasks: string[];
     isUpdated: boolean;
     setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
   }
+
 const SprintPage = ({
     sprintData,
+    isLocked,
     setEditOpen,
     setTaskOpen,
     assignedTasks,
@@ -22,6 +25,9 @@ const SprintPage = ({
 }: IndividualSprintInfoProps) => {
     // const [isEditing, setIsEditing] = useState(false);
     // const [updatedTaskData, setUpdatedTaskData] = useState(sprintData);
+    const [tasks, setTasks] = useState<TaskData[]>([]); // Assuming tasks are strings; adjust type as needed
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState(false);
     const startDate = new Date(sprintData.startDate);
     const endDate = new Date(sprintData.endDate);
     const status = sprintData.status;

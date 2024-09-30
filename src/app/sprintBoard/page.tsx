@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import PopUp from "@/components/PopUp";
-import AddTaskPage from "@/components/AddTask";
-import NavBar from "@/components/NavigatorBar";
 import { TaskData } from "@/utils/interface";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import CreateSprint from "@/components/CreateSprint";
@@ -57,15 +54,6 @@ export default function sprintBoardHome() {
         {/* <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage setIsOpen={setCreateOpen} />
         </PopUp> */}
-        <div className="fixed bottom-4 right-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={() => setCreateSprintOpen(true)}
-          >
-            Create Sprint
-          </button>
-        </div>
-
         {/* <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
           <CreateSprint setIsOpen={setCreateSprintOpen} />
         </PopUp> */}
