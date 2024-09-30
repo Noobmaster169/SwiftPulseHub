@@ -57,14 +57,14 @@ export default function sprintBoardHome() {
         {/* <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage setIsOpen={setCreateOpen} />
         </PopUp> */}
-        <div className="fixed bottom-4 right-4">
+        {/*<div className="fixed bottom-4 right-4">
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={() => setCreateSprintOpen(true)}
           >
             Create Sprint
           </button>
-        </div>
+        </div>*/}
 
         {/* <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
           <CreateSprint setIsOpen={setCreateSprintOpen} />

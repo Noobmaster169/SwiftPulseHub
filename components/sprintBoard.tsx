@@ -4,11 +4,13 @@ import { AiOutlineDelete, AiOutlineLock, AiOutlineUnlock } from "react-icons/ai"
 import { AiOutlineEdit } from "react-icons/ai";
 import PopUp from "@/components/PopUp";
 import CreateSprint from "@/components/CreateSprint";
+import MiniPopUp from "./MiniPopUp";
+import ProceedDelete from "./ProceedDelete";
 import { SprintData } from "@/utils/interface";
 import IndividualTaskInfo from "./IndividualTask";
 import SprintPage from "./IndividualSprint";
 import Link from "next/link";
-import {fetchSprint} from '@/utils/sprint';
+import {fetchSprint, deleteSprint} from '@/utils/sprint';
 
 type SprintBoardProps = {
   sprintOpen: boolean;
@@ -74,14 +76,13 @@ const SprintBoard = ({
     setSprintOpen(false);
   };
 
-  // const runDeleteTask = async (taskToDelete: TaskData) => {
-  //   const taskData: any = taskToDelete;
-  //   try {
-  //     await deleteTask(taskData._id);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const handleDelete = async (sprintId: string) =>{
+    try {
+      await deleteSprint(sprintId);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   // const mockupData: SprintData[] = [
   //   {
@@ -103,71 +104,6 @@ const SprintBoard = ({
   //     status: "Not Started",
   //   },
   // ];
-
-  // useEffect(() => {
-  //   console.log("Show Drag n Drop")
-  //   let dragTemp: HTMLElement | null = null;
-
-  //   // Handle drag start
-  //   document.querySelectorAll('.drag').forEach(item => {
-  //     item.addEventListener('dragstart', (e) => {
-  //       dragTemp = e.target as HTMLElement;
-  //       console.log('dragStart', dragTemp);
-  //     });
-  //   });
-
-  //   // Handle drag over for drop areas
-  //   document.querySelectorAll('.drop').forEach(dropZone => {
-  //     dropZone.addEventListener('dragover', (e) => {
-  //       e.preventDefault();
-  //     });
-  //   });
-
-  //   // Handle drop for dp1
-  //   const dp1 = document.getElementById('dp1');
-  //   if (dp1) {
-  //     dp1.addEventListener('drop', () => {
-  //       if (dragTemp) dp1.appendChild(dragTemp);
-  //     });
-  //   }
-
-  //   // Handle drop for dp2
-  //   const dp2 = document.getElementById('dp2');
-  //   if (dp2) {
-  //     dp2.addEventListener('drop', () => {
-  //       if (dragTemp) {
-  //         dp2.appendChild(dragTemp);
-  //         dp2.querySelectorAll('.drag').forEach((item:any) => {
-  //           console.log(item.innerText);
-  //         });
-  //       }
-  //     });
-  //   }
-
-  //   return () => {
-  //     // Cleanup event listeners
-  //     document.querySelectorAll('.drag').forEach(item => {
-  //       item.removeEventListener('dragstart', () => {});
-  //     });
-
-  //     document.querySelectorAll('.drop').forEach(dropZone => {
-  //       dropZone.removeEventListener('dragover', () => {});
-  //     });
-  //   };
-  // }, []);
-
-  // const check = ()=>{
-  //   const dp1 = document.getElementById('dp1');
-  //   const dp2 = document.getElementById('dp2');
-
-  //   console.log(dp1);
-  //   console.log(dp2);
-
-  //   const sprintTasks: string[] = []
-  //   dp1?.querySelectorAll('.drag').forEach((item) => {sprintTasks.push(item.id)});
-  //   console.log(sprintTasks);
-  // }
-
 
   return (
     <>
@@ -278,20 +214,17 @@ const SprintBoard = ({
                           >
                             {sprint.status}
                           </span>
-                          <button>
-                            {isDeleting 
-                            ? <AiOutlineDelete size={20} color="red" />
-                            : ``
-                            }
+                          <button className={isDeleting ? '' : 'invisible'}>
+                            <AiOutlineDelete size={20} color="red" onClick={()=>{setIsOpen(true); setCurrentSprint(sprint)}}/>
                           </button>
-                          {/* <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
+                          <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
                             <ProceedDelete
-                              taskToDelete={currentSprint}
+                              taskToDelete={currentSprint?._id}
                               isOpen={isOpen}
                               setIsOpen={setIsOpen}
-                              deleteTask={runDeleteTask}
+                              deleteTask={handleDelete}
                             />
-                          </MiniPopUp> */}
+                          </MiniPopUp>
                         </div>
                       </div>
                     </td>
