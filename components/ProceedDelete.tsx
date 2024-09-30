@@ -1,18 +1,18 @@
-import { TaskData } from "@/utils/interface";
+import { SprintData, TaskData } from "@/utils/interface";
 import React, {useState} from "react";
 
 
 type ModalProps = {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    taskToDelete: TaskData | null;
-    deleteTask: (taskToDelete: TaskData) => void;
+    objectToDelete: TaskData | SprintData | null;
+    deleteObject: (objectToDelete: TaskData | SprintData) => void;
 };
 
-const ProceedDelete = ({taskToDelete, isOpen, setIsOpen, deleteTask}: ModalProps) => {
+const ProceedDelete = ({objectToDelete, isOpen, setIsOpen, deleteObject}: ModalProps) => {
     const handleDelete= async() =>{
-        if (taskToDelete) {
-            await deleteTask(taskToDelete);
+        if (objectToDelete) {
+            await deleteObject(objectToDelete);
         }
         setIsOpen(false);
     }
