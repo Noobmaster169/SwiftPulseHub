@@ -25,6 +25,7 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
       startDate,
       endDate,
       status,
+      tasks: [],
     };
     try {
       await addSprint(data);
@@ -69,14 +70,14 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
             />
           </div>
 
-          <div className="form-group">
+          {/*<div className="form-group">
             <label>Status:</label>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="Not Started">Not Started</option>
               <option value="Active">Active</option>
               <option value="Completed">Completed</option>
             </select>
-          </div>
+          </div>*/}
 
           <div className="flex justify-center space-x-4">
             <button

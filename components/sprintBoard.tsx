@@ -27,12 +27,14 @@ const SprintBoard = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [isUpdated, setIsUpdated] = useState<boolean>(false);
   const [currentSprint, setCurrentSprint] = useState<SprintData | null>(null);
   const [dateSort, setDateSort] = useState<string | null>(null);
   const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
   const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
 
   const [database, setDatabase] = useState<SprintData[]>([]);
+  const [taskIds, setTaskIds] = useState<string[]>([]);
 
   useEffect(() => {
     if(database.length == 0){
@@ -44,12 +46,20 @@ const SprintBoard = ({
         data = [];
       }
       const modified_data = data.map((task: SprintData) => ({ ...task, isDeleted: false }));
-      console.log(modified_data);
+      const ids:string[] = [];
+      modified_data.forEach((sprint:SprintData) => {
+        if(!sprint.tasks){return}
+        sprint.tasks.forEach((task:string) => {
+          ids.push(task)
+        });
+      });
+      setTaskIds(ids);
+      //console.log(modified_data);
       setDatabase(modified_data);
       setIsLoading(false);
     };
     getDatabase();
-  }, [createOpen, isOpen, editOpen]);
+  }, [createOpen, isOpen, editOpen, isUpdated]);
 
 
 
@@ -73,26 +83,91 @@ const SprintBoard = ({
   //   }
   // };
 
-  const mockupData: SprintData[] = [
-    {
-      sprintName: "Sprint 1",
-      startDate: new Date("2024-09-01T00:00:00Z"),
-      endDate: new Date("2024-09-15T23:59:59Z"),
-      status: "Completed",
-    },
-    {
-      sprintName: "Sprint 2",
-      startDate: new Date("2024-09-16T00:00:00Z"),
-      endDate: new Date("2024-10-01T23:59:59Z"),
-      status: "In Progress",
-    },
-    {
-      sprintName: "Sprint 3",
-      startDate: new Date("2024-10-02T00:00:00Z"),
-      endDate: new Date("2024-10-15T23:59:59Z"),
-      status: "Not Started",
-    },
-  ];
+  // const mockupData: SprintData[] = [
+  //   {
+  //     sprintName: "Sprint 1",
+  //     startDate: new Date("2024-09-01T00:00:00Z"),
+  //     endDate: new Date("2024-09-15T23:59:59Z"),
+  //     status: "Completed",
+  //   },
+  //   {
+  //     sprintName: "Sprint 2",
+  //     startDate: new Date("2024-09-16T00:00:00Z"),
+  //     endDate: new Date("2024-10-01T23:59:59Z"),
+  //     status: "In Progress",
+  //   },
+  //   {
+  //     sprintName: "Sprint 3",
+  //     startDate: new Date("2024-10-02T00:00:00Z"),
+  //     endDate: new Date("2024-10-15T23:59:59Z"),
+  //     status: "Not Started",
+  //   },
+  // ];
+
+  // useEffect(() => {
+  //   console.log("Show Drag n Drop")
+  //   let dragTemp: HTMLElement | null = null;
+
+  //   // Handle drag start
+  //   document.querySelectorAll('.drag').forEach(item => {
+  //     item.addEventListener('dragstart', (e) => {
+  //       dragTemp = e.target as HTMLElement;
+  //       console.log('dragStart', dragTemp);
+  //     });
+  //   });
+
+  //   // Handle drag over for drop areas
+  //   document.querySelectorAll('.drop').forEach(dropZone => {
+  //     dropZone.addEventListener('dragover', (e) => {
+  //       e.preventDefault();
+  //     });
+  //   });
+
+  //   // Handle drop for dp1
+  //   const dp1 = document.getElementById('dp1');
+  //   if (dp1) {
+  //     dp1.addEventListener('drop', () => {
+  //       if (dragTemp) dp1.appendChild(dragTemp);
+  //     });
+  //   }
+
+  //   // Handle drop for dp2
+  //   const dp2 = document.getElementById('dp2');
+  //   if (dp2) {
+  //     dp2.addEventListener('drop', () => {
+  //       if (dragTemp) {
+  //         dp2.appendChild(dragTemp);
+  //         dp2.querySelectorAll('.drag').forEach((item:any) => {
+  //           console.log(item.innerText);
+  //         });
+  //       }
+  //     });
+  //   }
+
+  //   return () => {
+  //     // Cleanup event listeners
+  //     document.querySelectorAll('.drag').forEach(item => {
+  //       item.removeEventListener('dragstart', () => {});
+  //     });
+
+  //     document.querySelectorAll('.drop').forEach(dropZone => {
+  //       dropZone.removeEventListener('dragover', () => {});
+  //     });
+  //   };
+  // }, []);
+
+  // const check = ()=>{
+  //   const dp1 = document.getElementById('dp1');
+  //   const dp2 = document.getElementById('dp2');
+
+  //   console.log(dp1);
+  //   console.log(dp2);
+
+  //   const sprintTasks: string[] = []
+  //   dp1?.querySelectorAll('.drag').forEach((item) => {sprintTasks.push(item.id)});
+  //   console.log(sprintTasks);
+  // }
+
 
   return (
     <>
@@ -134,7 +209,7 @@ const SprintBoard = ({
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <thead>
               <tr>
-                {/* <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Sprint..." : "Sprint"}</th> */}
+                <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Sprint..." : "Sprint"}</th>
               </tr>
             </thead>
             <tbody>
@@ -149,8 +224,10 @@ const SprintBoard = ({
                     key={i}
                     className={`relative ${isActive?`hover:bg-gray-100`:``}`}
                     onClick={() => {
-                      isActive ? ``: isCompleted ? `` : openSprint(sprint);
-                      
+                      // Open Sprint at every scenario
+                      //isActive ? ``: isCompleted ? `` : openSprint(sprint);
+                      openSprint(sprint);
+
                       {/**attemped to link to another page for editSprint feature*/}
                       // isActive? ``: isCompleted? ``: window.location.href = `/individualSprint?sprintData=${encodeURIComponent(JSON.stringify(sprint))}`;;
                     }}
@@ -229,7 +306,7 @@ const SprintBoard = ({
       {/** pop-up for each sprint */}
       <PopUp isOpen={sprintOpen} setIsOpen={setSprintOpen}> 
         {currentSprint &&
-        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} />
+        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} assignedTasks={taskIds} isUpdated={isUpdated} setIsUpdated={setIsUpdated} />
         } 
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>

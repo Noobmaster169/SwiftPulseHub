@@ -1,4 +1,5 @@
 export interface TaskData {
+    _id?        : string;
     taskName?   : string;
     description?: string;
     type?       : string;
@@ -12,8 +13,10 @@ export interface TaskData {
 }
 
 export interface SprintData {
+    _id?: string;
     sprintName: string;
     startDate: Date;
     endDate: Date;
     status: string;
+    tasks: string[];
 }
