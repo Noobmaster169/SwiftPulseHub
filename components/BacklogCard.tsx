@@ -263,10 +263,10 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                         </button>
                         <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
                           <ProceedDelete
-                            taskToDelete={currentTask}
+                            objectToDelete={currentTask}
                             isOpen={isOpen}
                             setIsOpen={setIsOpen}
-                            deleteTask={runDeleteTask}
+                            deleteObject={runDeleteTask}
                           />
                         </MiniPopUp>
                       </div>
