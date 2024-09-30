@@ -10,7 +10,7 @@ import { SprintData } from "@/utils/interface";
 import IndividualTaskInfo from "./IndividualTask";
 import SprintPage from "./IndividualSprint";
 import Link from "next/link";
-import {fetchSprint, deleteSprint} from '@/utils/sprint';
+import {fetchSprint, deleteSprint, updateSprint} from '@/utils/sprint';
 
 type SprintBoardProps = {
   sprintOpen: boolean;
@@ -84,26 +84,22 @@ const SprintBoard = ({
     }
   }
 
-  // const mockupData: SprintData[] = [
-  //   {
-  //     sprintName: "Sprint 1",
-  //     startDate: new Date("2024-09-01T00:00:00Z"),
-  //     endDate: new Date("2024-09-15T23:59:59Z"),
-  //     status: "Completed",
-  //   },
-  //   {
-  //     sprintName: "Sprint 2",
-  //     startDate: new Date("2024-09-16T00:00:00Z"),
-  //     endDate: new Date("2024-10-01T23:59:59Z"),
-  //     status: "In Progress",
-  //   },
-  //   {
-  //     sprintName: "Sprint 3",
-  //     startDate: new Date("2024-10-02T00:00:00Z"),
-  //     endDate: new Date("2024-10-15T23:59:59Z"),
-  //     status: "Not Started",
-  //   },
-  // ];
+  const startSprint = async (sprint :SprintData) => {
+    let activeExist = false;
+    database.forEach((sprint)=>{
+      if(sprint.status === "Active"){activeExist = true;}
+    })
+    if(!activeExist){
+      if(sprint.status === "Not Started"){
+        const newData: any = {...currentSprint, status: "Active"};
+        await updateSprint(newData);
+      }else{
+        alert("ERROR: Invalid Sprint Status")
+      }
+    }else{
+      alert("ERROR: There is an active sprint")
+    }
+  }
 
   return (
     <>
@@ -136,6 +132,14 @@ const SprintBoard = ({
               >
                 Delete sprint
               </button>
+              <MiniPopUp isOpen={isOpen} setIsOpen={setIsOpen}>
+                <ProceedDelete
+                  taskToDelete={currentSprint}
+                  isOpen={isOpen}
+                  setIsOpen={setIsOpen}
+                  deleteTask={handleDelete}
+                />
+              </MiniPopUp>
             </div>
           </div>
         </div>
@@ -239,7 +243,7 @@ const SprintBoard = ({
       {/** pop-up for each sprint */}
       <PopUp isOpen={sprintOpen} setIsOpen={setSprintOpen}> 
         {currentSprint &&
-        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} assignedTasks={taskIds} isUpdated={isUpdated} setIsUpdated={setIsUpdated} />
+        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} assignedTasks={taskIds} isUpdated={isUpdated} setIsUpdated={setIsUpdated} startSprint={startSprint} />
         } 
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>

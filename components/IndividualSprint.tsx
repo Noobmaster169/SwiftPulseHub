@@ -1,27 +1,36 @@
-import { SprintData } from "@/utils/interface";
-import React, { useState } from "react";
+import { SprintData, TaskData } from "@/utils/interface";
+import React, { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import SprintTasks from "./SprintTasks";
 import {fetchSprint, updateSprint} from '@/utils/sprint';
+import KanbanBoard from "./kanbanboard";
 
 interface IndividualSprintInfoProps {
     sprintData: SprintData;
+    isLocked: boolean;
     setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setTaskOpen: React.Dispatch<React.SetStateAction<boolean>>;
     assignedTasks: string[];
     isUpdated: boolean;
     setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+    startSprint: (sprintData: SprintData) => void;
   }
+
 const SprintPage = ({
     sprintData,
+    isLocked,
     setEditOpen,
     setTaskOpen,
     assignedTasks,
     isUpdated,
     setIsUpdated,
+    startSprint,
 }: IndividualSprintInfoProps) => {
     // const [isEditing, setIsEditing] = useState(false);
     // const [updatedTaskData, setUpdatedTaskData] = useState(sprintData);
+    const [tasks, setTasks] = useState<TaskData[]>([]); // Assuming tasks are strings; adjust type as needed
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState(false);
     const startDate = new Date(sprintData.startDate);
     const endDate = new Date(sprintData.endDate);
     const status = sprintData.status;
@@ -41,7 +50,7 @@ const SprintPage = ({
         <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-bold">{sprintData.sprintName}</h1>
             {status == "Not Started"? 
-                <button className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
+                <button onClick={()=>{startSprint(sprintData)}} className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
                     Force Start
                 </button>
                 :
@@ -82,9 +91,7 @@ const SprintPage = ({
         {sprintData.status == "Not Started" ?
             <SprintTasks sprintData={sprintData} assignedTasks={assignedTasks} updateTasks={updateTasks}/>
             : 
-            <div>
-                Kanban Board Component Here
-            </div>
+            <KanbanBoard tasks={tasks} />
         }
     </div>
     );

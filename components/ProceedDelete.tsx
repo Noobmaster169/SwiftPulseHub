@@ -1,4 +1,4 @@
-import { TaskData } from "@/utils/interface";
+import { SprintData, TaskData } from "@/utils/interface";
 import React, {useState} from "react";
 
 

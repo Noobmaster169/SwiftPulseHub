@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { TaskData, SprintData } from "@/utils/interface";
 import { fetchTask } from '@/utils/database';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import PopUp from "@/components/PopUp";
+import IndividualTaskInfo from "@/components/IndividualTask";
+import EditTask from "@/components/EditTask";
 
 interface SprintTaskProps{
     sprintData: SprintData;
@@ -13,6 +16,10 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
     const [database, setDatabase] = useState<TaskData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [displayedTasks, setDisplayedTasks] = useState<TaskData[]>([]);
+
+    const [taskOpen, setTaskOpen] = useState(false);
+    const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
+    const [editOpen, setEditOpen] = useState<boolean>(false);
 
     let sprintTasks = sprintData.tasks;
     if(!sprintTasks){
@@ -110,7 +117,7 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
         <div id="dp1" droppable="true" class="drop flex-1 bg-gray-100 rounded-lg shadow-lg p-5 space-y-1">
             <h2 className="text-lg font-semibold mb-3">Sprint Backlog</h2>
             {displayedTasks.map((task:any) => 
-                <div id={task._id} draggable="true" class="drag w-full bg-white px-5 pt-4 pb-3 rounded-md shadow-md text-black">
+                <div id={task._id} draggable="true" class="drag w-full bg-white px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={()=>{setCurrentTask(task);setTaskOpen(true)}}>
                     {task.taskName}
                     <div className="flex flex-row text-sm text-gray-500 pt-0.5">
                         <div className="mr-4">Type: {task.type}</div>
@@ -128,7 +135,7 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
             <h2 className="text-lg font-semibold mb-3">Product Backlog</h2>
             {database.map((task:any) => {
                if(assignedTasks.includes(task._id)){return}
-               return <div id={task._id} draggable="true" class="drag w-full bg-white px-5 pt-4 pb-3 rounded-md shadow-md text-black">
+               return <div id={task._id} draggable="true" class="drag w-full bg-white px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={()=>{setCurrentTask(task);setTaskOpen(true)}}>
                 {task.taskName}
                 <div className="flex flex-row text-sm text-gray-500 pt-0.5">
                     <div className="mr-4">Type: {task.type}</div>
@@ -139,5 +146,11 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
         </div>
     </div>
     <button className="w-1/2 p-2 m-6 bg-blue-500 font-semibold text-white rounded-md " onClick={handleUpdate}>Update Sprint</button>
+    <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
+        {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />}
+    </PopUp>
+    <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
+        {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
+    </PopUp>
     </>)
 }
