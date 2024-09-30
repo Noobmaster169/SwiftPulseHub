@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import SprintTasks from "./SprintTasks";
 import {fetchSprint, updateSprint} from '@/utils/sprint';
+import KanbanBoard from "./kanbanboard";
 
 interface IndividualSprintInfoProps {
     sprintData: SprintData;
@@ -89,7 +90,7 @@ const SprintPage = ({
             <SprintTasks sprintData={sprintData} assignedTasks={assignedTasks} updateTasks={updateTasks}/>
             : 
             <div>
-                Kanban Board Component Here
+               <KanbanBoard tasks={tasks} />
             </div>
         }
     </div>
