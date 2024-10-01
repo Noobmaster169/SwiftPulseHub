@@ -9,6 +9,7 @@ import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
 import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
+import React from 'react';
 
 type BacklogCardProps = {
   taskOpen: boolean;
@@ -28,12 +29,10 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   const [dateSort, setDateSort] = useState<string | null>(null);
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
-  const [showPriorityDropdown, setShowPriorityDropdown] = useState<boolean>(false);
-  const [showDateDropdown, setShowDateDropdown] = useState<boolean>(false);
-  const [showTagDropdown, setShowTagDropdown] = useState<boolean>(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Manage active dropdown
 
   useEffect(() => {
-    if(database.length == 0){
+    if (database.length == 0) {
       setIsLoading(true);
     }
     const getDatabase = async () => {
@@ -97,13 +96,18 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   const handlePrioritySort = (sortOption: string) => {
     setPrioritySort(sortOption);
     setDateSort(null); // Reset date sort when priority sort is selected
-    setShowPriorityDropdown(false);
+    setActiveDropdown(null); // Close the dropdown
   };
 
   const handleDateSort = (sortOption: string) => {
     setDateSort(sortOption);
     setPrioritySort(null); // Reset priority sort when date sort is selected
-    setShowDateDropdown(false);
+    setActiveDropdown(null); // Close the dropdown
+  };
+
+  const toggleDropdown = (dropdownName: string) => {
+    // If the dropdown is already open, close it; otherwise, open the selected one
+    setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
 
   return (
@@ -120,11 +124,11 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
             <div className="relative">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-                onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
+                onClick={() => toggleDropdown('priority')}
               >
                 Priority
               </button>
-              {showPriorityDropdown && (
+              {activeDropdown === 'priority' && (
                 <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   <button
                     className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 whitespace-nowrap"
@@ -144,23 +148,23 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
             <div className="relative">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-                onClick={() => setShowDateDropdown(!showDateDropdown)}
+                onClick={() => toggleDropdown('date')}
               >
                 Date
               </button>
-              {showDateDropdown && (
+              {activeDropdown === 'date' && (
                 <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   <button
                     className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 whitespace-nowrap"
                     onClick={() => handleDateSort("recent-to-past")}
                   >
-                    Latest to Old
+                    Latest to Oldest
                   </button>
                   <button
                     className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                     onClick={() => handleDateSort("old-to-latest")}
                   >
-                    Old to Latest
+                    Oldest to Latest
                   </button>
                 </div>
               )}
@@ -168,11 +172,11 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
             <div className="relative">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-                onClick={() => setShowTagDropdown(!showTagDropdown)}
+                onClick={() => toggleDropdown('tags')}
               >
                 Tags
               </button>
-              {showTagDropdown && (
+              {activeDropdown === 'tags' && (
                 <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {availableTags.map((tag, index) => (
                     <label key={index} className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 whitespace-nowrap">
@@ -224,7 +228,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                       {/* task Name and Assigned To which member */}
                       <div className="flex-1">
                         <div className="text-lg font-bold">{task.taskName}</div>
-                        <div className="text-sm text-gray-600">Assigned to: {task.assignedTo? task.assignedTo : "NONE"}</div>
+                        <div className="text-sm text-gray-600">Assigned to: {task.assignedTo ? task.assignedTo : "NONE"}</div>
                         {/* the tags */}
                         {task.tags && (
                           <div className="flex space-x-2 mt-2">
@@ -247,7 +251,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                       </div>
                       {/* adding task Progress and Mark */}
                       <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint? task.storyPoint : "1"}</span>
+                        <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint ? task.storyPoint : "1"}</span>
                         <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
                           task.status === 'Not Started'
                             ? 'bg-blue-200 text-blue-800'
@@ -257,7 +261,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                         }`}>
                           {task.status}
                         </span>
-                      {/* Delete icon */}
+                        {/* Delete icon */}
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
                         </button>
@@ -289,18 +293,18 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
         </div>
       </div>
       <div className="z-50">
-      <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
-        {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />}
-      </PopUp>
-      <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
-        <AddTaskPage setIsOpen={setCreateOpen} />
-      </PopUp>
-      <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
-        {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
-      </PopUp>
+        <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
+          {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />}
+        </PopUp>
+        <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
+          <AddTaskPage setIsOpen={setCreateOpen} />
+        </PopUp>
+        <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
+          {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
+        </PopUp>
       </div>
     </>
   );
-}
+};
 
 export default BacklogCard;
