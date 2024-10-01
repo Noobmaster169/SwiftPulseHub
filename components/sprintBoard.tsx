@@ -201,7 +201,12 @@ const SprintBoard = ({
               </tr>
             </thead>
             <tbody>
-              {database.map((sprint: SprintData, i: number) => {
+              {database
+              .sort((a: SprintData, b: SprintData) => {
+                const statusOrder = ["Active", "Not Started", "Completed"];
+                return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+              })
+              .map((sprint: SprintData, i: number) => {
                 const today = new Date();
                 const start = new Date(sprint.startDate);
                 const end = new Date(sprint.endDate);
