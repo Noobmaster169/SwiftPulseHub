@@ -8,13 +8,14 @@ import SprintBoard from "@/components/sprintBoard";
 import HorizontalNavBar from "@/components/HorizontalNavBar";
 import ThemeSelector from "@/components/ThemeSelector";
 import PopUp from "@/components/PopUp";
+import { useTheme } from "@/components/ThemeContext";
 
 export default function sprintBoardHome() {
   const [isOpen, setIsOpen] = useState(false);
   const [databases, setDatabases] = useState<string[]>([]);
   const [taskOpen, setTaskOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
-  const [currentTheme, setCurrentTheme] = useState<string>('/background/ghibli1.png');
+  const { currentTheme, setCurrentTheme } = useTheme();
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState<boolean>(false);
 
   const bounty = {

@@ -10,13 +10,14 @@ import { TaskData } from "@/utils/interface";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import HorizontalNavbar from "@/components/HorizontalNavBar";
 import ThemeSelector from "@/components/ThemeSelector";
+import { useTheme } from "@/components/ThemeContext";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [databases, setDatabases] = useState<string[]>([]);
   const [taskOpen, setTaskOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
-  const [currentTheme, setCurrentTheme] = useState('/background/ghibli1.png');
+  const { currentTheme, setCurrentTheme } = useTheme();
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
   
   const bounty = {
@@ -39,6 +40,7 @@ export default function Home() {
 
   const handleThemeChange = (newTheme: string) => {
     setCurrentTheme(newTheme);
+    setIsThemeSelectorOpen(false);
   };
 
 
