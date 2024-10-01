@@ -45,7 +45,7 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       ariaHideApp={false}
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
-    ><div className="z-50">
+    ><div>
       <div className="flex flex-row justify-end text-white">
         <div></div>
         <div className="text-gray-800 hover:text-gray-400 mb:3" onClick={() => setIsOpen(false)}>

@@ -201,7 +201,12 @@ const SprintBoard = ({
               </tr>
             </thead>
             <tbody>
-              {database.map((sprint: SprintData, i: number) => {
+              {database
+              .sort((a: SprintData, b: SprintData) => {
+                const statusOrder = ["Active", "Not Started", "Completed"];
+                return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+              })
+              .map((sprint: SprintData, i: number) => {
                 const today = new Date();
                 const start = new Date(sprint.startDate);
                 const end = new Date(sprint.endDate);
@@ -261,7 +266,7 @@ const SprintBoard = ({
                             className={`px-3 py-1 text-sm font-semibold rounded-md ${
                               sprint.status === "Not Started"
                                 ? "bg-blue-200 text-blue-800"
-                                : sprint.status === "In Progress"
+                                : sprint.status === "Active"
                                 ? "bg-yellow-200 text-yellow-800"
                                 : "bg-green-200 text-green-800"
                             }`}

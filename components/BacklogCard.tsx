@@ -125,9 +125,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 Priority
               </button>
               {showPriorityDropdown && (
-                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   <button
-                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 whitespace-nowrap"
                     onClick={() => handlePrioritySort("low-to-high")}
                   >
                     Low to High
@@ -149,9 +149,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 Date
               </button>
               {showDateDropdown && (
-                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   <button
-                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 whitespace-nowrap"
                     onClick={() => handleDateSort("recent-to-past")}
                   >
                     Latest to Old
@@ -173,9 +173,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 Tags
               </button>
               {showTagDropdown && (
-                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                <div className="absolute mt-2 min-w-max bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {availableTags.map((tag, index) => (
-                    <label key={index} className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
+                    <label key={index} className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 whitespace-nowrap">
                       <input
                         type="checkbox"
                         value={tag}
@@ -210,7 +210,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
 
         {/* Single-Column Table */}
         <div className="w-full flex items-center justify-center font-mono text-sm mt-4">
-          <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
+          <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
               <tr>
                 <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
@@ -288,6 +288,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
           </table>
         </div>
       </div>
+      <div className="z-50">
       <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
         {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />}
       </PopUp>
@@ -297,6 +298,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
       <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
         {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
       </PopUp>
+      </div>
     </>
   );
 }

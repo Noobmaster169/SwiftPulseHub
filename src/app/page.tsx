@@ -9,12 +9,17 @@ import NavBar from "@/components/NavigatorBar";
 import { TaskData } from "@/utils/interface";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import HorizontalNavbar from "@/components/HorizontalNavBar";
+import ThemeSelector from "@/components/ThemeSelector";
+import { useTheme } from "@/components/ThemeContext";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [databases, setDatabases] = useState<string[]>([]);
   const [taskOpen, setTaskOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
+  const { currentTheme, setCurrentTheme } = useTheme();
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
+  
   const bounty = {
     title: "Bounty Title",
     description: "Description",
@@ -32,6 +37,12 @@ export default function Home() {
     console.log("Getting Database");
     getDatabase();
   }, []);
+
+  const handleThemeChange = (newTheme: string) => {
+    setCurrentTheme(newTheme);
+    setIsThemeSelectorOpen(false);
+  };
+
 
   const mokcupData: TaskData[] = [
     {
@@ -74,13 +85,17 @@ export default function Home() {
 
   return (
     <>
-    <HorizontalNavbar />
+    <HorizontalNavbar setThemeSelectorOpen={setIsThemeSelectorOpen} />
       <main
         className="w-full flex min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: "url('/background/background1.png')" }}
+        style={{ 
+          backgroundImage: `url('${currentTheme}')`,
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center', }}
       >
         <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
-          <div className="w-full">
+          <div className="w-full mt-12">
             <BacklogCard
               taskOpen={taskOpen}
               setTaskOpen={setTaskOpen}
@@ -91,6 +106,12 @@ export default function Home() {
         </div>
         <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage setIsOpen={setCreateOpen} />
+        </PopUp>
+        <PopUp isOpen={isThemeSelectorOpen} setIsOpen={setIsThemeSelectorOpen}>
+          <ThemeSelector 
+            setIsOpen={setIsThemeSelectorOpen} 
+            onThemeChange={handleThemeChange}
+          />
         </PopUp>
       </main>
     </>
