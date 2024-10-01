@@ -173,7 +173,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 Tags
               </button>
               {showTagDropdown && (
-                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                <div className="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {availableTags.map((tag, index) => (
                     <label key={index} className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
                       <input
@@ -210,7 +210,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
 
         {/* Single-Column Table */}
         <div className="w-full flex items-center justify-center font-mono text-sm mt-4">
-          <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
+          <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
               <tr>
                 <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
@@ -288,6 +288,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
           </table>
         </div>
       </div>
+      <div className="z-50">
       <PopUp isOpen={taskOpen} setIsOpen={setTaskOpen}>
         {currentTask && <IndividualTaskInfo taskData={currentTask} setEditOpen={setEditOpen} setTaskOpen={setTaskOpen} />}
       </PopUp>
@@ -297,6 +298,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
       <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
         {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
       </PopUp>
+      </div>
     </>
   );
 }
