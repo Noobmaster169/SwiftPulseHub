@@ -3,22 +3,22 @@ import { TaskData } from "@/utils/interface";
 import { updateTask } from "@/utils/database";
 
 interface AddTimeLogProps {
-  taskData: TaskData;
+  taskData: any;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
   const [timeLogged, setTimeLogged] = useState<number>(0);
   const [member, setMember] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
   const handleAddTimeLog = async () => {
     if (timeLogged > 0 && member) {
-      const updatedTask = {
-        ...taskData,
-        timeLogged: (taskData.timeLogged || 0) + timeLogged,
-        assignedTo: member,
-      };
-      await updateTask(updatedTask);
+      if(!taskData.timeLog){
+        taskData.timeLog = [];
+      }
+      taskData.timeLog.push({timeLogged: timeLogged, member: member, message: message});
+      await updateTask(taskData);
       setIsOpen(false);
     } else {
       alert("Please enter valid time and member.");
@@ -49,6 +49,18 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
           id="timeLogged"
           value={timeLogged}
           onChange={(e) => setTimeLogged(parseFloat(e.target.value))}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+        />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="timeLogged" className="block mb-1">
+          Log Message
+        </label>
+        <input
+          type="text"
+          id="message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
