@@ -44,7 +44,6 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
             }
           })
           setDisplayedTasks(sprintAssignedTasks);
-
           setDatabase(data);
           setIsLoading(false);
         };

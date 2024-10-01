@@ -14,6 +14,7 @@ interface IndividualSprintInfoProps {
     isUpdated: boolean;
     setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
     startSprint: (sprintData: SprintData) => void;
+    endSprint: (sprintData: SprintData) => void;
   }
 
 const SprintPage = ({
@@ -25,10 +26,8 @@ const SprintPage = ({
     isUpdated,
     setIsUpdated,
     startSprint,
+    endSprint,
 }: IndividualSprintInfoProps) => {
-    // const [isEditing, setIsEditing] = useState(false);
-    // const [updatedTaskData, setUpdatedTaskData] = useState(sprintData);
-    const [tasks, setTasks] = useState<TaskData[]>([]); // Assuming tasks are strings; adjust type as needed
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isOpen, setIsOpen] = useState(false);
     const startDate = new Date(sprintData.startDate);
@@ -50,13 +49,15 @@ const SprintPage = ({
         <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-bold">{sprintData.sprintName}</h1>
             {status == "Not Started"? 
-                <button onClick={()=>{startSprint(sprintData)}} className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
+                <button onClick={()=>{startSprint(sprintData);setTaskOpen(false)}} className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
                     Force Start
                 </button>
                 :
-                <button className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
+                status == "Active"?
+                <button onClick={()=>{endSprint(sprintData);setTaskOpen(false)}} className="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
                     Force End
                 </button>
+                :<></>
             }
         </div>
         <table className="w-50">
@@ -91,7 +92,7 @@ const SprintPage = ({
         {sprintData.status == "Not Started" ?
             <SprintTasks sprintData={sprintData} assignedTasks={assignedTasks} updateTasks={updateTasks}/>
             : 
-            <KanbanBoard tasks={tasks} />
+            <KanbanBoard tasks={sprintData.tasks} />
         }
     </div>
     );

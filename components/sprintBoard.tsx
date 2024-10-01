@@ -67,7 +67,7 @@ const SprintBoard = ({
         const start = new Date(sprint.startDate);
         const end = new Date(sprint.endDate);
         // Auto Start Sprints
-        if(today >= start){
+        if(today >= start && sprint.status=="Not Started"){
           if(!activeSprint){
             console.log("Updating Sprint Status to Active")
             const newData: any = {...sprint, status: "Active"};
@@ -79,7 +79,7 @@ const SprintBoard = ({
           }
         }
         // Auto End Sprints
-        if(today >= end){
+        if(today >= end && sprint.status!="Completed"){
           const newData: any = {...sprint, status: "Completed"};
           await updateSprint(newData);
           sprint.status = "Completed";
@@ -122,13 +122,30 @@ const SprintBoard = ({
     })
     if(!activeExist){
       if(sprint.status === "Not Started"){
-        const newData: any = {...currentSprint, status: "Active"};
+        const today = new Date();
+        const todayDate = today.toString();
+        
+        const newData: any = {...currentSprint, startDate:todayDate, status: "Active"};
         await updateSprint(newData);
+        setIsUpdated(!isUpdated);
       }else{
         alert("ERROR: Invalid Sprint Status")
       }
     }else{
       alert("ERROR: Can't start when an active sprint exists")
+    }
+  }
+
+  const endSprint = async (sprint: SprintData)=>{
+    const today = new Date();
+    const todayDate = today.toString();
+
+    if(sprint.status === "Active"){
+      const newData: any = {...currentSprint, endDate:todayDate, status: "Completed"};
+      await updateSprint(newData);
+      setIsUpdated(!isUpdated);
+    }else{
+      alert("ERROR: Invalid Sprint Status")
     }
   }
 
@@ -276,7 +293,7 @@ const SprintBoard = ({
       {/** pop-up for each sprint */}
       <PopUp isOpen={sprintOpen} setIsOpen={setSprintOpen}> 
         {currentSprint &&
-        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} assignedTasks={taskIds} isUpdated={isUpdated} setIsUpdated={setIsUpdated} startSprint={startSprint} />
+        <SprintPage sprintData={currentSprint} setEditOpen={setEditOpen} setTaskOpen={setSprintOpen} assignedTasks={taskIds} isUpdated={isUpdated} setIsUpdated={setIsUpdated} startSprint={startSprint} endSprint={endSprint} />
         } 
       </PopUp>
       <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>

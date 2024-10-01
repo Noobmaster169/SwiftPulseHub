@@ -132,7 +132,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
           className="w-full border border-gray-300 rounded px-3 py-2"
         >
           <option value="story">Story</option>
-          <option value="bug">Bug</option>
+          <option value="bugs">Bugs</option>
         </select>
       </div>
       <div className="mb-4">
