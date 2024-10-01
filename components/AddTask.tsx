@@ -1,13 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import { TaskData } from "@/utils/interface";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandInput as Input,
+} from "@/components/ui/command";
 
 interface AddTaskProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const defaultTags = ["UI", "API", "Backend", "Frontend", "Bug", "Enhancement"];
 
 const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const router = useRouter();
@@ -18,29 +29,41 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const [assignedTo, setAssignedTo] = useState("");
   const [finishedBy, setFinishedBy] = useState("");
   const [priority, setPriority] = useState("medium");
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
   const [projectStage, setProjectStage] = useState("planning");
-  const [availableTags, setAvailableTags] = useState<string[]>([
-    "UI",
-    "API",
-    "Backend",
-    "Frontend",
-    "Bug",
-    "Enhancement",
-  ]);
 
-  const handleAddTag = () => {
-    if (tagInput && !tags.includes(tagInput)) {
-      const newTags = tagInput.split(",").map((tag) => tag.trim());
-      setTags([...tags, ...newTags]);
-      setAvailableTags([...availableTags, ...newTags]);
-      setTagInput("");
+  // Tag states
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [tags, setTags] = useState(defaultTags);
+  const [open, setOpen] = useState(false);
+
+  const handleUnselectTag = useCallback((tag: string) => {
+    setSelectedTags((prev) => prev.filter((s) => s !== tag));
+  }, []);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+    const input = inputRef.current;
+    if (input) {
+      if ((e.key === "Delete" || e.key === "Backspace") && input.value === "") {
+        setSelectedTags((prev) => {
+          const newSelected = [...prev];
+          newSelected.pop();
+          return newSelected;
+        });
+      }
+      if (e.key === "Escape") {
+        input.blur();
+      }
     }
-  };
+  }, []);
 
-  const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
+  const addNewTag = () => {
+    if (inputValue && !tags.includes(inputValue)) {
+      setTags((prev) => [...prev, inputValue]);
+      setSelectedTags((prev) => [...prev, inputValue]);
+      setInputValue("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +77,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
       assignedTo,
       projectStage,
       priority,
-      tags,
+      tags: selectedTags,
     };
     try {
       await addTask(data);
@@ -64,10 +87,13 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
     }
   };
 
+  const selectableTags = tags.filter((tag) => !selectedTags.includes(tag));
+
   return (
     <div className="w-full p-4">
       <h1 className="text-2xl font-semibold mb-4">Add Task</h1>
       <form onSubmit={handleSubmit}>
+        {/* Task name input */}
         <div className="form-group">
           <label>Task name:</label>
           <input
@@ -78,6 +104,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           />
         </div>
 
+        {/* Description input */}
         <div className="form-group">
           <label>Description:</label>
           <textarea
@@ -87,6 +114,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           />
         </div>
 
+        {/* Type dropdown */}
         <div className="form-group">
           <label>Type:</label>
           <select value={type} onChange={(e) => setType(e.target.value)}>
@@ -95,6 +123,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           </select>
         </div>
 
+        {/* Storypoint dropdown */}
         <div className="form-group">
           <label>Storypoint:</label>
           <select
@@ -109,6 +138,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           </select>
         </div>
 
+        {/* Assigned to input */}
         <div className="form-group">
           <label>Assigned to:</label>
           <input
@@ -118,6 +148,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           />
         </div>
 
+        {/* Project stage dropdown */}
         <div className="form-group">
           <label>Project Stage:</label>
           <select
@@ -129,6 +160,8 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
             <option value="testing">Testing</option>
           </select>
         </div>
+
+        {/* Priority dropdown */}
         <div className="form-group">
           <label>Priority:</label>
           <select
@@ -142,53 +175,79 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           </select>
         </div>
 
+        {/* Tags input */}
         <div className="form-group">
           <label>Tag(s):</label>
-          <div className="tags-input">
-            <input
-              type="text"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              list="tagOptions"
-              onSelect={(e) => {
-                const selectedTag = e.currentTarget.value;
-                if (selectedTag && !tags.includes(selectedTag)) {
-                  setTags([...tags, selectedTag]);
-                  setTagInput("");
-                }
-              }}
-            />
-            <datalist id="tagOptions">
-              {availableTags
-                .filter(
-                  (tag) =>
-                    tag.toLowerCase().includes(tagInput.toLowerCase()) &&
-                    !tags.includes(tag)
-                )
-                .map((tag) => (
-                  <option key={tag} value={tag} />
+          <Command
+            onKeyDown={handleKeyDown}
+            className="overflow-visible bg-transparent"
+          >
+            <div className="group border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+              <div className="flex gap-1 flex-wrap">
+                {selectedTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="bg-background text-foreground"
+                  >
+                    {tag}
+                    <button
+                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleUnselectTag(tag)}
+                    >
+                      <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    </button>
+                  </Badge>
                 ))}
-            </datalist>
-            <button
-              type="button"
-              onClick={handleAddTag}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Add
-            </button>
-          </div>
-          <div className="tags-list">
-            {tags.map((tag) => (
-              <span key={tag} className="tag">
-                {tag}{" "}
-                <button type="button" onClick={() => handleRemoveTag(tag)}>
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
+                <Input
+                  ref={inputRef}
+                  value={inputValue}
+                  onValueChange={setInputValue}
+                  onBlur={() => setOpen(false)}
+                  onFocus={() => setOpen(true)}
+                  placeholder="Add tag..."
+                  className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1"
+                />
+              </div>
+            </div>
+            {open && selectableTags.length > 0 ? (
+              <div className="relative mt-2">
+                <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                  <CommandGroup>
+                    {selectableTags.map((tag) => (
+                      <CommandItem
+                        key={tag}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onSelect={() => {
+                          setInputValue("");
+                          setSelectedTags((prev) => [...prev, tag]);
+                        }}
+                      >
+                        {tag}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </div>
+              </div>
+            ) : null}
+          </Command>
+          <Button
+            onClick={addNewTag}
+            className="mt-2"
+            disabled={!inputValue || tags.includes(inputValue)}
+          >
+            Add Tag
+          </Button>
         </div>
 
+        {/* Buttons */}
         <div className="flex justify-center space-x-4">
           <button
             type="button"
@@ -219,41 +278,35 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           margin-bottom: 20px;
         }
         .form-group {
-          margin-bottom: 15px;
+          margin-bottom: 20px;
         }
         label {
           display: block;
-          margin-bottom: 5px;
+          font-weight: bold;
+          margin-bottom: 8px;
         }
         input,
-        textarea,
-        select {
+        select,
+        textarea {
           width: 100%;
           padding: 8px;
-          margin-bottom: 10px;
+          font-size: 16px;
           border: 1px solid #ccc;
           border-radius: 4px;
         }
-        .tags-input {
-          display: flex;
-          gap: 8px;
+        input[type="text"],
+        textarea {
+          height: 40px;
         }
-        .tags-list {
-          margin-top: 10px;
-        }
-        .tag {
-          display: inline-block;
-          background-color: #d0c9f9;
-          padding: 5px 10px;
-          border-radius: 16px;
-          margin-right: 5px;
+        textarea {
+          resize: vertical;
+          min-height: 80px;
         }
         button {
-          padding: 8px 16px;
-          color: white;
+          padding: 10px 20px;
+          font-size: 16px;
           border: none;
           border-radius: 4px;
-          cursor: pointer;
         }
       `}</style>
     </div>
