@@ -57,9 +57,14 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ setThemeSelectorOpe
                 Settings
               </a>
             </li>
+            <li>
+              <div className="hover:text-gray-500" onClick={() => setThemeSelectorOpen(true)}>
+                Set Theme
+              </div>
+            </li>
           </ul>
 
-          <div className="relative" ref={dropdownRef}>
+          {/*<div className="relative" ref={dropdownRef}>
             <Avatar onClick={onToggleAvatarDropdown} className="cursor-pointer">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
@@ -81,7 +86,7 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ setThemeSelectorOpe
                 </a>
               </div>
             )}
-          </div>
+          </div>*/}
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-3xl cursor-pointer">
             {menuOpen ? <IoClose /> : <IoMenu />}

@@ -47,7 +47,11 @@ export default function sprintBoardHome() {
     <HorizontalNavBar setThemeSelectorOpen={setIsThemeSelectorOpen} />
       <main
         className="w-full flex min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: `url('${currentTheme}')` }}
+        style={{ 
+          backgroundImage: `url('${currentTheme}')`,
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center' }}
       >
         <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
           <div className="w-full mt-12">
