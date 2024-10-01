@@ -15,7 +15,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ setIsOpen, onThemeChange 
     '/background/ghibli1.png',
     '/background/ghibli2.jpg',
     '/background/ghibli3.jpg',
-    '/background/shinkai1.png',
+    '/background/shinkai1.jpg',
     '/background/shinkai2.jpg',
   ];
 
