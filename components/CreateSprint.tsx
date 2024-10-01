@@ -20,7 +20,7 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(endDate < startDate){
+    if (endDate < startDate) {
       alert("Invalid Date Range. Try Again");
       return;
     }
@@ -105,8 +105,10 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
             value={[startDate, endDate] as [Date, Date]}
             onChange={(value) => {
               const dates = value as [Date, Date];
-              setStartDate(dates[0]);
-              setEndDate(dates[1] || dates[0]);
+              const adjustedStartDate = new Date(dates[0]);
+              adjustedStartDate.setDate(adjustedStartDate.getDate() + 1);
+              setStartDate(adjustedStartDate);
+              setEndDate(dates[1] || adjustedStartDate);
             }}
             selectRange={true}
             tileClassName={({ date, view }) => {
