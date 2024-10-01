@@ -49,12 +49,43 @@ const SprintBoard = ({
       }
       const modified_data = data.map((task: SprintData) => ({ ...task, isDeleted: false }));
       const ids:string[] = [];
+      let activeSprint = false;
       modified_data.forEach((sprint:SprintData) => {
+        // Check if any active sprint exists
+        if(sprint.status === "Active"){
+          activeSprint = true;
+        }
+        // Get the list of tasks in the sprint
         if(!sprint.tasks){return}
         sprint.tasks.forEach((task:string) => {
           ids.push(task)
         });
       });
+      // Automatically Update Sprint Status
+      modified_data.forEach(async (sprint:SprintData) => {
+        const today = new Date();
+        const start = new Date(sprint.startDate);
+        const end = new Date(sprint.endDate);
+        // Auto Start Sprints
+        if(today >= start){
+          if(!activeSprint){
+            console.log("Updating Sprint Status to Active")
+            const newData: any = {...sprint, status: "Active"};
+            await updateSprint(newData);
+            sprint.status = "Active";
+            activeSprint = true;
+          }else{
+            console.log("Auto Start Fail: A Sprint is still active")
+          }
+        }
+        // Auto End Sprints
+        if(today >= end){
+          const newData: any = {...sprint, status: "Completed"};
+          await updateSprint(newData);
+          sprint.status = "Completed";
+        }
+      });
+
       setTaskIds(ids);
       //console.log(modified_data);
       setDatabase(modified_data);
@@ -97,7 +128,7 @@ const SprintBoard = ({
         alert("ERROR: Invalid Sprint Status")
       }
     }else{
-      alert("ERROR: There is an active sprint")
+      alert("ERROR: Can't start when an active sprint exists")
     }
   }
 
@@ -157,12 +188,14 @@ const SprintBoard = ({
                 const today = new Date();
                 const start = new Date(sprint.startDate);
                 const end = new Date(sprint.endDate);
-                const isActive: boolean = today >= start && today <= end;
-                const isCompleted: boolean = today >= end;
+                const isActive = sprint.status === "Active";
+                const isCompleted = sprint.status === "Completed";
+                //const isActive: boolean = today >= start && today <= end;
+                //const isCompleted: boolean = today >= end;
                 return (
                   <tr
                     key={i}
-                    className={`relative ${isActive?`hover:bg-gray-100`:``}`}
+                    className={`relative ${isActive?`hover:bg-opacity-50`:``}`}
                     onClick={() => {
                       // Open Sprint at every scenario
                       //isActive ? ``: isCompleted ? `` : openSprint(sprint);

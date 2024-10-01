@@ -20,6 +20,10 @@ const CreateSprint = ({ setIsOpen }: CreateSprintProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(endDate < startDate){
+      alert("Invalid Date Range. Try Again");
+      return;
+    }
     const data: SprintData = {
       sprintName,
       startDate,

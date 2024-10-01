@@ -114,7 +114,7 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
     return(
     <>
     <div className="w-full max-w-4xl grid grid-cols-2 gap-8">
-        <div id="dp1" droppable="true" class="drop flex-1 bg-gray-100 rounded-lg shadow-lg p-5 space-y-1">
+        <div id="dp1" droppable="true" class="drop flex-1 bg-blue-100 rounded-lg shadow-lg p-5 space-y-1">
             <h2 className="text-lg font-semibold mb-3">Sprint Backlog</h2>
             {displayedTasks.map((task:any) => 
                 <div id={task._id} draggable="true" class="drag w-full bg-white px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={()=>{setCurrentTask(task);setTaskOpen(true)}}>
@@ -131,7 +131,7 @@ export default function SprintTasks({sprintData, assignedTasks, updateTasks}: Sp
             <div id="1249" draggable="true" class="drag w-full bg-blue-400 p-5 rounded-md shadow-md text-white">Item4</div>
             <div id="168" draggable="true" class="drag w-full bg-blue-500 p-5 rounded-md shadow-md text-white">Item5</div>*/}
         </div>
-        <div id="dp2" droppable="true" class="drop flex-1 bg-gray-100 rounded-lg shadow-lg p-5 space-y-1">
+        <div id="dp2" droppable="true" class="drop flex-1 bg-purple-100 rounded-lg shadow-lg p-5 space-y-1">
             <h2 className="text-lg font-semibold mb-3">Product Backlog</h2>
             {database.map((task:any) => {
                if(assignedTasks.includes(task._id)){return}
