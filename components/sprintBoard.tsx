@@ -261,7 +261,7 @@ const SprintBoard = ({
                             className={`px-3 py-1 text-sm font-semibold rounded-md ${
                               sprint.status === "Not Started"
                                 ? "bg-blue-200 text-blue-800"
-                                : sprint.status === "In Progress"
+                                : sprint.status === "Active"
                                 ? "bg-yellow-200 text-yellow-800"
                                 : "bg-green-200 text-green-800"
                             }`}

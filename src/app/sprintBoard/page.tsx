@@ -6,12 +6,18 @@ import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import CreateSprint from "@/components/CreateSprint";
 import SprintBoard from "@/components/sprintBoard";
 import HorizontalNavBar from "@/components/HorizontalNavBar";
+import ThemeSelector from "@/components/ThemeSelector";
+import PopUp from "@/components/PopUp";
+import { useTheme } from "@/components/ThemeContext";
 
 export default function sprintBoardHome() {
   const [isOpen, setIsOpen] = useState(false);
   const [databases, setDatabases] = useState<string[]>([]);
   const [taskOpen, setTaskOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
+  const { currentTheme, setCurrentTheme } = useTheme();
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState<boolean>(false);
+
   const bounty = {
     title: "Bounty Title",
     description: "Description",
@@ -20,6 +26,10 @@ export default function sprintBoardHome() {
 
   const openModal = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleThemeChange = (newTheme: string) => {
+    setCurrentTheme(newTheme);
   };
 
 //   useEffect(() => {
@@ -32,16 +42,15 @@ export default function sprintBoardHome() {
 //     getDatabase();
 //   }, []);
 
-
   return (
     <>
-    <HorizontalNavBar />
+    <HorizontalNavBar setThemeSelectorOpen={setIsThemeSelectorOpen} />
       <main
         className="w-full flex min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: "url('/background/background1.png')" }}
+        style={{ backgroundImage: `url('${currentTheme}')` }}
       >
         <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
-          <div className="w-full">
+          <div className="w-full mt-12">
             <SprintBoard
               sprintOpen={taskOpen}
               setSprintOpen={setTaskOpen}
@@ -57,6 +66,12 @@ export default function sprintBoardHome() {
         {/* <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
           <CreateSprint setIsOpen={setCreateSprintOpen} />
         </PopUp> */}
+        <PopUp isOpen={isThemeSelectorOpen} setIsOpen={setIsThemeSelectorOpen}>
+          <ThemeSelector 
+            setIsOpen={setIsThemeSelectorOpen} 
+            onThemeChange={handleThemeChange}
+          />
+        </PopUp>
       </main>
     </>
   );

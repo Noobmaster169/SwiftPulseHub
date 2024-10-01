@@ -7,7 +7,6 @@ import KanbanBoard from "./kanbanboard";
 
 interface IndividualSprintInfoProps {
     sprintData: SprintData;
-    isLocked: boolean;
     setEditOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setTaskOpen: React.Dispatch<React.SetStateAction<boolean>>;
     assignedTasks: string[];
@@ -19,7 +18,6 @@ interface IndividualSprintInfoProps {
 
 const SprintPage = ({
     sprintData,
-    isLocked,
     setEditOpen,
     setTaskOpen,
     assignedTasks,
