@@ -3,11 +3,14 @@
  * such as task title, description, assigned personnel, progress status, edit history, and tags.
  */
 
-import { TaskData } from "@/utils/interface";
+import { TaskData, Log } from "@/utils/interface";
 import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import EditTask from "./EditTask";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
+import AddTimeLog from "@/components/AddTimeLog";
+import PopUp from "@/components/PopUp";
+import MediumPopUp from "@/components/MediumPopUp";
 
 interface IndividualTaskInfoProps {
   taskData: TaskData;
@@ -24,6 +27,7 @@ const IndividualTaskInfo = ({
 }: IndividualTaskInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedTaskData, setUpdatedTaskData] = useState(taskData);
+  const [timeLogOpen, setTimeLogOpen] = useState(false);
 
   const handleEdit = () => {
     setEditOpen(true);
@@ -124,8 +128,39 @@ const IndividualTaskInfo = ({
               </p>
             </div>
           </div>
+          <button onClick={()=>{setTimeLogOpen(true)}} className="bg-gray-200 text-black px-4 py-2 mt-10 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
+            Add Time Log
+          </button>
+          <div className="my-6 py-2 px-4 bg-purple-100 rounded-lg">
+            <div className="text-lg font-semibold py-2">Time Logs</div>
+            {taskData.timeLog ?
+              taskData.timeLog.length === 0 ? 
+                <div className="py-3 text-gray-500 border-t-2 border-black border-opacity-50">{"(Time Log is still empty)"}</div> 
+                :
+                taskData.timeLog.map((log:Log) => 
+                  <div className="p-3 flex flex-col border-t-2 border-black border-opacity-50 hover:bg-purple-200">
+                    <div className="flex flex-row items-center">
+                      <div className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center mr-4 flex-shrink-0">
+                        {log.member ? log.member.charAt(0).toUpperCase() : ""}
+                      </div>
+                      <div className="flex flex-col justify-start">
+                        <div className="flex flex-row">
+                          <div className="text-lg font-semibold pr-1">{log.member}</div>
+                          <div className="text-lg font-medium">({log.timeLogged} hours)</div>
+                        </div>
+                        <div>{log.message}</div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              : <div className="py-3 text-gray-500 border-t-2 border-black border-opacity-50">{"(Time Log is still empty)"}</div>
+            }
+          </div>
         </div>
       )}
+      <MediumPopUp isOpen={timeLogOpen} setIsOpen={setTimeLogOpen}>
+        <AddTimeLog taskData={taskData} setIsOpen={setTimeLogOpen} />
+      </MediumPopUp>
     </div>
   );
 };

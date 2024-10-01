@@ -9,6 +9,7 @@ export interface TaskData {
     projectStage?: string; 
     priority?   : string;
     tags?       : string[];
+    timeLog?    : Log[];
     isDeleted?  : boolean;
 }
 
@@ -19,4 +20,10 @@ export interface SprintData {
     endDate: Date;
     status: string;
     tasks: string[];
+}
+
+export interface Log{
+    timeLogged: number;
+    member: string;
+    message: string;
 }

@@ -57,8 +57,16 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
   const updateChanges = async (id: string, status: string) => {
     console.log("Assigning Task with ID:", id, "to Status:", status);
     let task = database.find(task => task._id === id);
+    
+    setDisplayedTasks(prevTasks => 
+      prevTasks.map(task => 
+        task._id === id ? { ...task, status} : task
+      )
+    );
+
     if (task) {
       task.status = status;
+      //task.status = "Not Started";
       await updateTask(task);
       console.log("Task Updated");
     } else {
@@ -87,8 +95,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
     document.querySelectorAll('.drop').forEach(dropZone => {
       dropZone.addEventListener('drop', () => {
         if (dragTemp) {
-          dropZone.appendChild(dragTemp);
+          //dropZone.appendChild(dragTemp);
           updateChanges(dragTemp.id, dropZone.id);
+          dragTemp=null;
         }
       });
     });
@@ -112,66 +121,66 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
         <div id="Not Started" className="bg-blue-100 p-4 rounded-md drop w-52">
           <h3 className="font-bold text-blue-800">Not Started</h3>
           {displayedTasks.filter(task => task.status === 'Not Started').map((task: any) =>
-            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onDoubleClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
+            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
               <div className="flex justify-between items-center">
                 <span>{task.taskName}</span>
-                {expandedTasks.has(task._id) ? (
+                {/*expandedTasks.has(task._id) ? (
                   <VscChevronUp onClick={() => toggleExpand(task._id)} />
                 ) : (
                   <VscChevronDown onClick={() => toggleExpand(task._id)} />
-                )}
+                )*/}
               </div>
-              {expandedTasks.has(task._id) && (
+              {/*expandedTasks.has(task._id) && (
                 <div className="text-xs mt-2">
                   <p>Assigned to: {task.assignedTo || "None"}</p>
                   <p>Accumulated Time Logged: {task.timeLogged || 0} hours</p>
                   <button onClick={() => handleAddTimeLog(task)} className="text-blue-500">Add Time Log</button>
                 </div>
-              )}
+              )*/}
             </div>
           )}
         </div>
         <div id="In Progress" className="bg-yellow-100 p-4 rounded-md drop w-52">
           <h3 className="font-bold text-yellow-800">In Progress</h3>
           {displayedTasks.filter(task => task.status === 'In Progress').map((task: any) =>
-            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onDoubleClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
+            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
               <div className="flex justify-between items-center">
                 <span>{task.taskName}</span>
-                {expandedTasks.has(task._id) ? (
+                {/*expandedTasks.has(task._id) ? (
                   <VscChevronUp onClick={() => toggleExpand(task._id)} />
                 ) : (
                   <VscChevronDown onClick={() => toggleExpand(task._id)} />
-                )}
+                )*/}
               </div>
-              {expandedTasks.has(task._id) && (
+              {/*expandedTasks.has(task._id) && (
                 <div className="text-xs mt-2">
                   <p>Assigned to: {task.assignedTo || "None"}</p>
                   <p>Accumulated Time Logged: {task.timeLogged || 0} hours</p>
                   <button onClick={() => handleAddTimeLog(task)} className="text-blue-500">Add Time Log</button>
                 </div>
-              )}
+              )*/}
             </div>
           )}
         </div>
         <div id="Completed" className="bg-green-100 p-4 rounded-md drop w-52">
           <h3 className="font-bold text-green-800">Completed</h3>
           {displayedTasks.filter(task => task.status === 'Completed').map((task: any) =>
-            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onDoubleClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
+            <div key={task._id} id={task._id} draggable="true" className="drag w-full bg-white my-2 px-5 pt-4 pb-3 rounded-md shadow-md text-black" onClick={() => { setCurrentTask(task); setTaskOpen(true) }}>
               <div className="flex justify-between items-center">
                 <span>{task.taskName}</span>
-                {expandedTasks.has(task._id) ? (
+                {/*expandedTasks.has(task._id) ? (
                   <VscChevronUp onClick={() => toggleExpand(task._id)} />
                 ) : (
                   <VscChevronDown onClick={() => toggleExpand(task._id)} />
-                )}
+                )*/}
               </div>
-              {expandedTasks.has(task._id) && (
+              {/*expandedTasks.has(task._id) && (
                 <div className="text-xs mt-2">
                   <p>Assigned to: {task.assignedTo || "None"}</p>
                   <p>Accumulated Time Logged: {task.timeLogged || 0} hours</p>
                   <button onClick={() => handleAddTimeLog(task)} className="text-blue-500">Add Time Log</button>
                 </div>
-              )}
+              )*/}
             </div>
           )}
         </div>
@@ -182,9 +191,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
       <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
         {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
       </PopUp>
-      <PopUp isOpen={timeLogOpen} setIsOpen={setTimeLogOpen}>
+      {/*<PopUp isOpen={timeLogOpen} setIsOpen={setTimeLogOpen}>
         {currentTask && <AddTimeLog taskData={currentTask} setIsOpen={setTimeLogOpen} />}
-      </PopUp>
+      </PopUp>*/}
     </>
   );
 };
