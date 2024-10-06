@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 const links = [
     { name: 'Product Backlog', href: '/', icon: GoSidebarCollapse },
     { name: 'Sprint Board', href: '/sprintBoard', icon: GoSidebarExpand },
+    { name: 'Team Board', href: '/dashboard', icon: GoSidebarCollapse}
 ];
 
 export default function NavBar() {
