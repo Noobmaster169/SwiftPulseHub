@@ -27,3 +27,8 @@ export interface Log{
     member: string;
     message: string;
 }
+
+export interface memberData {
+    name: string;
+    totalHours: number;
+}
