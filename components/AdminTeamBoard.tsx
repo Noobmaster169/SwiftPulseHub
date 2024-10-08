@@ -12,7 +12,7 @@ import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import React from "react";
 import MemberEffort from "./MemberEffort";
 import MediumPopUp from "./MediumPopUp";
-
+import AddMemberForm from "./AddMemberForm";
 type AdminTeamBoardProps = {
   memberOpen: boolean;
   setMemberOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +32,7 @@ const AdminTeamBoard = () => {
   const [memberOpen, setMemberOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<memberData | null>(null);
   const [memberEffortOpen, setMemberEffortOpen] = useState(false);
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
 
   const openGraph = (member: memberData) => {
     setSelectedMember(member);
@@ -56,7 +57,16 @@ const AdminTeamBoard = () => {
   //     }
   //   };
 
-  const mokcupData: memberData[] = [
+  const addMember = (name: string, email: string, password: string) => {
+    const newMember: memberData = {
+      name,
+      totalHours: 0,
+      workingHours: [],
+    };
+    setMembers([...members, newMember]);
+    console.log(`Added member: ${name}, ${email}`);
+  };
+  const [members, setMembers] = useState<memberData[]>([
     {
       name: "Member1",
       totalHours: 3,
@@ -96,7 +106,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-07", hours: 7 },
       ],
     },
-  ];
+  ])  ;
 
   return (
     <>
@@ -111,7 +121,7 @@ const AdminTeamBoard = () => {
           <div className="flex items-center space-x-6">
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-              onClick={() => {}}
+              onClick={() => setAddMemberOpen(true)}
             >
               Add member
             </button>
@@ -134,7 +144,7 @@ const AdminTeamBoard = () => {
             </thead>
             <tbody>
               {/* {!isLoading && sortedAndFilteredTasks.map((task: TaskData, i: number) => ( */}
-              {mokcupData.map((member, i: number) => (
+              {members.map((member, i: number) => (
                 <tr
                   key={i}
                   className="relative hover:bg-gray-100"
@@ -170,6 +180,9 @@ const AdminTeamBoard = () => {
             setIsOpen={setMemberEffortOpen}
           />
         )}
+      </PopUp>
+      <PopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
+        <AddMemberForm setIsOpen={setAddMemberOpen} addMember={addMember} />
       </PopUp>
     </>
   );
