@@ -35,18 +35,23 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
     ) || [];
 
   const totalHours = filteredData.reduce((sum, entry) => sum + entry.hours, 0);
+  const averageHoursPerDay = totalHours / filteredData.length;
+  const hours = Math.floor(averageHoursPerDay);
+  const minutes = Math.round((averageHoursPerDay - hours) * 60);
 
   return (
     <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">{member.name}'s Effort</h2>
-        <div className="flex justify-between mb-4">
+      <div className="p-2">
+        <h2 className="text-xl font-bold mb-2">{member.name}'s Effort</h2>
+        <div className="flex justify-between mb-2">
           <div>
             {format(startDate, "MMM d")} - {format(endDate, "MMM d")}
           </div>
-          <div>{totalHours / filteredData.length} hours per day</div>
+          <div>
+            {hours} hours {minutes} minutes per day
+          </div>
         </div>
-        <BarChart width={400} height={300} data={filteredData}>
+        <BarChart width={660} height={440} data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"

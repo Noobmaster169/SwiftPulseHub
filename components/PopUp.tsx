@@ -17,7 +17,8 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
 
   const customStyles = {
     overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.1)",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      zIndex: 9999,
     },
     content: {
       top: "50%",
@@ -35,6 +36,7 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       border: "none",
       //overflow:"hidden",
       //boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
+      zIndex: 10000,
     },
   };
 
