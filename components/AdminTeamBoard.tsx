@@ -181,9 +181,9 @@ const AdminTeamBoard = () => {
           />
         )}
       </PopUp>
-      <PopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
+      <MediumPopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
         <AddMemberForm setIsOpen={setAddMemberOpen} addMember={addMember} />
-      </PopUp>
+      </MediumPopUp>
     </>
   );
 };

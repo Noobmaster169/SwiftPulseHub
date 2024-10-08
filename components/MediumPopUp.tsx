@@ -18,6 +18,7 @@ const MediumPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.1)",
+      zIndex: 10000,
     },
     content: {
       top: "50%",
@@ -33,8 +34,8 @@ const MediumPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       transform: "translate(-50%, -50%)",
       backgroundColor: "#f9f9f9",
       border: "none",
-      overflow:"hidden",
-      //boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
+      overflow: "auto", // Change this line to allow scrolling
+      zIndex: 10001,
     },
   };
 
@@ -45,7 +46,16 @@ const MediumPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
     >
-      {children}
+      <div className="flex flex-col h-full">
+        <div className="flex justify-end">
+          <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+            <IoMdClose size={24} />
+          </button>
+        </div>
+        <div className="overflow-auto">
+          {children}
+        </div>
+      </div>
     </Modal>
   );
 };
