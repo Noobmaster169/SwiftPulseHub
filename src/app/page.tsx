@@ -107,12 +107,12 @@ export default function Home() {
         <PopUp isOpen={createOpen} setIsOpen={setCreateOpen}>
           <AddTaskPage setIsOpen={setCreateOpen} />
         </PopUp>
-        <PopUp isOpen={isThemeSelectorOpen} setIsOpen={setIsThemeSelectorOpen}>
+        {isThemeSelectorOpen && (
           <ThemeSelector 
-            setIsOpen={setIsThemeSelectorOpen} 
             onThemeChange={handleThemeChange}
+            onClose={() => setIsThemeSelectorOpen(false)}
           />
-        </PopUp>
+        )}
       </main>
     </>
   );
