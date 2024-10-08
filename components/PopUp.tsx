@@ -39,24 +39,27 @@ const PopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   };
 
   return (
-    
     <Modal
       isOpen={isOpen}
       ariaHideApp={false}
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
-    ><div>
-      <div className="flex flex-row justify-end text-white">
-        <div></div>
-        <div className="text-gray-800 hover:text-gray-400 mb:3" onClick={() => setIsOpen(false)}>
-          <IoMdClose />
+    >
+      <div>
+        <div className="flex flex-row justify-end text-white">
+          <div></div>
+          <div
+            className="text-gray-800 hover:text-gray-400 mb:3"
+            onClick={() => setIsOpen(false)}
+          >
+            <IoMdClose />
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-start h-full">
+          {children}
         </div>
       </div>
-      <div className="flex flex-col items-center justify-start h-full">
-        {children}
-      </div></div>
     </Modal>
-    
   );
 };
 
