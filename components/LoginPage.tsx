@@ -7,8 +7,8 @@ type LoginProps = {
   };
 
 const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
-    const [isAdmin, setIsAdmin] = useState(false)
-    const [isUser, setIsUser] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isUser, setIsUser] = useState(false);
 
 
     return (
@@ -30,7 +30,7 @@ const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
             </div>
             
             <MediumPopUp isOpen={isAdmin} setIsOpen={setIsAdmin}>
-                <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+                <div className="flex flex-col items-center justify-center space-y-4">
                     <p className="text-lg font-bold mb-4">Admin Login</p>
                     <p>
                         Username: 
@@ -47,7 +47,7 @@ const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
                 </div>
             </MediumPopUp>
             <MediumPopUp isOpen={isUser} setIsOpen={setIsUser}>
-                <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+                <div className="flex flex-col items-center justify-center space-y-4">
                     <p className="text-lg font-bold mb-4">User Login</p>
                     <p>
                         Username: 
