@@ -27,3 +27,9 @@ export interface Log{
     member: string;
     message: string;
 }
+
+export interface UserData{
+    _id?: string;
+    name: string;
+    hash: string;
+}
