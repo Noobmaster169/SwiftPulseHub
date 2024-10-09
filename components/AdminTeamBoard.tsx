@@ -13,6 +13,11 @@ import React from "react";
 import MemberEffort from "./MemberEffort";
 import MediumPopUp from "./MediumPopUp";
 import AddMemberForm from "./AddMemberForm";
+import { FaRegEdit } from "react-icons/fa";
+import EditMember from "./EditMember";
+
+
+
 type AdminTeamBoardProps = {
   memberOpen: boolean;
   setMemberOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,9 +36,15 @@ const AdminTeamBoard = () => {
   const [currentMember, setCurrentMember] = useState<memberData | null>(null);
   const [memberOpen, setMemberOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<memberData | null>(null);
+  // effort
   const [memberEffortOpen, setMemberEffortOpen] = useState(false);
+  // adding member
   const [addMemberOpen, setAddMemberOpen] = useState(false);
-
+  // editing member
+  const [editMemberOpen, setEditMemberOpen] = useState(false);
+  // deleting member
+  const [deleteMemberOpen, setDeleteMemberOpen] = useState(false);
+  const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
   const openGraph = (member: memberData) => {
     setSelectedMember(member);
     setMemberOpen(true);
@@ -41,6 +52,11 @@ const AdminTeamBoard = () => {
   const openMemberEffort = (member: memberData) => {
     setSelectedMember(member);
     setMemberEffortOpen(true);
+  };
+
+  
+  const deleteMember = (memberToDelete: memberData) => {
+    setMembers(members.filter(member => member.name !== memberToDelete.name));
   };
 
   //   const editTask = () => {
@@ -62,6 +78,7 @@ const AdminTeamBoard = () => {
       name,
       totalHours: 0,
       workingHours: [],
+      email,
     };
     setMembers([...members, newMember]);
     console.log(`Added member: ${name}, ${email}`);
@@ -79,6 +96,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-06", hours: 1.5 },
         { date: "2024-10-07", hours: 2 },
       ],
+      email: "member1@gmail.com",
     },
     {
       name: "Member2",
@@ -92,6 +110,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-06", hours: 2 },
         { date: "2024-10-07", hours: 0.5 },
       ],
+      email: "member2@gmail.com",
     },
     {
       name: "Member3",
@@ -105,6 +124,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-06", hours: 6 },
         { date: "2024-10-07", hours: 7 },
       ],
+      email: "member3@gmail.com",
     },
   ])  ;
 
@@ -127,7 +147,7 @@ const AdminTeamBoard = () => {
             </button>
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-              onClick={() => {}}
+              onClick={() => setEditMemberOpen(true)}
             >
               Edit
             </button>
@@ -181,8 +201,13 @@ const AdminTeamBoard = () => {
           />
         )}
       </PopUp>
+      {/* add member */}
       <MediumPopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
         <AddMemberForm setIsOpen={setAddMemberOpen} addMember={addMember} />
+      </MediumPopUp>
+
+      <MediumPopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
+        <EditMember members={members} setIsOpen={setEditMemberOpen} deleteMember={deleteMember}/>
       </MediumPopUp>
     </>
   );

@@ -31,5 +31,6 @@ export interface Log{
 export interface memberData {
     name: string;
     totalHours: number;
+    email: string;
     workingHours?: Array<{ date: string; hours: number }>;
 }
