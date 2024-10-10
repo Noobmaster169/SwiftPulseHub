@@ -45,6 +45,7 @@ const UserTeamBoard = () => {
     {
       name: "Member1",
       totalHours: 3,
+      email: "member1@example.com",
       workingHours: [
         { date: "2024-10-01", hours: 1 },
         { date: "2024-10-02", hours: 2 },

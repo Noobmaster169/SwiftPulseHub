@@ -15,8 +15,8 @@ import MediumPopUp from "./MediumPopUp";
 import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
-
-
+import TeamInsights from "./TeamInsights";
+import Link from "next/link";
 
 type AdminTeamBoardProps = {
   memberOpen: boolean;
@@ -44,7 +44,9 @@ const AdminTeamBoard = () => {
   const [editMemberOpen, setEditMemberOpen] = useState(false);
   // deleting member
   const [deleteMemberOpen, setDeleteMemberOpen] = useState(false);
-  const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
+  const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] =
+    useState(false);
+  const [insightsOpen, setInsightsOpen] = useState(false);
   const openGraph = (member: memberData) => {
     setSelectedMember(member);
     setMemberOpen(true);
@@ -54,9 +56,8 @@ const AdminTeamBoard = () => {
     setMemberEffortOpen(true);
   };
 
-  
   const deleteMember = (memberToDelete: memberData) => {
-    setMembers(members.filter(member => member.name !== memberToDelete.name));
+    setMembers(members.filter((member) => member.name !== memberToDelete.name));
   };
 
   //   const editTask = () => {
@@ -126,7 +127,7 @@ const AdminTeamBoard = () => {
       ],
       email: "member3@gmail.com",
     },
-  ])  ;
+  ]);
 
   return (
     <>
@@ -150,6 +151,12 @@ const AdminTeamBoard = () => {
               onClick={() => setEditMemberOpen(true)}
             >
               Edit
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
+              onClick={() => setInsightsOpen(true)}
+            >
+              Insights
             </button>
           </div>
         </div>
@@ -207,8 +214,15 @@ const AdminTeamBoard = () => {
       </MediumPopUp>
 
       <MediumPopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
-        <EditMember members={members} setIsOpen={setEditMemberOpen} deleteMember={deleteMember}/>
+        <EditMember
+          members={members}
+          setIsOpen={setEditMemberOpen}
+          deleteMember={deleteMember}
+        />
       </MediumPopUp>
+      <PopUp isOpen={insightsOpen} setIsOpen={setInsightsOpen}>
+        <TeamInsights members={members} />
+      </PopUp>
     </>
   );
 };
