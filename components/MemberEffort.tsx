@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { format, subDays } from "date-fns";
+import Calendar from "react-calendar";
 
 type MemberEffortProps = {
   isOpen: boolean;
@@ -23,8 +24,9 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   setIsOpen,
   member,
 }) => {
-  const [startDate, setStartDate] = useState(subDays(new Date(), 7));
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
 
   if (!member) return null;
 
@@ -35,22 +37,45 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
     ) || [];
 
   const totalHours = filteredData.reduce((sum, entry) => sum + entry.hours, 0);
-  const averageHoursPerDay = totalHours / filteredData.length;
+  const averageHoursPerDay = filteredData.length > 0 ? totalHours / filteredData.length : 0;
   const hours = Math.floor(averageHoursPerDay);
   const minutes = Math.round((averageHoursPerDay - hours) * 60);
+
+  const handleDateChange = (dates: [Date, Date]) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end || start);
+    setShowCalendar(false); 
+  };
 
   return (
     <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className="p-2">
         <h2 className="text-xl font-bold mb-2">{member.name}'s Effort</h2>
         <div className="flex justify-between mb-2">
-          <div>
+          <button
+            onClick={() => setShowCalendar(!showCalendar)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
+          >
             {format(startDate, "MMM d")} - {format(endDate, "MMM d")}
-          </div>
+          </button>
           <div>
             {hours} hours {minutes} minutes per day
           </div>
         </div>
+        
+        {/* Calendar to select the date range */}
+        {showCalendar && (
+          <Calendar
+            value={[startDate, endDate] as [Date, Date]}
+            selectRange={true}
+            onChange={handleDateChange}
+            tileClassName={({ date }) =>
+              date.getTime() === new Date().getTime() ? "bg-yellow-100" : ""
+            }
+          />
+        )}
+
         <BarChart width={660} height={440} data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
