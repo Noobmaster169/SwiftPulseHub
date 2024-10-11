@@ -30,7 +30,14 @@ export interface Log{
 
 export interface memberData {
     name: string;
-    totalHours: number;
+    totalHours?: number;
+    HoursPerDay?: number;
     email: string;
     workingHours?: Array<{ date: string; hours: number }>;
+}
+
+export interface teamBoard {
+    startDate: Date;
+    endDate: Date;
+    memberList: memberData[];
 }
