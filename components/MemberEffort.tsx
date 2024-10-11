@@ -37,15 +37,15 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
     ) || [];
 
   const totalHours = filteredData.reduce((sum, entry) => sum + entry.hours, 0);
-  const averageHoursPerDay = totalHours / filteredData.length;
+  const averageHoursPerDay = filteredData.length > 0 ? totalHours / filteredData.length : 0;
   const hours = Math.floor(averageHoursPerDay);
   const minutes = Math.round((averageHoursPerDay - hours) * 60);
 
   const handleDateChange = (dates: [Date, Date]) => {
     const [start, end] = dates;
     setStartDate(start);
-    setEndDate(end || start); // if no end date is selected, set end as start
-    setShowCalendar(false); // Close calendar after date is selected
+    setEndDate(end || start);
+    setShowCalendar(false); 
   };
 
   return (
