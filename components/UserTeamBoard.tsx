@@ -3,7 +3,7 @@ import { SetStateAction, useState, useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import MiniPopUp from "./MiniPopUp";
 import ProceedDelete from "./ProceedDelete";
-import { TaskData, memberData } from "@/utils/interface";
+import { TaskData, memberData, teamBoard } from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
@@ -63,6 +63,27 @@ const UserTeamBoard = () => {
     },
   ];
 
+    {/**mockup data for teamBoard */}
+    const [teamBoard, setTeamBoard] = useState<teamBoard>(
+      {
+        startDate: new Date("2024-10-01"),
+        endDate: new Date("2024-10-16"),
+        memberList: mokcupData,
+      }
+    )
+  
+    {/**calculate total working Hours and average working Hours per day*/}
+    mokcupData.map( m => {
+      const today = new Date ("2024-10-12")
+      const minute = 1000 * 60;
+      const hour = minute * 60;
+      const day = hour * 24;
+  
+      const diffInDays = (today.getTime() - teamBoard.startDate.getTime())/day
+      m.totalHours = m.workingHours?.reduce((sum,v) => (sum + v.hours), 0) 
+      m.HoursPerDay = m.totalHours? parseFloat((m.totalHours / diffInDays).toFixed(1)) : 0
+    })
+
   return (
     <>
       <div className="z-50 flex min-h-screen flex-col items-start justify-start p-8 relative">
@@ -100,7 +121,7 @@ const UserTeamBoard = () => {
                       <div className="text-lg font-bold">{member.name}</div>
                       {/* adding task Progress and Mark */}
                       <div className="text-md font-bold">
-                        {member.totalHours} Hours
+                        {member.HoursPerDay} Hours per day
                       </div>
                       <button
                         className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
