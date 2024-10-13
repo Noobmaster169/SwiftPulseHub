@@ -74,8 +74,6 @@ const AdminTeamBoard = () => {
   //     }
   //   };
 
-  
-
   const addMember = (name: string, email: string, password: string) => {
     const newMember: memberData = {
       name,
@@ -130,26 +128,30 @@ const AdminTeamBoard = () => {
     },
   ]);
 
-  {/**mockup data for teamBoard */}
-  const [teamBoard, setTeamBoard] = useState<teamBoard>(
-    {
-      startDate: new Date("2024-10-01"),
-      endDate: new Date("2024-10-16"),
-      memberList: members,
-    }
-  )
+  {
+    /**mockup data for teamBoard */
+  }
+  const [teamBoard, setTeamBoard] = useState<teamBoard>({
+    startDate: new Date("2024-10-01"),
+    endDate: new Date("2024-10-16"),
+    memberList: members,
+  });
 
-  {/**calculate total working Hours and average working Hours per day*/}
-  members.map( m => {
-    const today = new Date ("2024-10-07")
+  {
+    /**calculate total working Hours and average working Hours per day*/
+  }
+  members.map((m) => {
+    const today = new Date("2024-10-07");
     const minute = 1000 * 60;
     const hour = minute * 60;
     const day = hour * 24;
 
-    const diffInDays = (today.getTime() - teamBoard.startDate.getTime())/day
-    m.totalHours = m.workingHours?.reduce((sum,v) => (sum + v.hours), 0) 
-    m.HoursPerDay = m.totalHours? parseFloat((m.totalHours / diffInDays).toFixed(1)) : 0
-  })
+    const diffInDays = (today.getTime() - teamBoard.startDate.getTime()) / day;
+    m.totalHours = m.workingHours?.reduce((sum, v) => sum + v.hours, 0);
+    m.HoursPerDay = m.totalHours
+      ? parseFloat((m.totalHours / diffInDays).toFixed(1))
+      : 0;
+  });
 
   return (
     <>
