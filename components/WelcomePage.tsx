@@ -1,15 +1,13 @@
 import React, {useState} from "react";
 import MediumPopUp from "./MediumPopUp";
 
-type LoginProps = {
+type WelcomePageProps = {
     setAdminLogin: React.Dispatch<React.SetStateAction<boolean>>;
     setUserLogin: React.Dispatch<React.SetStateAction<boolean>>;
   };
 
-const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
+const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
     const [isAdmin, setIsAdmin] = useState(false);
-    const [isUser, setIsUser] = useState(false);
-
 
     return (
         <div className="flex items-center justify-center text-black min-h-screen">
@@ -19,13 +17,13 @@ const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
                     className="mb-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     onClick={() => setIsAdmin(true)}
                 >
-                    Login as Admin
+                    View as Admin
                 </button>
                 <button 
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                    onClick={() => setIsUser(true)}
+                    onClick={() => setUserLogin(true)}
                 >
-                    Login as User
+                    View as User
                 </button>
             </div>
             
@@ -46,26 +44,10 @@ const LoginPage = ({setAdminLogin, setUserLogin}: LoginProps) => {
                     >Login</button>
                 </div>
             </MediumPopUp>
-            <MediumPopUp isOpen={isUser} setIsOpen={setIsUser}>
-                <div className="flex flex-col items-center justify-center space-y-4">
-                    <p className="text-lg font-bold mb-4">User Login</p>
-                    <p>
-                        Username: 
-                        <input type="text" className="ml-2 w-30 p-1 border rounded" placeholder="Enter username"/>
-                    </p>
-                    <p>
-                        Password: 
-                        <input type="text" className="ml-2 p-1 border rounded" placeholder="Enter password"/>
-                    </p>
-                    <button className="mb-2 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => {setUserLogin(true)}}>Login</button>
-                </div>
-                
-            </MediumPopUp>
-            
         </div>
         
 
     )
 }
 
-export default LoginPage;
+export default WelcomePage;

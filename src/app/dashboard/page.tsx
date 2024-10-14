@@ -3,7 +3,7 @@ import HorizontalNavBar from "@/components/HorizontalNavBar";
 import ThemeSelector from "@/components/ThemeSelector";
 import { useTheme } from "@/components/ThemeContext";
 import { useState } from 'react';
-import LoginPage from "@/components/LoginPage";
+import WelcomePage from "@/components/WelcomePage";
 import AdminTeamBoard from "@/components/AdminTeamBoard";
 import UserTeamBoard from "@/components/UserTeamBoard";
 
@@ -32,7 +32,7 @@ export default function Dashboard() {
             >   
                 <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
                     <div className="w-full mt-12">
-                        {isAdminLogin ? <AdminTeamBoard /> : isUserLogin ? <UserTeamBoard /> : <LoginPage setAdminLogin={setIsAdminLogin} setUserLogin={setIsUserLogin} />}
+                        {isAdminLogin ? <AdminTeamBoard /> : isUserLogin ? <UserTeamBoard /> : <WelcomePage setAdminLogin={setIsAdminLogin} setUserLogin={setIsUserLogin} />}
                     </div>
                 </div>
                 

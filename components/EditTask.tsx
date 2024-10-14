@@ -117,7 +117,9 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
           type="number"
           id="storyPoint"
           value={updatedTask.storyPoint}
-          onChange={(e) => handleChange("storyPoint", Number(e.target.value))}
+          min={0}
+          max={10}
+          onChange={(e) => handleChange("storyPoint", Math.min(10, Math.max(0, Number(e.target.value))))}
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
