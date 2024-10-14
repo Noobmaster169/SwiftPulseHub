@@ -6,6 +6,7 @@ import { useState } from 'react';
 import WelcomePage from "@/components/WelcomePage";
 import AdminTeamBoard from "@/components/AdminTeamBoard";
 import UserTeamBoard from "@/components/UserTeamBoard";
+import NavBar from "@/components/NavigatorBar";
 
 export default function Dashboard() {
     const { currentTheme, setCurrentTheme } = useTheme();
@@ -30,6 +31,7 @@ export default function Dashboard() {
                     backgroundPosition: 'center' 
                 }}
             >   
+                <NavBar/>
                 <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
                     <div className="w-full mt-12">
                         {isAdminLogin ? <AdminTeamBoard /> : isUserLogin ? <UserTeamBoard /> : <WelcomePage setAdminLogin={setIsAdminLogin} setUserLogin={setIsUserLogin} />}
