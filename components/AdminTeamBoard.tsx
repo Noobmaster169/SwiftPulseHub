@@ -1,21 +1,21 @@
 "use client";
 import { SetStateAction, useState, useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
-import MiniPopUp from "./MiniPopUp";
 import ProceedDelete from "./ProceedDelete";
-import { TaskData, memberData, UserData, teamBoard } from "@/utils/interface";
-import PopUp from "@/components/PopUp";
+import { TaskData, memberData, UserData, teamBoard, Log } from "@/utils/interface";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
-import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import React from "react";
 import MemberEffort from "./MemberEffort";
+import PopUp from "@/components/PopUp";
 import MediumPopUp from "./MediumPopUp";
+import MiniPopUp from "./MiniPopUp";
 import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
 import {fetchUsers} from '@/utils/users';
+import { fetchTask } from "@/utils/database";
 
 
 import TeamInsights from "./TeamInsights";
@@ -30,7 +30,10 @@ type AdminTeamBoardProps = {
 
 // const AdminTeamBoard = ({ memberOpen, setMemberOpen, createOpen, setCreateOpen }: AdminTeamBoardProps) => {
 const AdminTeamBoard = () => {
-  const [users, setUsers] = useState<UserData[]>([])
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [usersData, setUsersData]= useState<any[]>([]);
+  const [tasks, setTasks] = useState<TaskData[]>([]);
+
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -65,9 +68,28 @@ const AdminTeamBoard = () => {
 
   const getData= async ()=>{
     console.log("Fetching Users")
+    const tasks = await fetchTask();
     const users = await fetchUsers();
-    console.log(users);
+
+    const usersData = users.map((user:UserData) => {return {...user, workingHours:[], assignedTasks:[]}});
+    tasks.forEach((task:TaskData) =>{
+      const assignedUser = usersData.find((user:UserData) => user.name === task.assignedTo);
+      if(assignedUser){
+        console.log("Found user with name:", assignedUser.name)
+        assignedUser.assignedTasks.push(task._id);
+        task.timeLog?.forEach((log:Log)=>{
+          console.log("Log:", log);
+          if(log.date){
+            const logDate = new Date(log.date);
+            assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
+          }
+        })
+      }
+      else{console.log("Didn't find user with the name:", task.assignedTo)};
+    })
+    console.log(usersData);
     setUsers(users);
+    setUsersData(usersData);
   }
 
   const [memberUpdated, setMemberUpdated] = useState(false);
@@ -210,7 +232,7 @@ const AdminTeamBoard = () => {
 
   return (
     <>
-      <div className="z-50 flex min-h-screen flex-col items-start justify-start p-8 relative">
+      <div className="flex min-h-screen flex-col items-start justify-start p-8 relative">
         {/*  "PRODUCT BACKLOG" title */}
         <div className="absolute top-15 left-18 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md">
           Team Board

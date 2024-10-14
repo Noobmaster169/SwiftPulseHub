@@ -141,11 +141,11 @@ const IndividualTaskInfo = ({
                   <div className="p-3 flex flex-col border-t-2 border-black border-opacity-50 hover:bg-purple-200">
                     <div className="flex flex-row items-center">
                       <div className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center mr-4 flex-shrink-0">
-                        {log.member ? log.member.charAt(0).toUpperCase() : ""}
+                        {taskData.assignedTo?.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col justify-start">
                         <div className="flex flex-row">
-                          <div className="text-lg font-semibold pr-1">{log.member}</div>
+                          <div className="text-lg font-semibold pr-1">{taskData.assignedTo}</div>
                           <div className="text-lg font-medium">({log.timeLogged} hours)</div>
                         </div>
                         <div>{log.message}</div>
