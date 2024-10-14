@@ -9,7 +9,7 @@ export function SigninForm() {
   return (
     <div className="w-full max-w-md">
       <form>
-        <Card>
+        <Card className="bg-opacity-50">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl text-center font-bold">Sign In</CardTitle>
           </CardHeader>
@@ -24,12 +24,12 @@ export function SigninForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button className="w-20 rounded bg-black text-white">Confirm</button>
+            <button className="w-20 rounded bg-gray-800 text-white">Confirm</button>
           </CardFooter>
         </Card>
-        <div className="mt-4 text-center text-sm">
+        <div className="mt-4 text-center text-sm text-white ">
           Don't have an account?
-          <Link className="underline ml-2" href="signUp">
+          <Link className="underline ml-2 font-semibold" href="signUp">
             Sign Up
           </Link>
         </div>

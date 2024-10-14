@@ -93,7 +93,8 @@ export default function Home() {
           backgroundAttachment: 'fixed',
           backgroundSize: 'cover',
           backgroundPosition: 'center', }}
-      >
+      > 
+        <NavBar/>
         <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
           <div className="w-full mt-12">
             <BacklogCard
