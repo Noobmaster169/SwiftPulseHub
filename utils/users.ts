@@ -17,7 +17,7 @@ export async function updateUser(newData:UserData) {
 }
 
 /* Add a User to the Database */
-export async function addSprint(data:SprintData) {
+export async function addUser(data:UserData) {
     try {
         const res = await fetch('/api/users', {
             method: 'POST',
@@ -33,7 +33,7 @@ export async function addSprint(data:SprintData) {
 }
 
 /* Delete a Sprint from the Database */
-export async function deleteSprint(id:string) {
+export async function deleteUser(id:string) {
     try {
         const res = await fetch('/api/users/delete', {
             method: 'DELETE',

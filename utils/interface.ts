@@ -24,6 +24,7 @@ export interface SprintData {
 
 export interface Log{
     timeLogged: number;
+    date: Date;
     member: string;
     message: string;
 }
@@ -31,5 +32,13 @@ export interface Log{
 export interface UserData{
     _id?: string;
     name: string;
+    email: string;
     hash: string;
+}
+    
+export interface memberData {
+    name: string;
+    totalHours: number;
+    email: string;
+    workingHours?: Array<{ date: string; hours: number }>;
 }

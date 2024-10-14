@@ -17,7 +17,8 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
       if(!taskData.timeLog){
         taskData.timeLog = [];
       }
-      taskData.timeLog.push({timeLogged: timeLogged, member: member, message: message});
+      const today = new Date()
+      taskData.timeLog.push({timeLogged: timeLogged, date:today, member: member, message: message});
       await updateTask(taskData);
       setIsOpen(false);
     } else {

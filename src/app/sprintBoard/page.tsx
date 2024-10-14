@@ -7,7 +7,6 @@ import CreateSprint from "@/components/CreateSprint";
 import SprintBoard from "@/components/sprintBoard";
 import HorizontalNavBar from "@/components/HorizontalNavBar";
 import ThemeSelector from "@/components/ThemeSelector";
-import PopUp from "@/components/PopUp";
 import { useTheme } from "@/components/ThemeContext";
 
 export default function sprintBoardHome() {
@@ -30,21 +29,22 @@ export default function sprintBoardHome() {
 
   const handleThemeChange = (newTheme: string) => {
     setCurrentTheme(newTheme);
+    setIsThemeSelectorOpen(false);
   };
 
-//   useEffect(() => {
-//     const getDatabase = async () => {
-//       const data = await fetchTask();
-//       console.log(data);
-//       setDatabases(data);
-//     };
-//     console.log("Getting Database");
-//     getDatabase();
-//   }, []);
+  // useEffect(() => {
+  //   const getDatabase = async () => {
+  //     const data = await fetchTask();
+  //     console.log(data);
+  //     setDatabases(data);
+  //   };
+  //   console.log("Getting Database");
+  //   getDatabase();
+  // }, []);
 
   return (
     <>
-    <HorizontalNavBar setThemeSelectorOpen={setIsThemeSelectorOpen} />
+      <HorizontalNavBar setThemeSelectorOpen={setIsThemeSelectorOpen} />
       <main
         className="w-full flex min-h-screen bg-cover bg-center"
         style={{ 
@@ -60,7 +60,7 @@ export default function sprintBoardHome() {
               setSprintOpen={setTaskOpen}
               createOpen={createOpen}
               setCreateOpen={setCreateOpen}
-            />{" "}
+            />
             {/* Add BacklogCard component here */}
           </div>
         </div>
@@ -70,12 +70,12 @@ export default function sprintBoardHome() {
         {/* <PopUp isOpen={createSprintOpen} setIsOpen={setCreateSprintOpen}>
           <CreateSprint setIsOpen={setCreateSprintOpen} />
         </PopUp> */}
-        <PopUp isOpen={isThemeSelectorOpen} setIsOpen={setIsThemeSelectorOpen}>
+        {isThemeSelectorOpen && (
           <ThemeSelector 
-            setIsOpen={setIsThemeSelectorOpen} 
             onThemeChange={handleThemeChange}
+            onClose={() => setIsThemeSelectorOpen(false)}
           />
-        </PopUp>
+        )}
       </main>
     </>
   );
