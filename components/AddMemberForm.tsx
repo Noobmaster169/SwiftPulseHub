@@ -28,7 +28,7 @@ const AddMemberForm: React.FC<AddMemberFormProps> = ({ setIsOpen, memberAdded })
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-full mt-20">
       <h2 className="text-xl font-semibold mb-4">Add Team Member</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
