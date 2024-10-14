@@ -307,11 +307,11 @@ const AdminTeamBoard = () => {
       <PopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
         <AddMemberForm setIsOpen={setAddMemberOpen} memberAdded={memberAdded} />
       </PopUp>
-      <MiniPopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
+      <PopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
         {/*Change members[0] to other data*/}
         <ProceedDelete isOpen={editMemberOpen} setIsOpen={setEditMemberOpen} taskToDelete={members[0]} deleteTask={deleteMember}/>
-      </MiniPopUp>
-      <MediumPopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
+      </PopUp>
+      <PopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
         <EditMember
           members={members}
           setIsOpen={setEditMemberOpen}
@@ -319,7 +319,7 @@ const AdminTeamBoard = () => {
           updateMember={updateMember}
           // hasAssignedTasks={hasAssignedTasks}
         />
-      </MediumPopUp>
+      </PopUp>
       <PopUp isOpen={insightsOpen} setIsOpen={setInsightsOpen}>
         <TeamInsights members={members} />
       </PopUp>
