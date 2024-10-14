@@ -74,6 +74,39 @@ const AdminTeamBoard = () => {
   //     }
   //   };
 
+  const updateMember = (updatedMember: memberData) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.name === updatedMember.name ? updatedMember : member
+      )
+    );
+  };
+
+
+  const assignTaskToMember = (memberName: string, task: string, action: 'add' | 'remove') => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) => {
+        if (member.name === memberName) {
+          const updatedTasks = action === 'add'
+            ? [...(member.assignedTasks || []), task]
+            : (member.assignedTasks || []).filter((t) => t !== task);
+          return { ...member, assignedTasks: updatedTasks };
+        }
+        return member;
+      })
+    );
+  };
+  // const hasAssignedTasks = (member: memberData): boolean => {
+  //   return Array.isArray(member.assignedTasks) && member.assignedTasks.length > 0;
+  // };
+
+  // const handleAssignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'add');
+  // };
+  // const handleUnassignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'remove');
+  // };
+
   const addMember = (name: string, email: string, password: string) => {
     const newMember: memberData = {
       name,
@@ -81,6 +114,7 @@ const AdminTeamBoard = () => {
       HoursPerDay: 0,
       workingHours: [],
       email,
+      assignedTasks: [],
     };
     setMembers([...members, newMember]);
     console.log(`Added member: ${name}, ${email}`);
@@ -99,6 +133,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-07", hours: 2 },
       ],
       email: "member1@gmail.com",
+      assignedTasks: ["Task1", "Task2"]
     },
     {
       name: "Member2",
@@ -112,6 +147,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-07", hours: 0.5 },
       ],
       email: "member2@gmail.com",
+      assignedTasks: ["Task1", "Task2"],
     },
     {
       name: "Member3",
@@ -125,6 +161,7 @@ const AdminTeamBoard = () => {
         { date: "2024-10-07", hours: 7 },
       ],
       email: "member3@gmail.com",
+      assignedTasks: ["Task1", "Task2"],
     },
   ]);
 
@@ -223,6 +260,22 @@ const AdminTeamBoard = () => {
           </table>
         </div>
       </div>
+      {/* <div>
+      {members.map((member) => (
+        <div key={member.name}>
+          <h3>{member.name}</h3>
+          <ul>
+            {member.assignedTasks?.map((task) => (
+              <li key={task}>
+                {task}
+                <button onClick={() => handleUnassignTask(member.name, task)}>Unassign</button>
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => handleAssignTask(member.name, 'NewTask')}>Assign New Task</button>
+        </div>
+      ))}
+    </div> */}
       <PopUp isOpen={memberEffortOpen} setIsOpen={setMemberEffortOpen}>
         {selectedMember && (
           <MemberEffort
@@ -242,6 +295,8 @@ const AdminTeamBoard = () => {
           members={members}
           setIsOpen={setEditMemberOpen}
           deleteMember={deleteMember}
+          updateMember={updateMember}
+          // hasAssignedTasks={hasAssignedTasks}
         />
       </MediumPopUp>
       <PopUp isOpen={insightsOpen} setIsOpen={setInsightsOpen}>

@@ -34,6 +34,7 @@ export interface memberData {
     HoursPerDay?: number;
     email: string;
     workingHours?: Array<{ date: string; hours: number }>;
+    assignedTasks?: string[];
 }
 
 export interface teamBoard {
