@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
-import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
 import { LiaClipboardListSolid } from "react-icons/lia";
 import { RiKanbanView2 } from "react-icons/ri";
 import { RiTeamLine } from "react-icons/ri";
@@ -21,7 +20,7 @@ export default function NavBar() {
         <nav className={"h-full w-64 p-6 fixed top-0 left-0 z-40 bg-white bg-opacity-30 backdrop-blur-lg dark:bg-gray-700 dark:bg-opacity-30 dark:backdrop-blur-lg"/*border-r-2 border-white*/}>
             <div className="flex flex-col h-full justify-center">
                 <button
-                    className="md:hidden p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 "
+                    className="md:hidden p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
                     onClick={() => setDropdown(!dropdown)}
                 >
                     {dropdown ? <IoMdClose /> : <GiHamburgerMenu />}
