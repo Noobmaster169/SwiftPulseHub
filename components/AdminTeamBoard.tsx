@@ -71,6 +71,25 @@ const AdminTeamBoard = () => {
       }
       else{console.log("Didn't find user with the name:", task.assignedTo)};
     })
+    usersData.forEach((user:any) => {
+      if(user){
+        const today = new Date();
+        const firstDay = new Date();
+        let totalHours = 0
+        user.workingHours.forEach((log:any)=>{
+          const logDate = new Date(log.date);
+          totalHours += log.hours;
+          // console.log("FOUND LOG AT:", logDate.toString());
+          if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
+        })
+        const diffInMs = today.getTime() - firstDay.getTime();
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+        // console.log(user.name, "started at:", firstDay.toString())
+        // console.log("Today is:", today.toString());
+        console.log("Difference in days:", diffInDays);
+        user.HoursPerDay = totalHours / diffInDays;
+      }
+    })
     console.log(usersData);
     setUsers(users);
     setUsersData(usersData);
@@ -348,6 +367,24 @@ const AdminTeamBoard = () => {
                   </td>
                 </tr>
               ))}
+              {usersData.map((member:any, i: number) => 
+                member ? <tr key={i} className="relative hover:bg-gray-100">
+                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
+                    <div className="flex items-center justify-between">
+                      <div className="text-lg font-bold">{member.name}</div>
+                      <div className="text-md font-bold">
+                        {member.HoursPerDay} Hours per day
+                      </div>
+                      <button
+                        className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
+                        onClick={() => openMemberEffort(member)}
+                      >
+                        Effort
+                      </button>
+                    </div>
+                  </td>
+                </tr> : ""
+              )}
             </tbody>
           </table>
         </div>
