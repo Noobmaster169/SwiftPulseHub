@@ -2,6 +2,7 @@ import { updateTask } from "@/utils/database";
 import { TaskEditHistoryEntry, TaskData, UserData } from "@/utils/interface";
 import { useState, useEffect } from "react";
 import { fetchUsers } from "@/utils/users";
+import {useUser} from '@/context/UserContext';
 
 interface EditTaskProps {
   taskData: TaskData;
@@ -24,6 +25,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   ]);
   const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
   const [showTagDropdown, setShowTagDropdown] = useState(false);
+  const {currentUser} = useUser();
 
   const getUsersData = async ()=>{
     const users = await fetchUsers();
@@ -47,7 +49,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
     if (taskData.status !== updatedTask.status) {
       historyEntries.push({
         date: new Date().toISOString(),
-        modifiedBy: 'User Name', 
+        modifiedBy: currentUser? currentUser.name : updatedTask.assignedTo, 
         type: 'status',
         details: `Status changed from ${taskData.status} to ${updatedTask.status}`,
       });
@@ -56,7 +58,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
     if (taskData.assignedTo !== updatedTask.assignedTo) {
       historyEntries.push({
         date: new Date().toISOString(),
-        modifiedBy: 'User Name', 
+        modifiedBy: currentUser? currentUser.name : updatedTask.assignedTo, 
         type: 'reassignment',
         details: `Assigned to changed from ${taskData.assignedTo} to ${updatedTask.assignedTo}`,
       });
@@ -65,7 +67,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
     if (taskData.description !== updatedTask.description) {
       historyEntries.push({
         date: new Date().toISOString(),
-        modifiedBy: 'User Name', 
+        modifiedBy: currentUser? currentUser.name : updatedTask.assignedTo, 
         type: 'description',
         details: `Description updated from "${taskData.description}" to "${updatedTask.description}".`,
       });
