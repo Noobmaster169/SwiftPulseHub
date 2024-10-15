@@ -19,9 +19,7 @@ interface BurndownChartProps {
 
 const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
   const [chartData, setChartData] = useState<any[]>([]);
-  const [chartView, setChartView] = useState<"storyPoints" | "tasks">(
-    "tasks"
-  );
+  const [chartView, setChartView] = useState<"storyPoints" | "tasks">("tasks");
   const [taskData, setTaskData] = useState<TaskData[]>([]);
 
   const mockSprintData: SprintData = {
@@ -32,7 +30,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
     status: "active",
     tasks: ["1", "2", "3", "4"],
   };
-  
+
   const mockTaskData: TaskData[] = [
     {
       _id: "1",
@@ -71,51 +69,68 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
       completedAt: "2024-10-09",
     },
   ];
-  
-  const compileData = async ()=>{
+
+  const compileData = async () => {
     const startDate = new Date(sprintData.startDate);
     const endDate = new Date(sprintData.endDate);
     const today = new Date();
     const stopDate = today < endDate && today > startDate ? today : endDate;
 
     const database = await fetchTask();
-    const taskData = database.filter((task:TaskData) => sprintData.tasks.includes(task._id));
+    const taskData = database.filter((task: TaskData) =>
+      sprintData.tasks.includes(task._id || "")
+    ); // Fix linter error
     setTaskData(taskData);
-  
+
     //const endDate = new Date(sprintData.endDate);
     const totalDays = eachDayOfInterval({ start: startDate, end: endDate });
     const totalStoryPoints = taskData.reduce(
-      (sum:number, task:TaskData) => sum + parseInt(task.storyPoint || "0"),
+      (sum: number, task: TaskData) => sum + parseInt(task.storyPoint || "0"),
       0
     );
     const totalTasks = taskData.length;
 
-    taskData.forEach((task:TaskData) =>{console.log(task)});
+    taskData.forEach((task: TaskData) => {
+      console.log(task);
+    });
 
     const initialData = totalDays.map((date, index) => {
-      const completedTasks = taskData.filter(
-        (task: TaskData) => {
-          if(!task.completedAt) return false;
-          const completedDate = new Date(task.completedAt);
-          const dayLimit = new Date(date.getTime() + (24 * 60 * 60 * 1000));
-          const isCompleted = completedDate <= dayLimit;
-          console.log("Task Finished At:", completedDate, "But Date is:", date, "Is Completed:", isCompleted);
-          return isCompleted;
-        }
-      ).length;
+      const completedTasks = taskData.filter((task: TaskData) => {
+        if (!task.completedAt) return false;
+        const completedDate = new Date(task.completedAt);
+        const dayLimit = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+        const isCompleted = completedDate <= dayLimit;
+        console.log(
+          "Task Finished At:",
+          completedDate,
+          "But Date is:",
+          date,
+          "Is Completed:",
+          isCompleted
+        );
+        return isCompleted;
+      }).length;
       const completedStoryPoints = taskData
         .filter(
-          (task: TaskData) => task.completedAt && new Date(task.completedAt) <= date
+          (task: TaskData) =>
+            task.completedAt && new Date(task.completedAt) <= date
         )
-        .reduce((sum:number, task:TaskData) => sum + parseInt(task.storyPoint || "0"), 0);
+        .reduce(
+          (sum: number, task: TaskData) =>
+            sum + parseInt(task.storyPoint || "0"),
+          0
+        );
 
       if (date > stopDate) {
         return {
           date: format(date, "MM/dd"),
-          idealTasks: totalTasks - (index * totalTasks) / (totalDays.length - 1),
+          idealTasks:
+            totalTasks - (index * totalTasks) / (totalDays.length - 1),
+          idealPoints:
+            totalStoryPoints -
+            (index * totalStoryPoints) / (totalDays.length - 1),
         };
       }
-
 
       return {
         date: format(date, "MM/dd"),
@@ -131,8 +146,8 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
     });
 
     setChartData(initialData);
-  }
-  
+  };
+
   useEffect(() => {
     compileData();
   }, [sprintData, tasks]);
