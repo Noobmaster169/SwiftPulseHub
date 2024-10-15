@@ -17,10 +17,12 @@ import TeamInsights from "./TeamInsights";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import sha256 from 'crypto-js/sha256';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AdminTeamBoard = () => {
-  const [users, setUsers] = useState<UserData[]>([])
-  const [usersData, setUsersData] = useState<any>([])
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [usersData, setUsersData] = useState<any>([]);
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,177 +38,100 @@ const AdminTeamBoard = () => {
   const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const {setCurrentUser} = useUser();
+  const [memberUpdated, setMemberUpdated] = useState(false);
+  const [sortCriteria, setSortCriteria] = useState<'name' | 'hours'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [openDropdown, setOpenDropdown] = useState<'name' | 'hours' | null>(null);
+
+  // Updated state for date range feature
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000));
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      console.log("Fetching Users");
+      const tasks = await fetchTask();
+      const users = await fetchUsers();
+
+      const usersData = users.map((user: UserData) => {
+        if (user.name !== "admin") {
+          return { ...user, workingHours: [], assignedTasks: [] };
+        } else {
+          setCurrentUser(user);
+          return;
+        }
+      });
+
+      tasks.forEach((task: TaskData) => {
+        const assignedUser = usersData.find((user: UserData) => user ? user.name === task.assignedTo : false);
+        if (assignedUser) {
+          console.log("Found user with name:", assignedUser.name);
+          assignedUser.assignedTasks.push(task._id);
+          task.timeLog?.forEach((log: Log) => {
+            console.log("Log:", log);
+            const logDate = log.date ? new Date(log.date) : new Date();
+            assignedUser.workingHours.push({ date: logDate.toString(), hours: log.timeLogged });
+          });
+        } else {
+          console.log("Didn't find user with the name:", task.assignedTo);
+        }
+      });
+
+      usersData.forEach((user: any) => {
+        if (user) {
+          user.HoursPerDay = calculateAverageHours(user, startDate, endDate);
+        }
+      });
+
+      console.log(usersData);
+      setUsers(users);
+      setUsersData(usersData);
+      setIsLoading(false);
+    };
+
+    getData();
+  }, [memberUpdated, startDate, endDate]);
+
+  const calculateAverageHours = (member: any, start: Date, end: Date) => {
+    const relevantHours = member.workingHours.filter((log: any) => {
+      const logDate = new Date(log.date);
+      return logDate >= start && logDate <= end;
+    });
+
+    const totalHours = relevantHours.reduce((sum: number, log: any) => sum + log.hours, 0);
+    const diffInDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    return totalHours / diffInDays;
+  };
+
   const openGraph = (member: memberData) => {
     setSelectedMember(member);
     setMemberOpen(true);
   };
+
   const openMemberEffort = (member: memberData) => {
     setSelectedMember(member);
     setMemberEffortOpen(true);
   };
 
   const deleteMember = (memberToDelete: any) => {
-    if(memberToDelete._id){
+    if (memberToDelete._id) {
       deleteUser(memberToDelete._id);
-    }else{
-      alert("Unknown Member")
+    } else {
+      alert("Unknown Member");
     }
-    setMemberUpdated(memberUpdated);
-    setEditMemberOpen(false);
-    memberAdded();
-    //setMembers(members.filter((member) => member.name !== memberToDelete.name));
-  };
-
-  const getData= async ()=>{
-    console.log("Fetching Users")
-    const tasks = await fetchTask();
-    const users = await fetchUsers();
-
-    const usersData = users.map((user:UserData) => {
-      // Make sure admin is not in the list of users
-      if(user.name !== "admin"){return {...user, workingHours:[], assignedTasks:[]}}
-      else{
-        setCurrentUser(user);
-        return}
-    });
-    tasks.forEach((task:TaskData) =>{
-      const assignedUser = usersData.find((user:UserData) => user? user.name === task.assignedTo : false);
-      if(assignedUser){
-        console.log("Found user with name:", assignedUser.name)
-        assignedUser.assignedTasks.push(task._id);
-        task.timeLog?.forEach((log:Log)=>{
-          console.log("Log:", log);
-          const logDate = log.date? new Date(log.date) : new Date();
-          assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
-        })
-      }
-      else{console.log("Didn't find user with the name:", task.assignedTo)};
-    })
-    usersData.forEach((user:any) => {
-      if(user){
-        const today = new Date();
-        const firstDay = new Date();
-        let totalHours = 0
-        user.workingHours.forEach((log:any)=>{
-          const logDate = new Date(log.date);
-          totalHours += log.hours;
-          // console.log("FOUND LOG AT:", logDate.toString());
-          if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
-        })
-        const diffInMs = today.getTime() - firstDay.getTime();
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-        // console.log(user.name, "started at:", firstDay.toString())
-        // console.log("Today is:", today.toString());
-        console.log("Difference in days:", diffInDays);
-        user.HoursPerDay = totalHours / diffInDays;
-      }
-    })
-    console.log(usersData);
-    setUsers(users);
-    setUsersData(usersData);
-    setIsLoading(false);
-  }
-
-  const [memberUpdated, setMemberUpdated] = useState(false);
-  useEffect(() =>{
-    getData();
-  }, [memberUpdated])
-
-  //   const editTask = () => {
-  //     setEditOpen(true);
-  //     setTaskOpen(false);
-  //   };
-
-  //   const runDeleteTask = async (taskToDelete: TaskData) => {
-  //     const taskData: any = taskToDelete;
-  //     try {
-  //       await deleteTask(taskData._id);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
-
-  const memberAdded = ()=>{
     setMemberUpdated(!memberUpdated);
-  }
-  const updateMember = async (updatedMember: any) => {
-    await updateUser(updatedMember);
-    memberAdded();
+    setEditMemberOpen(false);
   };
-
-
-  const assignTaskToMember = (memberName: string, task: string, action: 'add' | 'remove') => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) => {
-        if (member.name === memberName) {
-          const updatedTasks = action === 'add'
-            ? [...(member.assignedTasks || []), task]
-            : (member.assignedTasks || []).filter((t) => t !== task);
-          return { ...member, assignedTasks: updatedTasks };
-        }
-        return member;
-      })
-    );
-  };
-
-  const [sortCriteria, setSortCriteria] = useState<'name' | 'hours'>('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [openDropdown, setOpenDropdown] = useState<'name' | 'hours' | null>(null);
-
-  const [members, setMembers] = useState<memberData[]>([
-    {
-      name: "Member1",
-      workingHours: [
-        { date: "2024-10-01", hours: 3 },
-        { date: "2024-10-02", hours: 4 },
-        { date: "2024-10-03", hours: 5 },
-        { date: "2024-10-04", hours: 1 },
-        { date: "2024-10-05", hours: 2.5 },
-        { date: "2024-10-06", hours: 1.5 },
-        { date: "2024-10-07", hours: 2 },
-      ],
-      email: "member1@gmail.com",
-      assignedTasks: ["Task1", "Task2"]
-    },
-    {
-      name: "Member2",
-      workingHours: [
-        { date: "2024-10-01", hours: 1 },
-        { date: "2024-10-02", hours: 3 },
-        { date: "2024-10-03", hours: 3 },
-        { date: "2024-10-04", hours: 2 },
-        { date: "2024-10-05", hours: 1 },
-        { date: "2024-10-06", hours: 2 },
-        { date: "2024-10-07", hours: 0.5 },
-      ],
-      email: "member2@gmail.com",
-      assignedTasks: ["Task1", "Task2"],
-    },
-    {
-      name: "Member3",
-      workingHours: [
-        { date: "2024-10-01", hours: 1 },
-        { date: "2024-10-02", hours: 2 },
-        { date: "2024-10-03", hours: 3 },
-        { date: "2024-10-04", hours: 4 },
-        { date: "2024-10-05", hours: 5 },
-        { date: "2024-10-06", hours: 6 },
-        { date: "2024-10-07", hours: 7 },
-      ],
-      email: "member3@gmail.com",
-      assignedTasks: ["Task1", "Task2"],
-    },
-  ]);
-
-  const [teamBoard, setTeamBoard] = useState<teamBoard>({
-    startDate: new Date("2024-10-01"),
-    endDate: new Date("2024-10-16"),
-    memberList: members,
-  });
 
   const addMember = async (name: string, email: string, password: string) => {
     console.log(`Added member: ${name}, ${email}`);
-    memberAdded();
+    setMemberUpdated(!memberUpdated);
+  };
+
+  const updateMember = async (updatedMember: any) => {
+    await updateUser(updatedMember);
+    setMemberUpdated(!memberUpdated);
   };
 
   const toggleDropdown = (dropdown: 'name' | 'hours') => {
@@ -229,19 +154,6 @@ const AdminTeamBoard = () => {
     }
   });
 
-  members.forEach((m) => {
-    const today = new Date("2024-10-07");
-    const minute = 1000 * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-
-    const diffInDays = (today.getTime() - teamBoard.startDate.getTime()) / day;
-    m.totalHours = m.workingHours?.reduce((sum, v) => sum + v.hours, 0);
-    m.HoursPerDay = m.totalHours
-      ? parseFloat((m.totalHours / diffInDays).toFixed(1))
-      : 0;
-  });
-
   return (
     <div className="relative min-h-screen p-8">
       <div className="absolute top-4 left-4 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md z-10">
@@ -249,7 +161,6 @@ const AdminTeamBoard = () => {
       </div>
 
       <div className="mt-20 relative">
-        {/* Control bar */}
         <div className="flex justify-between items-center mb-4 z-20 relative">
           <div className="flex space-x-2">
             <button
@@ -269,6 +180,12 @@ const AdminTeamBoard = () => {
               onClick={() => setInsightsOpen(true)}
             >
               Insights
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
+              onClick={() => setShowDatePicker(!showDatePicker)}
+            >
+              Set Date Range
             </button>
           </div>
           <div className="flex space-x-2">
@@ -327,57 +244,62 @@ const AdminTeamBoard = () => {
           </div>
         </div>
 
-        {/* Team members table */}
+        {showDatePicker && (
+          <div className="mb-4 flex space-x-4">
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date) => setStartDate(date)}
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <DatePicker
+              selected={endDate}
+              onChange={(date: Date) => {
+                setEndDate(date);
+                setStartDate(new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000));
+              }}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+            />
+          </div>
+        )}
+
         <div className="w-full flex items-center justify-center font-mono text-sm">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
-          <thead>
+            <thead>
               <tr>
                 <th className="py-4 px-4 pl-8 border-b border-gray-500 text-lg text-left">{isLoading ? "Loading Members..." : "Members"}</th>
               </tr>
             </thead>
             <tbody>
-              {/*sortedMembers.map((member, i: number) => (
-                <tr key={i} className="relative hover:bg-gray-100">
-                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
-                    <div className="flex items-center justify-between">
-                      <div className="text-lg font-bold">{member.name}</div>
-                      <div className="text-md font-bold">
-                        {member.HoursPerDay} Hours per day
+              {sortedUsersData.map((member: any, i: number) => 
+                member ? (
+                  <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50">
+                    <td className="relative py-8 px-8 border-b border-gray-500 text-left">
+                      <div className="flex items-center justify-between">
+                        <div className="text-lg font-bold">{member.name}</div>
+                        <div className="text-lg font-bold">
+                          {member.HoursPerDay.toFixed(2)} Hours per day
+                        </div>
+                        <button
+                          className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
+                          onClick={() => openMemberEffort(member)}
+                        >
+                          Effort
+                        </button>
                       </div>
-                      <button
-                        className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
-                        onClick={() => openMemberEffort(member)}
-                      >
-                        Effort
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))*/}
-              {sortedUsersData.map((member:any, i: number) => 
-                member ? <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50">
-                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
-                    <div className="flex items-center justify-between">
-                      <div className="text-lg font-bold">{member.name}</div>
-                      <div className="text-lg font-bold">
-                        {member.HoursPerDay} Hours per day
-                      </div>
-                      <button
-                        className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
-                        onClick={() => openMemberEffort(member)}
-                      >
-                        Effort
-                      </button>
-                    </div>
-                  </td>
-                </tr> : ""
+                    </td>
+                  </tr>
+                ) : null
               )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Popups */}
       <PopUp isOpen={memberEffortOpen} setIsOpen={setMemberEffortOpen}>
         {selectedMember && (
           <MemberEffort
@@ -388,7 +310,7 @@ const AdminTeamBoard = () => {
         )}
       </PopUp>
       <PopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
-        <AddMemberForm setIsOpen={setAddMemberOpen} memberAdded={memberAdded} addMember={addMember} />
+        <AddMemberForm setIsOpen={setAddMemberOpen} memberAdded={() => setMemberUpdated(!memberUpdated)} addMember={addMember} />
       </PopUp>
       <PopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
         <EditMember
