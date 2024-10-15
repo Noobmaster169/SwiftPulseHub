@@ -55,11 +55,12 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
 
   const allDates = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
-  const chartData = allDates.map(date => {
-    const matchingEntry = filteredData.find(entry => isSameDay(new Date(entry.date), date));
+  const chartData = allDates.map((date) => {
+    const matchingEntries = filteredData.filter((entry) => isSameDay(new Date(entry.date), date));
+    const totalHours = matchingEntries.reduce((sum, entry) => sum + entry.hours, 0);
     return {
       date: format(date, "EEE"),
-      hours: matchingEntry ? matchingEntry.hours : 0
+      hours: totalHours,
     };
   });
 
@@ -104,7 +105,6 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
 
   const resetDates = () => {
     const currentStartDate = startOfWeek(new Date());
-    const currentEndDate = endOfWeek(new Date());
     setStartDate(currentStartDate);
     setEndDate(addDays(currentStartDate, 6));
   }
@@ -167,8 +167,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             onChange={handleEndDateChange}
           />
         )}
-
-        <BarChart width={660} height={440} data={chartData.length > 0 ? chartData : Array(7).fill({ date: '', hours: 0 })}>
+        <BarChart width={660} height={440} data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis />

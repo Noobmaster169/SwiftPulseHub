@@ -128,7 +128,7 @@ export default function Home() {
           />
         )}
       </main>
-      <MediumPopUp isOpen={!loggedIn} setIsOpen={()=>{}}>
+      <MediumPopUp isOpen={!loggedIn} setIsOpen={(_:any)=>{}}>
           <UserLogin />
       </MediumPopUp>
     </>

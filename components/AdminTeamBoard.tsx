@@ -45,7 +45,6 @@ const AdminTeamBoard = () => {
   };
 
   const deleteMember = (memberToDelete: any) => {
-    alert("Deleting Member")
     if(memberToDelete._id){
       deleteUser(memberToDelete._id);
     }else{
