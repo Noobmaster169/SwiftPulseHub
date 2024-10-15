@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
-import { TaskData } from "@/utils/interface";
+import { TaskData, UserData } from "@/utils/interface";
+import { fetchUsers } from "@/utils/users";
 
 interface AddTaskProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,14 +17,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const [type, setType] = useState("story");
   const [storyPoint, setStoryPoint] = useState(1);
   const [assignedTo, setAssignedTo] = useState("");
-  const [members, setMembers] = useState<string[]>([
-    "Tadiwa Vambe",
-    "Mario Taning",
-    "Jia Qian Chow",
-    "Shanwu Zhang",
-    "Jonathan Sugondo",
-    "Vanessa Wong",
-  ]);
+  const [members, setMembers] = useState<string[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<string[]>(members);
   const [finishedBy, setFinishedBy] = useState("");
   const [priority, setPriority] = useState("medium");
@@ -41,6 +35,22 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
   const [showTagDropdown, setShowTagDropdown] = useState(false);
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
+
+  const getUsersData = async ()=>{
+    const users = await fetchUsers();
+    const names:string[] = [];
+    users.forEach((user:UserData)=>{
+      if(user){
+        if(user.name && user.name !== "admin"){
+          names.push(user.name);
+        }
+      } 
+    });
+    setMembers(names);
+  }
+  useEffect(()=>{
+    getUsersData();
+  }, [])
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
@@ -156,7 +166,14 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
 
         <div className="form-group">
           <label>Assigned to:</label>
-          <div className="member-input">
+          <select
+            value={assignedTo}
+            onChange={(e) => setAssignedTo(e.target.value)}
+          >
+            {members.map((member) => <option value={member}>{member}</option>)}
+          </select>
+          
+          {/*<div className="member-input">
             <input
               type="text"
               value={assignedTo}
@@ -177,7 +194,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
                 ))}
               </ul>
             )}
-          </div>
+          </div>*/}
         </div>
 
         <div className="form-group">
