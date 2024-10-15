@@ -4,7 +4,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { FaSort, FaCaretDown } from "react-icons/fa";
 import MiniPopUp from "./MiniPopUp";
 import ProceedDelete from "./ProceedDelete";
-import { TaskData, memberData, UserData, teamBoard } from "@/utils/interface";
+import { TaskData, memberData, UserData, teamBoard, Log } from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import MemberEffort from "./MemberEffort";
 import MediumPopUp from "./MediumPopUp";
@@ -12,11 +12,13 @@ import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
 import { fetchUsers, addUser } from '@/utils/users';
+import { fetchTask} from '@/utils/database';
 import TeamInsights from "./TeamInsights";
 import Link from "next/link";
 
 const AdminTeamBoard = () => {
   const [users, setUsers] = useState<UserData[]>([])
+  const [usersData, setUsersData] = useState<any>([])
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +33,104 @@ const AdminTeamBoard = () => {
   const [deleteMemberOpen, setDeleteMemberOpen] = useState(false);
   const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const openGraph = (member: memberData) => {
+    setSelectedMember(member);
+    setMemberOpen(true);
+  };
+  const openMemberEffort = (member: memberData) => {
+    setSelectedMember(member);
+    setMemberEffortOpen(true);
+  };
+
+  const deleteMember = (memberToDelete: memberData) => {
+    setMembers(members.filter((member) => member.name !== memberToDelete.name));
+  };
+
+  const getData= async ()=>{
+    console.log("Fetching Users")
+    const tasks = await fetchTask();
+    const users = await fetchUsers();
+
+    const usersData = users.map((user:UserData) => {
+      // Make sure admin is not in the list of users
+      if(user.name !== "admin"){return {...user, workingHours:[], assignedTasks:[]}}
+      else{return}
+    });
+    tasks.forEach((task:TaskData) =>{
+      const assignedUser = usersData.find((user:UserData) => user? user.name === task.assignedTo : false);
+      if(assignedUser){
+        console.log("Found user with name:", assignedUser.name)
+        assignedUser.assignedTasks.push(task._id);
+        task.timeLog?.forEach((log:Log)=>{
+          console.log("Log:", log);
+          if(log.date){
+            const logDate = new Date(log.date);
+            assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
+          }
+        })
+      }
+      else{console.log("Didn't find user with the name:", task.assignedTo)};
+    })
+    console.log(usersData);
+    setUsers(users);
+    setUsersData(usersData);
+  }
+
+  const [memberUpdated, setMemberUpdated] = useState(false);
+  useEffect(() =>{
+    getData();
+  }, [memberUpdated])
+
+  //   const editTask = () => {
+  //     setEditOpen(true);
+  //     setTaskOpen(false);
+  //   };
+
+  //   const runDeleteTask = async (taskToDelete: TaskData) => {
+  //     const taskData: any = taskToDelete;
+  //     try {
+  //       await deleteTask(taskData._id);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+
+  const memberAdded = ()=>{
+    setMemberUpdated(!memberUpdated);
+  }
+  const updateMember = (updatedMember: memberData) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.name === updatedMember.name ? updatedMember : member
+      )
+    );
+  };
+
+
+  const assignTaskToMember = (memberName: string, task: string, action: 'add' | 'remove') => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) => {
+        if (member.name === memberName) {
+          const updatedTasks = action === 'add'
+            ? [...(member.assignedTasks || []), task]
+            : (member.assignedTasks || []).filter((t) => t !== task);
+          return { ...member, assignedTasks: updatedTasks };
+        }
+        return member;
+      })
+    );
+  };
+  // const hasAssignedTasks = (member: memberData): boolean => {
+  //   return Array.isArray(member.assignedTasks) && member.assignedTasks.length > 0;
+  // };
+
+  // const handleAssignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'add');
+  // };
+  // const handleUnassignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'remove');
+  // };
+
   const [sortCriteria, setSortCriteria] = useState<'name' | 'hours'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [openDropdown, setOpenDropdown] = useState<'name' | 'hours' | null>(null);
@@ -85,40 +185,6 @@ const AdminTeamBoard = () => {
     endDate: new Date("2024-10-16"),
     memberList: members,
   });
-
-  const [memberUpdated, setMemberUpdated] = useState(false);
-
-  useEffect(() => {
-    getData();
-  }, [memberUpdated])
-
-  const getData = async () => {
-    console.log("Fetching Users")
-    const users = await fetchUsers();
-    console.log(users);
-    setUsers(users);
-  }
-
-  const openMemberEffort = (member: memberData) => {
-    setSelectedMember(member);
-    setMemberEffortOpen(true);
-  };
-
-  const deleteMember = (memberToDelete: memberData) => {
-    setMembers(members.filter((member) => member.name !== memberToDelete.name));
-  };
-
-  const memberAdded = () => {
-    setMemberUpdated(!memberUpdated);
-  }
-
-  const updateMember = (updatedMember: memberData) => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) =>
-        member.name === updatedMember.name ? updatedMember : member
-      )
-    );
-  };
 
   const addMember = async (name: string, email: string, password: string) => {
     const newMember: memberData = {

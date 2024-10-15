@@ -9,19 +9,14 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  TooltipProps,
-  ReferenceLine,
 } from "recharts";
 import { 
   format, 
   addDays, 
   subDays, 
-  startOfDay, 
-  endOfDay, 
-  isSameDay, 
-  isWithinInterval, 
-  differenceInDays, 
-  isBefore 
+  startOfWeek, 
+  endOfWeek, 
+  isSameDay 
 } from "date-fns";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
@@ -40,8 +35,8 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   setIsOpen,
   member,
 }) => {
-  const [startDate, setStartDate] = useState<Date>(startOfDay(new Date()));
-  const [endDate, setEndDate] = useState<Date>(addDays(startDate, 6));
+  const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date()));
+  const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date()));
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
 
@@ -50,40 +45,39 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   const filteredData =
     member.workingHours?.filter(
       (entry) =>
-        new Date(entry.date) >= startOfDay(startDate) && new Date(entry.date) <= endOfDay(endDate)
+        new Date(entry.date) >= startDate && new Date(entry.date) <= endDate
     ) || [];
 
-  const dayCount = differenceInDays(endDate, startDate) + 1;
-  const allDates = Array.from({ length: dayCount }, (_, i) => addDays(startDate, i));
+  const allDates = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   const chartData = allDates.map(date => {
     const matchingEntry = filteredData.find(entry => isSameDay(new Date(entry.date), date));
     return {
-      date: date,
-      dayOfWeek: format(date, "EEE"),
-      fullDate: format(date, "MMM d, yyyy"),
+      date: format(date, "EEE"),
       hours: matchingEntry ? matchingEntry.hours : 0
     };
   });
 
   const totalHours = filteredData.reduce((sum, entry) => sum + entry.hours, 0);
-  const averageHoursPerDay = totalHours / dayCount;
+  const averageHoursPerDay = totalHours / 7;
   const hours = Math.floor(averageHoursPerDay);
   const minutes = Math.round((averageHoursPerDay - hours) * 60);
 
   const handleStartDateChange = (value: Value) => {
     if (value instanceof Date) {
-      const newStartDate = startOfDay(value);
+      const newStartDate = startOfWeek(value);
       setStartDate(newStartDate);
-      if (isBefore(endDate, newStartDate) || differenceInDays(endDate, newStartDate) > 6) {
-        setEndDate(addDays(newStartDate, 6));
-      }
+      setEndDate(addDays(newStartDate, 6));
       setShowStartCalendar(false);
     }
   };
 
   const handleEndDateChange = (value: Value) => {
     if (value instanceof Date) {
+      if (value < startDate) {
+        alert("End date cannot be before start date");
+        return;
+      }
       const newEndDate = endOfWeek(value);
       setEndDate(newEndDate);
       setStartDate(startOfWeek(newEndDate));
@@ -92,37 +86,22 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   };
 
   const handlePreviousWeek = () => {
-    const newStartDate = subDays(startDate, dayCount);
+    const newStartDate = subDays(startDate, 7);
     setStartDate(newStartDate);
-    setEndDate(subDays(endDate, dayCount));
+    setEndDate(addDays(newStartDate, 6));
   };
 
   const handleNextWeek = () => {
-    const newStartDate = addDays(startDate, dayCount);
+    const newStartDate = addDays(startDate, 7);
     setStartDate(newStartDate);
-    setEndDate(addDays(endDate, dayCount));
-  };
-
-  const tileDisabled = ({ date, view }: { date: Date; view: string }) =>
-    view === 'month' && !isWithinInterval(date, { start: startDate, end: addDays(startDate, 6) });
-
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip" style={{ backgroundColor: 'white', padding: '5px', border: '1px solid #ccc' }}>
-          <p className="label">{`${payload[0].payload.fullDate}`}</p>
-          <p className="intro">{`Hours: ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
+    setEndDate(addDays(newStartDate, 6));
   };
 
   const resetDates = () => {
     const currentStartDate = startOfWeek(new Date());
     const currentEndDate = endOfWeek(new Date());
     setStartDate(currentStartDate);
-    setEndDate(currentEndDate);
+    setEndDate(addDays(currentStartDate, 6));
   }
 
   return (
@@ -154,13 +133,13 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             onClick={handlePreviousWeek}
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
           >
-            Previous Period
+            Previous Week
           </button>
           <button
             onClick={handleNextWeek}
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
           >
-            Next Period
+            Next Week
           </button>
           <button
             onClick={resetDates}
@@ -181,18 +160,21 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
           <Calendar
             value={endDate}
             onChange={handleEndDateChange}
-            tileDisabled={tileDisabled}
           />
         )}
 
-        <BarChart width={660} height={440} data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
-        </BarChart>
+        {filteredData.length > 0 ? (
+          <BarChart width={660} height={440} data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
+          </BarChart>
+        ) : (
+          <p>No data available for the selected date range.</p>
+          )}
       </div>
     </PopUp>
   );
