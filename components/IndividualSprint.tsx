@@ -97,7 +97,7 @@ const SprintPage = ({
                       startSprint(sprintData);
                       setTaskOpen(false);
                     }}
-                    className="mt-4 bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400"
+                    className="w-48 mt-4 bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400"
                   >
                     Force Start
                   </button>
@@ -107,7 +107,7 @@ const SprintPage = ({
                       endSprint(sprintData);
                       setTaskOpen(false);
                     }}
-                    className="mt-4 bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400"
+                    className="w-48 mt-4 bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400"
                   >
                     Force End
                   </button>
@@ -115,13 +115,15 @@ const SprintPage = ({
                   <></>
                 )}
               </tr>
+              <tr>
+              <button
+                onClick={() => setBurndownOpen(true)}
+                className="w-48 mt-4 bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400"
+              >
+                Burndown Chart
+              </button>
+              </tr>
             </tbody>
-            <button
-              onClick={() => setBurndownOpen(true)}
-              className="mt-4 bg-gray-200 text-black px-2 py-1 text-sm rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400 w-32"
-            >
-              Burndown Chart
-            </button>
           </table>
           <Calendar
             value={[startDate, endDate] as [Date, Date]}

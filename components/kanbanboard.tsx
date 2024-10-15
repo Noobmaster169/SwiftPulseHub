@@ -66,6 +66,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
 
     if (task) {
       task.status = status;
+      if(status === "Completed"){
+        task.completedAt = new Date().toString();
+      }
       //task.status = "Not Started";
       await updateTask(task);
       console.log("Task Updated");
