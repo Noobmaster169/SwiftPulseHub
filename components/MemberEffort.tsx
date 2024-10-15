@@ -162,19 +162,15 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             onChange={handleEndDateChange}
           />
         )}
-
-        {filteredData.length > 0 ? (
-          <BarChart width={660} height={440} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
-          </BarChart>
-        ) : (
-          <p>No data available for the selected date range.</p>
-          )}
+        {/* Display empty chart when no data is available */}
+        <BarChart width={660} height={440} data={chartData.length > 0 ? chartData : Array(7).fill({ date: '', hours: 0 })}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
+        </BarChart>
       </div>
     </PopUp>
   );
