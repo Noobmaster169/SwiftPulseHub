@@ -8,6 +8,29 @@ interface EditTaskProps {
 }
 
 const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
+  const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
+  const [members, setMembers] = useState<string[]>([
+    "Tadiwa Vambe",
+    "Mario Taning",
+    "Jia Qian Chow",
+    "Shanwu Zhang",
+    "Jonathan Sugondo",
+    "Vanessa Wong",
+  ]);
+  const [filteredMembers, setFilteredMembers] = useState<string[]>(members);
+  const [showMemberDropdown, setShowMemberDropdown] = useState(false);
+  const [tagInput, setTagInput] = useState("");
+  const [availableTags, setAvailableTags] = useState<string[]>([
+    "UI",
+    "API",
+    "Backend",
+    "Frontend",
+    "Bug",
+    "Enhancement",
+  ]);
+  const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
+  const [showTagDropdown, setShowTagDropdown] = useState(false);
+
   const handleSave = async () => {
     console.log("Saving Tasks");
     console.log(updatedTask);
@@ -19,26 +42,39 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
     setEditOpen(false);
   };
 
-  const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
-  const [tagInput, setTagInput] = useState("");
-  const [availableTags, setAvailableTags] = useState<string[]>([
-    "UI",
-    "API",
-    "Backend",
-    "Frontend",
-    "Bug",
-    "Enhancement",
-  ]);
+  const handleAssignedToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUpdatedTask((prevTask) => ({ ...prevTask, assignedTo: value }));
+    setFilteredMembers(
+      members.filter((member) =>
+        member.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
 
-  const handleAddTag = () => {
-    if (tagInput && !(updatedTask.tags ?? []).includes(tagInput)) {
-      const newTags = tagInput.split(",").map((tag) => tag.trim());
+  const handleMemberSelect = (member: string) => {
+    setUpdatedTask((prevTask) => ({ ...prevTask, assignedTo: member }));
+    setShowMemberDropdown(false);
+  };
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTagInput(value);
+    setFilteredTags(
+      availableTags.filter((tag) =>
+        tag.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
+
+  const handleTagSelect = (tag: string) => {
+    if (!(updatedTask.tags ?? []).includes(tag)) {
       setUpdatedTask((prevTask) => ({
         ...prevTask,
-        tags: [...(prevTask.tags ?? []), ...newTags],
+        tags: [...(prevTask.tags ?? []), tag],
       }));
-      setAvailableTags([...availableTags, ...newTags]);
       setTagInput("");
+      setFilteredTags(availableTags);
     }
   };
 
@@ -86,13 +122,30 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         <label htmlFor="assignedTo" className="block mb-1">
           Assigned To
         </label>
-        <input
-          type="text"
-          id="assignedTo"
-          value={updatedTask.assignedTo}
-          onChange={(e) => handleChange("assignedTo", e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
+        <div className="member-input">
+          <input
+            type="text"
+            id="assignedTo"
+            value={updatedTask.assignedTo}
+            onChange={handleAssignedToChange}
+            onFocus={() => setShowMemberDropdown(true)}
+            onBlur={() => setShowMemberDropdown(false)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          {showMemberDropdown && (
+            <ul className="member-list">
+              {filteredMembers.map((member) => (
+                <li
+                  key={member}
+                  onClick={() => handleMemberSelect(member)}
+                  className="member-item"
+                >
+                  {member}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
       <div className="mb-4">
         <label htmlFor="status" className="block mb-1">
@@ -119,7 +172,12 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
           value={updatedTask.storyPoint}
           min={0}
           max={10}
-          onChange={(e) => handleChange("storyPoint", Math.min(10, Math.max(0, Number(e.target.value))))}
+          onChange={(e) =>
+            handleChange(
+              "storyPoint",
+              Math.min(10, Math.max(0, Number(e.target.value)))
+            )
+          }
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
@@ -176,41 +234,24 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
             type="text"
             id="tags"
             value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
+            onChange={handleTagInputChange}
+            onFocus={() => setShowTagDropdown(true)}
+            onBlur={() => setShowTagDropdown(false)}
             className="w-full border border-gray-300 rounded px-3 py-2"
-            list="tagOptions"
-            onSelect={(e) => {
-              const selectedTag = e.currentTarget.value;
-              if (
-                selectedTag &&
-                !(updatedTask.tags ?? []).includes(selectedTag)
-              ) {
-                setUpdatedTask((prevTask) => ({
-                  ...prevTask,
-                  tags: [...(prevTask.tags ?? []), selectedTag],
-                }));
-                setTagInput("");
-              }
-            }}
           />
-          <datalist id="tagOptions">
-            {availableTags
-              .filter(
-                (tag) =>
-                  tag.toLowerCase().includes(tagInput.toLowerCase()) &&
-                  !(updatedTask.tags ?? []).includes(tag)
-              )
-              .map((tag) => (
-                <option key={tag} value={tag} />
+          {showTagDropdown && (
+            <ul className="tag-list">
+              {filteredTags.map((tag) => (
+                <li
+                  key={tag}
+                  onClick={() => handleTagSelect(tag)}
+                  className="tag-item"
+                >
+                  {tag}
+                </li>
               ))}
-          </datalist>
-          <button
-            type="button"
-            onClick={handleAddTag}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Add
-          </button>
+            </ul>
+          )}
         </div>
         <div className="tags-list">
           {(updatedTask.tags ?? []).map((tag) => (
