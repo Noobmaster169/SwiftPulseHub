@@ -277,39 +277,49 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         <label htmlFor="tags" className="block mb-1">
           Tags
         </label>
-        <div className="tags-input">
-          <input
-            type="text"
-            id="tags"
-            value={tagInput}
-            onChange={handleTagInputChange}
-            onFocus={() => setShowTagDropdown(true)}
-            onBlur={() => setShowTagDropdown(false)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          {showTagDropdown && (
-            <ul className="tag-list">
-              {filteredTags.map((tag) => (
-                <li
-                  key={tag}
-                  onClick={() => handleTagSelect(tag)}
-                  className="tag-item"
-                >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="tags-list">
-          {(updatedTask.tags ?? []).map((tag) => (
-            <span key={tag} className="tag">
-              {tag}{" "}
-              <button type="button" onClick={() => handleRemoveTag(tag)}>
-                &times;
+        <div className="relative">
+
+          
+          <div className="tags-input flex items-center space-x-2 ">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={handleTagInputChange}
+                onFocus={() => setShowTagDropdown(true)}
+                onBlur={() => setShowTagDropdown(false)}
+                className="flex-grow p-2 border rounded"
+              />
+              <button
+                type="button"
+                onClick={() => handleTagSelect(tagInput)}
+                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Add Tag
               </button>
-            </span>
-          ))}
+            {showTagDropdown && (
+              <ul className="tag-list absolute left-0 w-full bg-white border border-gray-300 rounded mt-30">
+                {filteredTags.map((tag) => (
+                  <li
+                    key={tag}
+                    onMouseDown={() => handleTagSelect(tag)}
+                    className="tag-item p-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="tags-list">
+            {(updatedTask.tags ?? []).map((tag) => (
+              <span key={tag} className="tag">
+                {tag}{" "}
+                <button type="button" onMouseDown={() => handleRemoveTag(tag)}>
+                  &times;
+                </button>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
