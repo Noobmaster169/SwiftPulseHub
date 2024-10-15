@@ -223,20 +223,28 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
 
         <div className="form-group">
           <label>Tag(s):</label>
-          <div className="tags-input">
+          <div className="tags-input flex items-center space-x-2">
             <input
               type="text"
               value={tagInput}
               onChange={handleTagInputChange}
               onFocus={() => setShowTagDropdown(true)}
               onBlur={() => setShowTagDropdown(false)}
+              className="flex-grow p-2 border rounded"
             />
+            <button
+              type="button"
+              onClick={handleAddTag}
+              className="ml-2 px-2 py-1 bg-blue-500 text-white rounded"
+            >
+              Add Tag
+            </button>
             {showTagDropdown && (
               <ul className="tag-list">
                 {filteredTags.map((tag) => (
                   <li
                     key={tag}
-                    onClick={() => handleTagSelect(tag)}
+                    onMouseDown={() => handleTagSelect(tag)}
                     className="tag-item"
                   >
                     {tag}
