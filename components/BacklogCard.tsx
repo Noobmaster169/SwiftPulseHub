@@ -265,7 +265,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                           className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
                           onClick={() => { setHistoryOpen(true); setCurrentTask(task); }}
                         >
-                          Edit History
+                          Task Edit History
                         </button>
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
