@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { memberData } from '../utils/interface';
+import { memberData , TaskData} from '../utils/interface';
 import { AiOutlineDelete,AiOutlineEdit } from "react-icons/ai";
 import DeleteMemberConfirmation from './DeleteMemberConfirm'; // Import the confirmation component
 import MediumPopUp from './MediumPopUp';
+import {fetchTask} from '@/utils/database';
 
 
 interface EditMemberProps {
@@ -20,8 +21,9 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
   const [memberToEdit, setMemberToEdit] = useState<memberData | null>(null);
   const [editedName, setEditedName] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
+  const [assignedTasks, setAssignedTasks] = useState<TaskData[]>([]);
 
-  const handleDeleteClick = (member: memberData) => {
+  const handleDeleteClick = async (member: memberData) => {
     setMemberToDelete(member);
     setDeleteConfirmationOpen(true);
   };
@@ -43,7 +45,7 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
   };
 
   return (
-    <div className="p-3 w-full bg-blue-100 rounded-md mt-20">
+    <div className="p-3 pt-6 w-full bg-blue-100 rounded-md mt-20">
       <h2 className="text-xl font-semibold mb-4">Edit Members</h2>
       {members.map((member) => (member?
         <div key={member.name} className="flex justify-between items-center mb-2 p-2 bg-white rounded shadow">
@@ -58,22 +60,12 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
           </div>
         </div>: ""
       ))}
-      <button
-        className="mt-4 px-4 py-2 bg-gray-300 text-gray-700 rounded"
-        onClick={() => setIsOpen(false)}
-      >
-        Close
-      </button>
 
       {deleteConfirmationOpen && memberToDelete && (
         <DeleteMemberConfirmation
           member={memberToDelete}
           setIsOpen={setDeleteConfirmationOpen}
           deleteMember={deleteMember}
-        //   hasAssignedTasks={(member) => {
-        //     // Replace the JSX element with a boolean condition
-        //     return !!member.assignedTasks && member.assignedTasks.length > 0;
-        //   }}
         />
       )}
     {/* edit popup*/}

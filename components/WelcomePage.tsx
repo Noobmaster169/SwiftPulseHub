@@ -20,13 +20,15 @@ const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
         const users = await fetchUsers();
         const admin = users.find((user:UserData) => user? user.name === "admin" : false);
         const encrypted = sha256(password).toString();
+        if(username !== "admin"){
+            alert("Invalid Username");
+        }
         if(encrypted !== admin.hash.toString()){
             alert("Invalid Password");
-            setLoading(false);
         }else{
-            setLoading(false);
             setAdminLogin(true);
         }
+        setLoading(false);
     }
 
     return (
@@ -74,7 +76,7 @@ const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
                         className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
                         onClick={adminLogin}
                         disabled={loading}
-                    >Login</button>
+                    >{loading? "Logging In": "Login"}</button>
                 </div>
             </MediumPopUp>
         </div>

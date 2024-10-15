@@ -90,7 +90,7 @@ export default function sprintBoardHome() {
           />
         )}
       </main>
-      <MediumPopUp isOpen={!loggedIn} setIsOpen={()=>{}}>
+      <MediumPopUp isOpen={!loggedIn} setIsOpen={(_:any)=>{}}>
           <UserLogin />
       </MediumPopUp>
     </>

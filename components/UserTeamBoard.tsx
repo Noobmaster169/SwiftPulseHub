@@ -26,7 +26,7 @@ type UserTeamBoardProps = {
 };
 
 // const AdminTeamBoard = ({ memberOpen, setMemberOpen, createOpen, setCreateOpen }: AdminTeamBoardProps) => {
-const UserTeamBoard = () => {
+const UserTeamBoard = ({setIsUserLogin}:any) => {
   const [database, setDatabase] = useState<TaskData[]>([]);
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -256,7 +256,7 @@ const UserTeamBoard = () => {
           </form>
         </div>
       </MediumPopUp>
-      <MediumPopUp isOpen={!loggedIn} setIsOpen={()=>{}}>
+      <MediumPopUp isOpen={!loggedIn} setIsOpen={setIsUserLogin}>
           <UserLogin />
       </MediumPopUp>
     </>

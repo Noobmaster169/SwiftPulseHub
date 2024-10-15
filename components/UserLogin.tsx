@@ -9,7 +9,7 @@ import { useUser } from '@/context/UserContext';
 type WelcomePageProps = {
     setAdminLogin: React.Dispatch<React.SetStateAction<boolean>>;
     setUserLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  };
+};
 
 const UserLogin = () => {
     const [isAdmin, setIsAdmin] = useState(false);
