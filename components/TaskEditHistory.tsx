@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { TaskData, EditHistoryEntry } from '@/utils/interface';
+import { TaskData, TaskEditHistoryEntry } from '@/utils/interface';
 
-type EditHistoryProps = {
-    editHistory: EditHistoryEntry[];
+type TaskEditHistoryProps = {
+   taskEditHistory: TaskEditHistoryEntry[];
 };
 
-const EditHistory: React.FC<EditHistoryProps> = ({ editHistory }) => {
-    const [filteredHistory, setFilteredHistory] = useState<EditHistoryEntry[]>(editHistory);
+const TaskEditHistory: React.FC<TaskEditHistoryProps> = ({ taskEditHistory }) => {
+    const [filteredHistory, setFilteredHistory] = useState<TaskEditHistoryEntry[]>(taskEditHistory);
     const [filterType, setFilterType] = useState<string>('all');
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
   
     useEffect(() => {
-      setFilteredHistory(editHistory);
-    }, [editHistory]);
+      setFilteredHistory(taskEditHistory);
+    }, [taskEditHistory]);
   
     const handleFilterChange = (type: string) => {
       setFilterType(type);
@@ -73,5 +73,5 @@ const EditHistory: React.FC<EditHistoryProps> = ({ editHistory }) => {
     );
   };
   
-  export default EditHistory;
+  export default TaskEditHistory;
   
