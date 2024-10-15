@@ -10,7 +10,7 @@ import {
   Legend,
 } from "recharts";
 import { format, eachDayOfInterval } from "date-fns";
-import { mockSprintData, mockTaskData } from "@/utils/mockData";
+import { fetchTask } from "@/utils/database";
 
 interface BurndownChartProps {
   sprintData: SprintData;
@@ -20,28 +20,102 @@ interface BurndownChartProps {
 const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
   const [chartData, setChartData] = useState<any[]>([]);
   const [chartView, setChartView] = useState<"storyPoints" | "tasks">(
-    "storyPoints"
+    "tasks"
   );
+  const [taskData, setTaskData] = useState<TaskData[]>([]);
 
-  useEffect(() => {
+  const mockSprintData: SprintData = {
+    _id: "1",
+    sprintName: "Sprint 1",
+    startDate: new Date("2024-10-01"),
+    endDate: new Date("2024-10-14"),
+    status: "active",
+    tasks: ["1", "2", "3", "4"],
+  };
+  
+  const mockTaskData: TaskData[] = [
+    {
+      _id: "1",
+      taskName: "Task 1",
+      description: "Implement user authentication",
+      assignedTo: "Jonathan",
+      storyPoint: "5",
+      status: "completed",
+      completedAt: "2024-10-03",
+    },
+    {
+      _id: "2",
+      taskName: "Task 2",
+      description: "Design user interface",
+      assignedTo: "Shanwu Zhang",
+      storyPoint: "3",
+      status: "completed",
+      completedAt: "2024-10-05",
+    },
+    {
+      _id: "3",
+      taskName: "Task 3",
+      description: "Implement search functionality",
+      assignedTo: "Mario Taning",
+      storyPoint: "8",
+      status: "in-progress",
+      completedAt: "2024-10-07",
+    },
+    {
+      _id: "4",
+      taskName: "Task 4",
+      description: "Write unit tests",
+      assignedTo: "Tadiwa Vambe",
+      storyPoint: "2",
+      status: "todo",
+      completedAt: "2024-10-09",
+    },
+  ];
+  
+  const compileData = async ()=>{
     const startDate = new Date(sprintData.startDate);
     const endDate = new Date(sprintData.endDate);
+    const today = new Date();
+    const stopDate = today < endDate && today > startDate ? today : endDate;
+
+    const database = await fetchTask();
+    const taskData = database.filter((task:TaskData) => sprintData.tasks.includes(task._id));
+    setTaskData(taskData);
+  
+    //const endDate = new Date(sprintData.endDate);
     const totalDays = eachDayOfInterval({ start: startDate, end: endDate });
-    const totalStoryPoints = tasks.reduce(
-      (sum, task) => sum + parseInt(task.storyPoint || "0"),
+    const totalStoryPoints = taskData.reduce(
+      (sum:number, task:TaskData) => sum + parseInt(task.storyPoint || "0"),
       0
     );
-    const totalTasks = tasks.length;
+    const totalTasks = taskData.length;
+
+    taskData.forEach((task:TaskData) =>{console.log(task)});
 
     const initialData = totalDays.map((date, index) => {
-      const completedTasks = tasks.filter(
-        (task) => task.completedAt && new Date(task.completedAt) <= date
+      const completedTasks = taskData.filter(
+        (task: TaskData) => {
+          if(!task.completedAt) return false;
+          const completedDate = new Date(task.completedAt);
+          const dayLimit = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+          const isCompleted = completedDate <= dayLimit;
+          console.log("Task Finished At:", completedDate, "But Date is:", date, "Is Completed:", isCompleted);
+          return isCompleted;
+        }
       ).length;
-      const completedStoryPoints = tasks
+      const completedStoryPoints = taskData
         .filter(
-          (task) => task.completedAt && new Date(task.completedAt) <= date
+          (task: TaskData) => task.completedAt && new Date(task.completedAt) <= date
         )
-        .reduce((sum, task) => sum + parseInt(task.storyPoint || "0"), 0);
+        .reduce((sum:number, task:TaskData) => sum + parseInt(task.storyPoint || "0"), 0);
+
+      if (date > stopDate) {
+        return {
+          date: format(date, "MM/dd"),
+          idealTasks: totalTasks - (index * totalTasks) / (totalDays.length - 1),
+        };
+      }
+
 
       return {
         date: format(date, "MM/dd"),
@@ -57,6 +131,10 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
     });
 
     setChartData(initialData);
+  }
+  
+  useEffect(() => {
+    compileData();
   }, [sprintData, tasks]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -76,7 +154,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Burndown Chart</h2>
       <div className="mb-4">
-        <button
+        {/*<button
           className={`px-4 py-2 rounded ${
             chartView === "storyPoints"
               ? "bg-blue-500 text-white"
@@ -85,7 +163,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
           onClick={() => setChartView("storyPoints")}
         >
           Story Points
-        </button>
+        </button>*/}
         <button
           className={`ml-2 px-4 py-2 rounded ${
             chartView === "tasks"
@@ -103,7 +181,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
         <YAxis />
         <Tooltip content={<CustomTooltip />} />
         <Legend />
-        <Line
+        {/*<Line
           type="monotone"
           dataKey={
             chartView === "storyPoints"
@@ -111,7 +189,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
               : "completedTasks"
           }
           stroke="#ff7300"
-        />
+        />*/}
         <Line
           type="monotone"
           dataKey={

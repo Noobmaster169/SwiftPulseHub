@@ -1,5 +1,5 @@
 import { updateTask } from "@/utils/database";
-import { TaskData, UserData } from "@/utils/interface";
+import { TaskEditHistoryEntry, TaskData, UserData } from "@/utils/interface";
 import { useState, useEffect } from "react";
 import { fetchUsers } from "@/utils/users";
 
@@ -42,11 +42,42 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   }, [])
 
   const handleSave = async () => {
-    console.log("Saving Tasks");
-    console.log(updatedTask);
-    await updateTask(updatedTask);
+    const historyEntries: TaskEditHistoryEntry[] = [];
+  
+    if (taskData.status !== updatedTask.status) {
+      historyEntries.push({
+        date: new Date().toISOString(),
+        modifiedBy: 'User Name', 
+        type: 'status',
+        details: `Status changed from ${taskData.status} to ${updatedTask.status}`,
+      });
+    }
+  
+    if (taskData.assignedTo !== updatedTask.assignedTo) {
+      historyEntries.push({
+        date: new Date().toISOString(),
+        modifiedBy: 'User Name', 
+        type: 'reassignment',
+        details: `Assigned to changed from ${taskData.assignedTo} to ${updatedTask.assignedTo}`,
+      });
+    }
+  
+    if (taskData.description !== updatedTask.description) {
+      historyEntries.push({
+        date: new Date().toISOString(),
+        modifiedBy: 'User Name', 
+        type: 'description',
+        details: `Description updated from "${taskData.description}" to "${updatedTask.description}".`,
+      });
+    }
+  
+    const updatedTaskEditHistory = [...(updatedTask.taskEditHistory || []), ...historyEntries];
+    const taskToUpdate = { ...updatedTask, taskEditHistory: updatedTaskEditHistory };
+  
+    await updateTask(taskToUpdate);
     setEditOpen(false);
   };
+  
 
   const handleCancel = () => {
     setEditOpen(false);

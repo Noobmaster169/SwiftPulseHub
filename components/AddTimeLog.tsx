@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { TaskData } from "@/utils/interface";
 import { updateTask } from "@/utils/database";
+import { addDays, format, startOfWeek, endOfWeek } from 'date-fns';
+
+const newDate = addDays(new Date(), 5);
+const formattedDate = format(new Date(), 'yyyy-MM-dd');
+const startDate = startOfWeek(new Date()); 
+const endDate = endOfWeek(new Date());
 
 interface AddTimeLogProps {
   taskData: TaskData;
@@ -66,13 +72,30 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
     }
   };
 
+  //     if (!taskData.timeLog) {
+  //       taskData.timeLog = [];
+  //     }
+  //     const today = new Date();
+  //     taskData.timeLog.push({
+  //       timeLogged: parseFloat(timeLogged.toFixed(2)),
+  //       date: today,
+  //       member: member,
+  //       message: message,
+  //     });
+  //     await updateTask(taskData);
+  //     setIsOpen(false);
+  //   } else {
+  //     alert("Please enter valid time and member.");
+  //   }
+  // };
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Add Time Log</h2>
       <div className="mb-4">
         <label htmlFor="member" className="block mb-1">
           Member
-        </label>
+          </label>
         <input
           type="text"
           id="member"
@@ -133,14 +156,14 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end">      
         <button
-          onClick={handleAddTimeLog}
-          className="bg-blue-500 text-white rounded px-4 py-2 mr-2"
-        >
-          Add
-        </button>
-        <button
+        onClick={handleAddTimeLog}
+        className="bg-blue-500 text-white rounded px-4 py-2"
+      >
+        Add
+      </button>
+      <button
           onClick={() => setIsOpen(false)}
           className="border border-gray-300 rounded px-4 py-2"
         >
@@ -152,3 +175,4 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
 };
 
 export default AddTimeLog;
+

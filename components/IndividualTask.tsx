@@ -11,6 +11,7 @@ import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import AddTimeLog from "@/components/AddTimeLog";
 import PopUp from "@/components/PopUp";
 import MediumPopUp from "@/components/MediumPopUp";
+import {useUser} from '@/context/UserContext';
 
 interface IndividualTaskInfoProps {
   taskData: TaskData;
@@ -33,6 +34,7 @@ const IndividualTaskInfo = ({
     setEditOpen(true);
     setTaskOpen(false);
   };
+  const {currentUser} = useUser();
 
   return (
     <div className="w-full">
@@ -128,9 +130,9 @@ const IndividualTaskInfo = ({
               </p>
             </div>
           </div>
-          <button onClick={()=>{setTimeLogOpen(true)}} className="bg-gray-200 text-black px-4 py-2 mt-10 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
+          {currentUser.name === taskData.assignedTo ? <button onClick={()=>{setTimeLogOpen(true)}} className="bg-gray-200 text-black px-4 py-2 mt-10 rounded-md hover:bg-gray-300 hover:ring hover:ring-gray-400">
             Add Time Log
-          </button>
+          </button>: ""}
           <div className="my-6 py-2 px-4 bg-purple-100 rounded-lg">
             <div className="text-lg font-semibold py-2">Time Logs</div>
             {taskData.timeLog ?

@@ -63,6 +63,7 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   useEffect(()=>{
     if(currentUser){
+      if(currentUser.name === "admin"){return}
       setLoggedIn(true);
     }
   })

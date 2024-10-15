@@ -8,6 +8,7 @@ import PopUp from "@/components/PopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
+import TaskEditHistory from "@/components/TaskEditHistory"; 
 import { updateTask, addTask, deleteTask, fetchTask } from '@/utils/database';
 import React from 'react';
 
@@ -24,12 +25,13 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [historyOpen, setHistoryOpen] = useState<boolean>(false); 
   const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
   const [prioritySort, setPrioritySort] = useState<string | null>(null);
   const [dateSort, setDateSort] = useState<string | null>(null);
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Manage active dropdown
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     if (database.length == 0) {
@@ -44,7 +46,6 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
       setDatabase(modified_data);
       setIsLoading(false);
 
-      // Extract unique tags from tasks
       const tags = new Set<string>();
       modified_data.forEach(task => {
         task.tags?.forEach(tag => tags.add(tag));
@@ -52,7 +53,7 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
       setAvailableTags(Array.from(tags));
     };
     getDatabase();
-  }, [createOpen, isOpen, editOpen]);
+  }, [createOpen, isOpen, editOpen, historyOpen]);
 
   const openTask = (task: TaskData) => {
     if (isInvisible) return;
@@ -62,6 +63,11 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
 
   const editTask = () => {
     setEditOpen(true);
+    setTaskOpen(false);
+  };
+
+  const openTaskEditHistory = () => {
+    setHistoryOpen(true);
     setTaskOpen(false);
   };
 
@@ -95,30 +101,27 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
 
   const handlePrioritySort = (sortOption: string) => {
     setPrioritySort(sortOption);
-    setDateSort(null); // Reset date sort when priority sort is selected
-    setActiveDropdown(null); // Close the dropdown
+    setDateSort(null); 
+    setActiveDropdown(null); 
   };
 
   const handleDateSort = (sortOption: string) => {
     setDateSort(sortOption);
-    setPrioritySort(null); // Reset priority sort when date sort is selected
-    setActiveDropdown(null); // Close the dropdown
+    setPrioritySort(null); 
+    setActiveDropdown(null); 
   };
 
   const toggleDropdown = (dropdownName: string) => {
-    // If the dropdown is already open, close it; otherwise, open the selected one
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
 
   return (
     <>
       <div className="flex min-h-screen flex-col items-start justify-start p-8 relative">
-        {/*  "PRODUCT BACKLOG" title */}
         <div className="absolute top-15 left-18 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md">
           PRODUCT BACKLOG
         </div>
 
-        {/* Filter Options */}
         <div className="flex items-center justify-between w-full mt-20 mb-4">
           <div className="flex items-center space-x-6">
             <div className="relative">
@@ -212,7 +215,6 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
           </div>
         </div>
 
-        {/* Single-Column Table */}
         <div className="w-full flex items-center justify-center font-mono text-sm mt-4">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
@@ -225,11 +227,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                 <tr key={i} className="relative hover:bg-gray-100" onClick={() => { openTask(task) }}>
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
-                      {/* task Name and Assigned To which member */}
                       <div className="flex-1">
                         <div className="text-lg font-bold">{task.taskName}</div>
                         <div className="text-sm text-gray-600">Assigned to: {task.assignedTo ? task.assignedTo : "NONE"}</div>
-                        {/* the tags */}
                         {task.tags && (
                           <div className="flex space-x-2 mt-2">
                             {task.tags.map((tag: string, index: number) => (
@@ -249,7 +249,6 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                           </div>
                         )}
                       </div>
-                      {/* adding task Progress and Mark */}
                       <div className="flex items-center space-x-2">
                         <span className="px-3 py-1 text-sm font-semibold rounded-md bg-red-100 text-gray-800">{task.storyPoint ? task.storyPoint : "1"}</span>
                         <span className={`px-3 py-1 text-sm font-semibold rounded-md ${
@@ -261,7 +260,13 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                         }`}>
                           {task.status}
                         </span>
-                        {/* Delete icon */}
+                        {/* Edit History Button */}
+                        {/*<button
+                          className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
+                          onClick={() => { setHistoryOpen(true); setCurrentTask(task); }}
+                        >
+                          Edit History
+                        </button>*/}
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
                         </button>
@@ -274,7 +279,6 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                           />
                         </MiniPopUp>
                       </div>
-                      {/* Triangle */}
                       <div className={`absolute top-0 right-0 w-0 h-0 border-t-[40px] border-l-[40px] ${
                         task.priority?.toLowerCase() === 'urgent'
                           ? 'border-t-red-500'
@@ -301,6 +305,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
         </PopUp>
         <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
           {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
+        </PopUp>
+        <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
+          {currentTask && <TaskEditHistory taskEditHistory={currentTask.taskEditHistory || []} />}
         </PopUp>
       </div>
     </>
