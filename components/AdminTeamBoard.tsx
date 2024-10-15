@@ -16,7 +16,6 @@ import { fetchTask} from '@/utils/database';
 import TeamInsights from "./TeamInsights";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
-import sha256 from 'crypto-js/sha256';
 
 const AdminTeamBoard = () => {
   const [users, setUsers] = useState<UserData[]>([])
