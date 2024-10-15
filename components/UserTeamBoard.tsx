@@ -1,10 +1,11 @@
 "use client";
 import { SetStateAction, useState, useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
-import MiniPopUp from "./MiniPopUp";
+import MediumPopUp from "./MediumPopUp";
 import ProceedDelete from "./ProceedDelete";
 import { TaskData, memberData, teamBoard } from "@/utils/interface";
 import PopUp from "@/components/PopUp";
+import MiniPopUp from "@/components/MiniPopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
@@ -25,6 +26,7 @@ const UserTeamBoard = () => {
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Manage active dropdown
   const [currentMember, setCurrentMember] = useState<memberData | null>(null);
@@ -97,7 +99,7 @@ const UserTeamBoard = () => {
           <div className="flex items-center space-x-6">
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
-              onClick={() => {}}
+              onClick={() => setChangePasswordOpen(true)}
             >
               Change password
             </button>
@@ -144,7 +146,34 @@ const UserTeamBoard = () => {
           member={currentMember}
         />
       </div>
+      <MediumPopUp isOpen={changePasswordOpen} setIsOpen={setChangePasswordOpen}>
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+          <form>
+            <div className="mb-4">
+              <label className="block text-gray-700">New Password:</label>
+              <input
+                type="password"
+                className="border p-2 rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Confirm Password:</label>
+              <input
+                type="password"
+                className="border p-2 rounded w-full"
+                required
+              />
+            </div>
+            <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2">
+              Submit
+            </button>
+          </form>
+        </div>
+      </MediumPopUp>
     </>
+    
   );
 };
 
