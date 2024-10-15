@@ -71,9 +71,13 @@ const AdminTeamBoard = () => {
     const tasks = await fetchTask();
     const users = await fetchUsers();
 
-    const usersData = users.map((user:UserData) => {return {...user, workingHours:[], assignedTasks:[]}});
+    const usersData = users.map((user:UserData) => {
+      // Make sure admin is not in the list of users
+      if(user.name !== "admin"){return {...user, workingHours:[], assignedTasks:[]}}
+      else{return}
+    });
     tasks.forEach((task:TaskData) =>{
-      const assignedUser = usersData.find((user:UserData) => user.name === task.assignedTo);
+      const assignedUser = usersData.find((user:UserData) => user? user.name === task.assignedTo : false);
       if(assignedUser){
         console.log("Found user with name:", assignedUser.name)
         assignedUser.assignedTasks.push(task._id);

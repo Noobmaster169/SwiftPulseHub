@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import MediumPopUp from "./MediumPopUp";
+import {fetchUsers} from '@/utils/users';
+import {UserData} from '@/utils/interface';
+import sha256 from 'crypto-js/sha256';
 
 type WelcomePageProps = {
     setAdminLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,6 +11,26 @@ type WelcomePageProps = {
 
 const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const adminLogin = async()=>{
+        setLoading(true);
+        const users = await fetchUsers();
+        const admin = users.find((user:UserData) => user? user.name === "admin" : false);
+        const encrypted = sha256(password).toString();
+        alert(encrypted)
+        alert(admin.hash)
+        if(encrypted !== admin.hash.toString()){
+            alert("Invalid Password");
+            setAdminLogin(true);
+            setLoading(false);
+        }else{
+            setLoading(false);
+            setAdminLogin(true);
+        }
+    }
 
     return (
         <div className="flex items-center justify-center text-black min-h-screen">
@@ -32,15 +55,28 @@ const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
                     <p className="text-lg font-bold mb-4">Admin Login</p>
                     <p>
                         Username: 
-                        <input type="text" className="ml-2 w-30 p-1 border rounded" placeholder="Enter username"/>
+                        <input
+                            type="text"
+                            className="ml-2 w-30 p-1 border rounded"
+                            placeholder="Enter username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
                     </p>
                     <p>
                         Password: 
-                        <input type="text" className="ml-2 p-1 border rounded" placeholder="Enter password"/>
+                        <input
+                            type="password"
+                            className="ml-2 p-1 border rounded"
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
                     </p>
                     <button 
                         className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
-                        onClick={() => {setAdminLogin(true)}}
+                        onClick={adminLogin}
+                        disabled={loading}
                     >Login</button>
                 </div>
             </MediumPopUp>
