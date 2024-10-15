@@ -44,18 +44,18 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
   return (
     <div className="p-3 w-full bg-blue-100 rounded-md mt-20">
       <h2 className="text-xl font-semibold mb-4">Edit Members</h2>
-      {members.map((member) => (
+      {members.map((member) => (member?
         <div key={member.name} className="flex justify-between items-center mb-2 p-2 bg-white rounded shadow">
           <span>{member.name}</span>
           <div className="flex items-center space-x-1">
-    <button onClick={() => handleDeleteClick(member)}>
-        <AiOutlineDelete size={20} className="text-red-500 hover:text-red-700" />
-    </button>
-    <button onClick={() => handleEditClick(member)}>
-        <AiOutlineEdit size={20} className="text-blue-500 hover:text-blue-700" />
-    </button>
-    </div>
-        </div>
+          <button onClick={() => handleDeleteClick(member)}>
+              <AiOutlineDelete size={20} className="text-red-500 hover:text-red-700" />
+          </button>
+          <button onClick={() => handleEditClick(member)}>
+              <AiOutlineEdit size={20} className="text-blue-500 hover:text-blue-700" />
+          </button>
+          </div>
+        </div>: ""
       ))}
       <button
         className="mt-4 px-4 py-2 bg-gray-300 text-gray-700 rounded"

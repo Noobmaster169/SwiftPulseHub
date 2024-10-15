@@ -70,6 +70,9 @@ const TeamInsights: React.FC<TeamInsightsProps> = ({ members }) => {
         </thead>
         <tbody>
           {members.map((member, i) => {
+            if(!member){
+              return "";
+            }
             const { totalHours, averageHoursPerDay } =
               calculateInsights(member);
             return (

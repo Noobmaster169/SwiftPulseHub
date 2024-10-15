@@ -3,15 +3,20 @@ import { SetStateAction, useState, useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import MediumPopUp from "./MediumPopUp";
 import ProceedDelete from "./ProceedDelete";
-import { TaskData, memberData, teamBoard } from "@/utils/interface";
+import { TaskData, memberData, teamBoard, Log, UserData } from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import MiniPopUp from "@/components/MiniPopUp";
 import IndividualTaskInfo from "@/components/IndividualTask";
 import AddTaskPage from "@/components/AddTask";
 import EditTask from "@/components/EditTask";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
+import {updateUser} from '@/utils/users';
 import React from "react";
 import MemberEffort from "./MemberEffort";
+import { useUser } from '@/context/UserContext';
+import UserLogin from '@/components/UserLogin';
+import { set } from "date-fns";
+import sha256 from 'crypto-js/sha256';
 
 type UserTeamBoardProps = {
   memberOpen: boolean;
@@ -31,6 +36,79 @@ const UserTeamBoard = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Manage active dropdown
   const [currentMember, setCurrentMember] = useState<memberData | null>(null);
   const [memberEffortOpen, setMemberEffortOpen] = useState(false);
+
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const changePassword = async()=>{
+    setIsChangingPassword(true);
+    if(password !== confirmPassword){
+      alert("Passwords do not match");
+    }else{
+      const encrypted = sha256(password).toString();
+      const newUser: UserData = {
+        _id : currentUser._id,
+        name: currentUser.name,
+        email: currentUser.email,
+        hash: encrypted,
+      }
+      await updateUser(newUser);
+    }
+    setIsChangingPassword(false);
+    setChangePasswordOpen(false);
+  }
+  
+  const {currentUser} = useUser();
+  const [userInformation, setUserInformation] = useState<any>(null);  
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  useEffect(()=>{
+    if(currentUser){
+      setLoggedIn(true);
+    }
+  })
+
+  const getData= async ()=>{
+    if(currentUser){
+      setIsLoading(true);
+      console.log("Fetching Users")
+      const tasks = await fetchTask();
+
+      currentUser.workingHours = [];
+      currentUser.assignedTasks = [];
+    
+      tasks.forEach((task:TaskData) =>{
+        if(currentUser.name === task.assignedTo){
+          currentUser.assignedTasks.push(task._id);
+          task.timeLog?.forEach((log:Log)=>{
+            const logDate = log.date? new Date(log.date) : new Date();
+            currentUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
+          })
+        }
+      });
+      const today = new Date();
+      const firstDay = new Date();
+      let totalHours = 0
+      currentUser.workingHours.forEach((log:any)=>{
+        const logDate = new Date(log.date);
+        totalHours += log.hours;
+        if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
+      })
+      const diffInMs = today.getTime() - firstDay.getTime();
+      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+      console.log("Difference in days:", diffInDays);
+      currentUser.HoursPerDay = totalHours / diffInDays;
+      
+      console.log(currentUser);
+      setUserInformation(currentUser);
+      setIsLoading(false);
+    }
+  }
+
+  const [memberUpdated, setMemberUpdated] = useState(false);
+  useEffect(() =>{
+    getData();
+  }, [memberUpdated, loggedIn])
+
 
   const openGraph = (member: memberData) => {
     if (isInvisible) return;
@@ -88,7 +166,7 @@ const UserTeamBoard = () => {
 
   return (
     <>
-      <div className="z-50 flex min-h-screen flex-col items-start justify-start p-8 relative">
+      {loggedIn? <div className="z-50 flex min-h-screen flex-col items-start justify-start p-8 relative">
         {/*  "PRODUCT BACKLOG" title */}
         <div className="absolute top-15 left-18 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md">
           Team Board
@@ -111,34 +189,34 @@ const UserTeamBoard = () => {
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
               <tr>
-                {/* <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Members..." : "Members"}</th> */}
+                <th className="py-4 px-4 pl-8 border-b border-gray-500 text-lg text-left">{isLoading ? "Loading Members..." : "Members"}</th>
               </tr>
             </thead>
             <tbody>
-              {mokcupData.map((member, i: number) => (
-                <tr key={i} className="relative hover:bg-gray-100">
+              {userInformation? (
+                <tr className="relative hover:bg-gray-100 hover:bg-opacity-50">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       {/* task Name and Assigned To which member */}
-                      <div className="text-lg font-bold">{member.name}</div>
+                      <div className="text-lg font-bold">{userInformation.name}</div>
                       {/* adding task Progress and Mark */}
-                      <div className="text-md font-bold">
-                        {member.HoursPerDay} Hours per day
+                      <div className="text-lg font-bold">
+                        {userInformation.HoursPerDay} Hours per day
                       </div>
                       <button
                         className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
-                        onClick={() => openMemberEffort(member)}
+                        onClick={() => openMemberEffort(userInformation)}
                       >
                         Effort
                       </button>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ): ""}
             </tbody>
           </table>
         </div>
-      </div>
+      </div>: ""}
       <div className="z-50">
         <MemberEffort
           isOpen={memberEffortOpen}
@@ -155,6 +233,9 @@ const UserTeamBoard = () => {
               <input
                 type="password"
                 className="border p-2 rounded w-full"
+                placeholder=""
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
@@ -163,14 +244,20 @@ const UserTeamBoard = () => {
               <input
                 type="password"
                 className="border p-2 rounded w-full"
+                placeholder=""
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
-            <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2">
+            <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2" disabled={isChangingPassword} onClick={changePassword}>
               Submit
             </button>
           </form>
         </div>
+      </MediumPopUp>
+      <MediumPopUp isOpen={!loggedIn} setIsOpen={()=>{}}>
+          <UserLogin />
       </MediumPopUp>
     </>
     

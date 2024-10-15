@@ -3,9 +3,9 @@ import { memberData } from '../utils/interface';
 import MediumPopUp from './MediumPopUp'; // Assuming you have a MediumPopUp component
 import PopUp from './PopUp';
 interface DeleteMemberConfirmProps {
-  member: memberData;
+  member: any;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  deleteMember: (member: memberData) => void;
+  deleteMember: (member: any) => void;
 
   };
 
@@ -21,9 +21,10 @@ const DeleteMemberConfirm: React.FC<DeleteMemberConfirmProps> = ({ member, setIs
 //       setIsOpen(false);
 //     }
 //   };
-const handleDelete = () => {
-    setReassignOpen(true);
-    setIsOpen(true);
+const handleDelete = async () => {
+    await deleteMember(member);  
+    //setReassignOpen(true);
+    setIsOpen(false);
   };
 
   return (
@@ -46,24 +47,24 @@ const handleDelete = () => {
       </div>
 
         <MediumPopUp isOpen={reassignOpen} setIsOpen={setReassignOpen}>
-        <div className="p-4">
+          <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">Attention</h2>
             <p>This team member is assigned with tasks.</p>
             <div className="flex justify-end space-x-2 mt-4">
             <button
-                className="bg-blue-500 text-white rounded px-4 py-2"
-                onClick={() => {
-                // Logic to reassign tasks
-                setReassignOpen(false);
-                setIsOpen(false);
-                // Navigate back to the sprint board
-                window.location.href = '/sprintBoard';
-                }}
+              className="bg-blue-500 text-white rounded px-4 py-2"
+              onClick={() => {
+              // Logic to reassign tasks
+              setReassignOpen(false);
+              setIsOpen(false);
+              // Navigate back to the sprint board
+              window.location.href = '/sprintBoard';
+              }}
             >
                 Reassign Task
             </button>
             </div>
-        </div>
+          </div>
         </MediumPopUp>
     </div>
   );

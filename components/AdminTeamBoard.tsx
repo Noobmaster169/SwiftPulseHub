@@ -11,7 +11,7 @@ import MediumPopUp from "./MediumPopUp";
 import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
-import { fetchUsers, addUser } from '@/utils/users';
+import { fetchUsers, addUser, deleteUser } from '@/utils/users';
 import { fetchTask} from '@/utils/database';
 import TeamInsights from "./TeamInsights";
 import Link from "next/link";
@@ -42,11 +42,21 @@ const AdminTeamBoard = () => {
     setMemberEffortOpen(true);
   };
 
-  const deleteMember = (memberToDelete: memberData) => {
-    setMembers(members.filter((member) => member.name !== memberToDelete.name));
+  const deleteMember = (memberToDelete: any) => {
+    alert("Deleting Member")
+    if(memberToDelete._id){
+      deleteUser(memberToDelete._id);
+    }else{
+      alert("Unknown Member")
+    }
+    setMemberUpdated(memberUpdated);
+    setEditMemberOpen(false);
+    memberAdded();
+    //setMembers(members.filter((member) => member.name !== memberToDelete.name));
   };
 
   const getData= async ()=>{
+    setIsLoading(true);
     console.log("Fetching Users")
     const tasks = await fetchTask();
     const users = await fetchUsers();
@@ -91,6 +101,7 @@ const AdminTeamBoard = () => {
     console.log(usersData);
     setUsers(users);
     setUsersData(usersData);
+    setIsLoading(false);
   }
 
   const [memberUpdated, setMemberUpdated] = useState(false);
@@ -204,23 +215,6 @@ const AdminTeamBoard = () => {
   });
 
   const addMember = async (name: string, email: string, password: string) => {
-    const newMember: memberData = {
-      name,
-      totalHours: 0,
-      HoursPerDay: 0,
-      workingHours: [],
-      email,
-      assignedTasks: [],
-    };
-    setMembers([...members, newMember]);
-    
-    const newUserData: UserData = {
-      name,
-      email,
-      hash: password, // Note: In a real application, you should hash the password before sending it to the server
-    };
-    await addUser(newUserData);
-    
     console.log(`Added member: ${name}, ${email}`);
     memberAdded();
   };
@@ -346,6 +340,11 @@ const AdminTeamBoard = () => {
         {/* Team members table */}
         <div className="w-full flex items-center justify-center font-mono text-sm">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
+          <thead>
+              <tr>
+                <th className="py-4 px-4 pl-8 border-b border-gray-500 text-lg text-left">{isLoading ? "Loading Members..." : "Members"}</th>
+              </tr>
+            </thead>
             <tbody>
               {/*sortedMembers.map((member, i: number) => (
                 <tr key={i} className="relative hover:bg-gray-100">
@@ -366,11 +365,11 @@ const AdminTeamBoard = () => {
                 </tr>
               ))*/}
               {usersData.map((member:any, i: number) => 
-                member ? <tr key={i} className="relative hover:bg-gray-100">
+                member ? <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       <div className="text-lg font-bold">{member.name}</div>
-                      <div className="text-md font-bold">
+                      <div className="text-lg font-bold">
                         {member.HoursPerDay} Hours per day
                       </div>
                       <button
@@ -403,14 +402,14 @@ const AdminTeamBoard = () => {
       </PopUp>
       <PopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
         <EditMember
-          members={members}
+          members={usersData}
           setIsOpen={setEditMemberOpen}
           deleteMember={deleteMember}
           updateMember={updateMember}
         />
       </PopUp>
       <PopUp isOpen={insightsOpen} setIsOpen={setInsightsOpen}>
-        <TeamInsights members={members} />
+        <TeamInsights members={usersData} />
       </PopUp>
     </div>
   );
