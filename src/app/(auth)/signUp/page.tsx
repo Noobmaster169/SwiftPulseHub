@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/signUpForm";
+//import { SignupForm } from "@/components/signUpForm";
 
 export default function SingUoRoute() {
   return (
@@ -11,7 +11,7 @@ export default function SingUoRoute() {
           backgroundPosition: 'center' 
       }}
     >
-      <div className="flex-1 flex flex-col items-center justify-between mt-36"><SignupForm /></div>
+      <div className="flex-1 flex flex-col items-center justify-between mt-36">{/*<SignupForm />*/}</div>
     </main>
   );
 }
