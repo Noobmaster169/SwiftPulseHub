@@ -34,7 +34,7 @@ export default function Dashboard() {
                 <NavBar/>
                 <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
                     <div className="w-full mt-12">
-                        {isAdminLogin ? <AdminTeamBoard /> : isUserLogin ? <UserTeamBoard /> : <WelcomePage setAdminLogin={setIsAdminLogin} setUserLogin={setIsUserLogin} />}
+                        {isAdminLogin ? <AdminTeamBoard /> : isUserLogin ? <UserTeamBoard setIsUserLogin={setIsUserLogin} /> : <WelcomePage setAdminLogin={setIsAdminLogin} setUserLogin={setIsUserLogin} />}
                     </div>
                 </div>
                 
