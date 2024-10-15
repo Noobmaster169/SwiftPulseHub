@@ -43,11 +43,6 @@ const HorizontalNavbar: React.FC<HorizontalNavbarProps> = ({ setThemeSelectorOpe
         <div className="flex items-center gap-6">
           <ul className="flex items-center gap-8">
             <li>
-              <a className="hover:text-gray-500" href="signIn">
-                Sign In
-              </a>
-            </li>
-            <li>
               <a className="hover:text-gray-500" href="#">
                 Notifications
               </a>

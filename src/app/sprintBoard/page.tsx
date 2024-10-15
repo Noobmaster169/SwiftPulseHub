@@ -6,9 +6,12 @@ import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
 import CreateSprint from "@/components/CreateSprint";
 import SprintBoard from "@/components/sprintBoard";
 import HorizontalNavBar from "@/components/HorizontalNavBar";
+import MediumPopUp from "@/components/MediumPopUp";
 import ThemeSelector from "@/components/ThemeSelector";
 import { useTheme } from "@/components/ThemeContext";
 import NavBar from "@/components/NavigatorBar";
+import { useUser } from '@/context/UserContext';
+import UserLogin from '@/components/UserLogin';
 
 export default function sprintBoardHome() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +20,14 @@ export default function sprintBoardHome() {
   const [createOpen, setCreateOpen] = useState<boolean>(false);
   const { currentTheme, setCurrentTheme } = useTheme();
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState<boolean>(false);
+
+  const {currentUser} = useUser();
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  useEffect(()=>{
+    if(currentUser){
+      setLoggedIn(true);
+    }
+  })
 
   const bounty = {
     title: "Bounty Title",
@@ -57,12 +68,12 @@ export default function sprintBoardHome() {
         <NavBar/>
         <div className="flex-1 flex flex-col items-center justify-between p-4 ml-64">
           <div className="w-full mt-12">
-            <SprintBoard
+            {loggedIn? <SprintBoard
               sprintOpen={taskOpen}
               setSprintOpen={setTaskOpen}
               createOpen={createOpen}
               setCreateOpen={setCreateOpen}
-            />
+            /> : ""}
             {/* Add BacklogCard component here */}
           </div>
         </div>
@@ -79,6 +90,9 @@ export default function sprintBoardHome() {
           />
         )}
       </main>
+      <MediumPopUp isOpen={!loggedIn} setIsOpen={()=>{}}>
+          <UserLogin />
+      </MediumPopUp>
     </>
   );
 }

@@ -106,7 +106,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
 
   return (
     <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="p-2">
+      <div className="p-2 w-full">
         <h2 className="text-xl font-bold mb-2">{member.name}'s Effort</h2>
         <div className="flex justify-between mb-2">
           <div className="space-x-2">

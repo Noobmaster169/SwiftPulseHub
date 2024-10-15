@@ -4,7 +4,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { FaSort, FaCaretDown } from "react-icons/fa";
 import MiniPopUp from "./MiniPopUp";
 import ProceedDelete from "./ProceedDelete";
-import { TaskData, memberData, UserData, teamBoard } from "@/utils/interface";
+import { TaskData, memberData, UserData, teamBoard, Log } from "@/utils/interface";
 import PopUp from "@/components/PopUp";
 import MemberEffort from "./MemberEffort";
 import MediumPopUp from "./MediumPopUp";
@@ -12,11 +12,13 @@ import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
 import { fetchUsers, addUser } from '@/utils/users';
+import { fetchTask} from '@/utils/database';
 import TeamInsights from "./TeamInsights";
 import Link from "next/link";
 
 const AdminTeamBoard = () => {
   const [users, setUsers] = useState<UserData[]>([])
+  const [usersData, setUsersData] = useState<any>([])
   const [isInvisible, SetIsInvisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +33,121 @@ const AdminTeamBoard = () => {
   const [deleteMemberOpen, setDeleteMemberOpen] = useState(false);
   const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const openGraph = (member: memberData) => {
+    setSelectedMember(member);
+    setMemberOpen(true);
+  };
+  const openMemberEffort = (member: memberData) => {
+    setSelectedMember(member);
+    setMemberEffortOpen(true);
+  };
+
+  const deleteMember = (memberToDelete: memberData) => {
+    setMembers(members.filter((member) => member.name !== memberToDelete.name));
+  };
+
+  const getData= async ()=>{
+    console.log("Fetching Users")
+    const tasks = await fetchTask();
+    const users = await fetchUsers();
+
+    const usersData = users.map((user:UserData) => {
+      // Make sure admin is not in the list of users
+      if(user.name !== "admin"){return {...user, workingHours:[], assignedTasks:[]}}
+      else{return}
+    });
+    tasks.forEach((task:TaskData) =>{
+      const assignedUser = usersData.find((user:UserData) => user? user.name === task.assignedTo : false);
+      if(assignedUser){
+        console.log("Found user with name:", assignedUser.name)
+        assignedUser.assignedTasks.push(task._id);
+        task.timeLog?.forEach((log:Log)=>{
+          console.log("Log:", log);
+          const logDate = log.date? new Date(log.date) : new Date();
+          assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
+        })
+      }
+      else{console.log("Didn't find user with the name:", task.assignedTo)};
+    })
+    usersData.forEach((user:any) => {
+      if(user){
+        const today = new Date();
+        const firstDay = new Date();
+        let totalHours = 0
+        user.workingHours.forEach((log:any)=>{
+          const logDate = new Date(log.date);
+          totalHours += log.hours;
+          // console.log("FOUND LOG AT:", logDate.toString());
+          if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
+        })
+        const diffInMs = today.getTime() - firstDay.getTime();
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+        // console.log(user.name, "started at:", firstDay.toString())
+        // console.log("Today is:", today.toString());
+        console.log("Difference in days:", diffInDays);
+        user.HoursPerDay = totalHours / diffInDays;
+      }
+    })
+    console.log(usersData);
+    setUsers(users);
+    setUsersData(usersData);
+  }
+
+  const [memberUpdated, setMemberUpdated] = useState(false);
+  useEffect(() =>{
+    getData();
+  }, [memberUpdated])
+
+  //   const editTask = () => {
+  //     setEditOpen(true);
+  //     setTaskOpen(false);
+  //   };
+
+  //   const runDeleteTask = async (taskToDelete: TaskData) => {
+  //     const taskData: any = taskToDelete;
+  //     try {
+  //       await deleteTask(taskData._id);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+
+  const memberAdded = ()=>{
+    setMemberUpdated(!memberUpdated);
+  }
+  const updateMember = (updatedMember: memberData) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.name === updatedMember.name ? updatedMember : member
+      )
+    );
+  };
+
+
+  const assignTaskToMember = (memberName: string, task: string, action: 'add' | 'remove') => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) => {
+        if (member.name === memberName) {
+          const updatedTasks = action === 'add'
+            ? [...(member.assignedTasks || []), task]
+            : (member.assignedTasks || []).filter((t) => t !== task);
+          return { ...member, assignedTasks: updatedTasks };
+        }
+        return member;
+      })
+    );
+  };
+  // const hasAssignedTasks = (member: memberData): boolean => {
+  //   return Array.isArray(member.assignedTasks) && member.assignedTasks.length > 0;
+  // };
+
+  // const handleAssignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'add');
+  // };
+  // const handleUnassignTask = (memberName: string, task: string) => {
+  //   assignTaskToMember(memberName, task, 'remove');
+  // };
+
   const [sortCriteria, setSortCriteria] = useState<'name' | 'hours'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [openDropdown, setOpenDropdown] = useState<'name' | 'hours' | null>(null);
@@ -85,40 +202,6 @@ const AdminTeamBoard = () => {
     endDate: new Date("2024-10-16"),
     memberList: members,
   });
-
-  const [memberUpdated, setMemberUpdated] = useState(false);
-
-  useEffect(() => {
-    getData();
-  }, [memberUpdated])
-
-  const getData = async () => {
-    console.log("Fetching Users")
-    const users = await fetchUsers();
-    console.log(users);
-    setUsers(users);
-  }
-
-  const openMemberEffort = (member: memberData) => {
-    setSelectedMember(member);
-    setMemberEffortOpen(true);
-  };
-
-  const deleteMember = (memberToDelete: memberData) => {
-    setMembers(members.filter((member) => member.name !== memberToDelete.name));
-  };
-
-  const memberAdded = () => {
-    setMemberUpdated(!memberUpdated);
-  }
-
-  const updateMember = (updatedMember: memberData) => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) =>
-        member.name === updatedMember.name ? updatedMember : member
-      )
-    );
-  };
 
   const addMember = async (name: string, email: string, password: string) => {
     const newMember: memberData = {
@@ -264,7 +347,7 @@ const AdminTeamBoard = () => {
         <div className="w-full flex items-center justify-center font-mono text-sm">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <tbody>
-              {sortedMembers.map((member, i: number) => (
+              {/*sortedMembers.map((member, i: number) => (
                 <tr key={i} className="relative hover:bg-gray-100">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
@@ -281,7 +364,25 @@ const AdminTeamBoard = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))*/}
+              {usersData.map((member:any, i: number) => 
+                member ? <tr key={i} className="relative hover:bg-gray-100">
+                  <td className="relative py-8 px-8 border-b border-gray-500 text-left">
+                    <div className="flex items-center justify-between">
+                      <div className="text-lg font-bold">{member.name}</div>
+                      <div className="text-md font-bold">
+                        {member.HoursPerDay} Hours per day
+                      </div>
+                      <button
+                        className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
+                        onClick={() => openMemberEffort(member)}
+                      >
+                        Effort
+                      </button>
+                    </div>
+                  </td>
+                </tr> : ""
+              )}
             </tbody>
           </table>
         </div>

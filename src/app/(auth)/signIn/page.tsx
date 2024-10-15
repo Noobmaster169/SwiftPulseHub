@@ -1,4 +1,4 @@
-import { SigninForm } from "@/components/signInForm";
+//import { SigninForm } from "@/components/signInForm";
 
 export default function SingInRoute() {
   return (  
@@ -11,7 +11,7 @@ export default function SingInRoute() {
           backgroundPosition: 'center' 
       }}
     >
-      <div className="flex-1 flex flex-col items-center justify-between mt-48"><SigninForm /></div>
+      <div className="flex-1 flex flex-col items-center justify-between mt-48">{/*<SigninForm />*/}</div>
     </main>
     
   );
