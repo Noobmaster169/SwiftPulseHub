@@ -45,7 +45,7 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
   };
 
   return (
-    <div className="p-3 pt-6 w-full bg-blue-100 rounded-md mt-20">
+    <div className="p-3 pt-6 w-full bg-blue-100 rounded-md mt-10">
       <h2 className="text-xl font-semibold mb-4">Edit Members</h2>
       {members.map((member) => (member?
         <div key={member.name} className="flex justify-between items-center mb-2 p-2 bg-white rounded shadow">

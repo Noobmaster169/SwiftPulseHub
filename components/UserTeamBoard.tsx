@@ -17,6 +17,8 @@ import { useUser } from '@/context/UserContext';
 import UserLogin from '@/components/UserLogin';
 import { set } from "date-fns";
 import sha256 from 'crypto-js/sha256';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type UserTeamBoardProps = {
   memberOpen: boolean;
@@ -36,6 +38,9 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Manage active dropdown
   const [currentMember, setCurrentMember] = useState<memberData | null>(null);
   const [memberEffortOpen, setMemberEffortOpen] = useState(false);
+
+  const [endDate, setEndDate] = useState<Date>(new Date(new Date().getTime() + 60 * 60 * 1000));
+  const [startDate, setStartDate] = useState<Date>(new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000));
 
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -86,24 +91,46 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
           })
         }
       });
-      const today = new Date();
-      const firstDay = new Date();
-      let totalHours = 0
-      currentUser.workingHours.forEach((log:any)=>{
-        const logDate = new Date(log.date);
-        totalHours += log.hours;
-        if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
-      })
-      const diffInMs = today.getTime() - firstDay.getTime();
-      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-      console.log("Difference in days:", diffInDays);
-      currentUser.HoursPerDay = totalHours / diffInDays;
+      currentUser.HoursPerDay = calculateAverageHours(currentUser, startDate, endDate);
+      // const today = new Date();
+      // const firstDay = new Date();
+      // let totalHours = 0
+      // currentUser.workingHours.forEach((log:any)=>{
+      //   const logDate = new Date(log.date);
+      //   totalHours += log.hours;
+      //   if(logDate < firstDay){firstDay.setTime(logDate.getTime())}
+      // })
+      // const diffInMs = today.getTime() - firstDay.getTime();
+      // const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+      // console.log("Difference in days:", diffInDays);
+      // currentUser.HoursPerDay = totalHours / diffInDays;
       
-      console.log(currentUser);
+      // console.log(currentUser);
       setUserInformation(currentUser);
       setIsLoading(false);
     }
   }
+  useEffect(() =>{
+    if(!isLoading){
+      const currentUser = userInformation;
+      currentUser.HoursPerDay = calculateAverageHours(currentUser, startDate, endDate);
+      setUserInformation(currentUser);
+    }
+  }, [startDate, endDate]);
+
+  const calculateAverageHours = (member: any, start: Date, end: Date) => {
+    const relevantHours = member.workingHours.filter((log: any) => {
+      const logDate = log.date ? new Date(log.date) : new Date();
+      const included = logDate >= start && logDate <= end;
+      //if(!included){console.log(member.name, 'log:', log, 'is not included')}
+      return included
+    });
+
+    const totalHours = relevantHours.reduce((sum: number, log: any) => sum + log.hours, 0);
+    const diffInDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    console.log(member.name, "worked for", totalHours, "hours in", diffInDays, "days");
+    return totalHours / diffInDays;
+  };
 
   const [memberUpdated, setMemberUpdated] = useState(false);
   useEffect(() =>{
@@ -122,48 +149,6 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
     setMemberEffortOpen(true);
   };
 
-  const mokcupData: memberData[] = [
-    {
-      name: "Member1",
-      totalHours: 3,
-      email: "member1@example.com",
-      workingHours: [
-        { date: "2024-10-01", hours: 1 },
-        { date: "2024-10-02", hours: 2 },
-        { date: "2024-10-03", hours: 3 },
-        { date: "2024-10-04", hours: 4 },
-        { date: "2024-10-05", hours: 5 },
-        { date: "2024-10-06", hours: 6 },
-        { date: "2024-10-07", hours: 7 },
-        { date: "2024-10-08", hours: 8 },
-        { date: "2024-10-09", hours: 9 },
-        { date: "2024-10-10", hours: 10 },
-        { date: "2024-10-11", hours: 11 },
-        { date: "2024-10-12", hours: 12 },
-      ],
-    },
-  ];
-
-    {/**mockup data for teamBoard */}
-    const [teamBoard, setTeamBoard] = useState<teamBoard>(
-      {
-        startDate: new Date("2024-10-01"),
-        endDate: new Date("2024-10-16"),
-        memberList: mokcupData,
-      }
-    )
-  
-    {/**calculate total working Hours and average working Hours per day*/}
-    mokcupData.map( m => {
-      const today = new Date ("2024-10-12")
-      const minute = 1000 * 60;
-      const hour = minute * 60;
-      const day = hour * 24;
-  
-      const diffInDays = (today.getTime() - teamBoard.startDate.getTime())/day
-      m.totalHours = m.workingHours?.reduce((sum,v) => (sum + v.hours), 0) 
-      m.HoursPerDay = m.totalHours? parseFloat((m.totalHours / diffInDays).toFixed(1)) : 0
-    })
 
   return (
     <>
@@ -184,6 +169,31 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
             </button>
           </div>
         </div>
+        <div className="flex justify-between items-center mb-4 z-20 relative">
+            <div>
+            <div className="text-white my-2 font-semibold text-lg">Select Date Range:</div>
+            <div className="mb-4 flex space-x-4">
+              <DatePicker
+                selected={startDate}
+                onChange={(date: Date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date: Date) => {
+                  setEndDate(date);
+                  //setStartDate(new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000));
+                }}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+              />
+            </div>
+            </div>
+            </div>
 
         {/* Single-Column Table */}
         <div className="w-full flex items-center justify-center font-mono text-sm mt-4">
@@ -202,7 +212,7 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
                       <div className="text-lg font-bold">{userInformation.name}</div>
                       {/* adding task Progress and Mark */}
                       <div className="text-lg font-bold">
-                        {userInformation.HoursPerDay} Hours per day
+                        {userInformation.HoursPerDay.toFixed(2)} Hours per day
                       </div>
                       <button
                         className="px-3 py-1 text-sm font-semibold rounded-md bg-black text-white hover:ring"
@@ -217,7 +227,7 @@ const UserTeamBoard = ({setIsUserLogin}:any) => {
             </tbody>
           </table>
         </div>
-      </div>: ""}
+        </div>: ""}
       <div className="z-50">
         <MemberEffort
           isOpen={memberEffortOpen}

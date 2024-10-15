@@ -28,7 +28,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   setIsOpen,
   member,
 }) => {
-  const [endDate, setEndDate] = useState<Date>(startOfDay(new Date()));
+  const [endDate, setEndDate] = useState<Date>(startOfDay(new Date(new Date().getTime() + 23 *60 * 60 * 1000)));
   const [startDate, setStartDate] = useState<Date>(subDays(endDate, 6));
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
@@ -65,9 +65,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
     if (value instanceof Date) {
       const newStartDate = startOfDay(value);
       setStartDate(newStartDate);
-      if (isBefore(endDate, newStartDate) || differenceInDays(endDate, newStartDate) > 6) {
-        setEndDate(addDays(newStartDate, 6));
-      }
+      setEndDate(addDays(newStartDate, 6));
       setShowStartCalendar(false);
     }
   };
@@ -140,7 +138,6 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
           <Calendar
             value={startDate}
             onChange={handleStartDateChange}
-            tileDisabled={tileDisabled}
           />
         )}
 

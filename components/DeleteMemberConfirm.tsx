@@ -87,7 +87,7 @@ const DeleteMemberConfirm: React.FC<DeleteMemberConfirmProps> = ({ member, setIs
         <PopUp isOpen={reassignOpen} setIsOpen={setReassignOpen}>
           <div className="flex flex-col items-center p-4 w-full">
             <h2 className="text-2xl text-center font-bold mb-2">Attention!</h2>
-            <p className="text-center font-semibold mb-4">Unassign these tasks from the member before removing it!</p>
+            <p className="text-center font-semibold mb-4">Unassign these tasks from {member.name} before removing it!</p>
             <div className="flex flex-col justify-center items-center bg-yellow-100 p-4 rounded-md w-3/4">
               {assignedTasks.map((task: TaskData, i: number) => <>
                 <div key={i} className="text-center w-full my-1 p-2 bg-white rounded shadow" onClick={()=>{setCurrentTask(task); setTaskOpen(true)}}>
