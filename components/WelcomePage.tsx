@@ -22,8 +22,7 @@ const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
         const encrypted = sha256(password).toString();
         if(username !== "admin"){
             alert("Invalid Username");
-        }
-        if(encrypted !== admin.hash.toString()){
+        }else if(encrypted !== admin.hash.toString()){
             alert("Invalid Password");
         }else{
             setAdminLogin(true);

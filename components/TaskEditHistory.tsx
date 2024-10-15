@@ -36,7 +36,7 @@ const TaskEditHistory: React.FC<TaskEditHistoryProps> = ({ taskEditHistory }) =>
       });
   
     return (
-      <div className="edit-history">
+      <div className="edit-history w-full">
         <h2 className="text-xl font-bold mb-2">Edit History</h2>
   
         <div className="filter-options mb-4">
@@ -47,7 +47,8 @@ const TaskEditHistory: React.FC<TaskEditHistoryProps> = ({ taskEditHistory }) =>
             <option value="reassignment">Reassignment</option>
             <option value="description">Description Edit</option>
           </select>
-  
+        </div>
+        <div className="filter-options mb-4">
           <label className="mr-2">Start Date:</label>
           <input type="date" onChange={handleStartDateChange} className="mr-4" />
   
@@ -58,10 +59,10 @@ const TaskEditHistory: React.FC<TaskEditHistoryProps> = ({ taskEditHistory }) =>
         {filteredHistoryEntries.length > 0 ? (
           <ul>
             {filteredHistoryEntries.map((entry, index) => (
-              <li key={index} className="mb-2 border-b pb-2">
+              <li key={index} className="p-4 bg-yellow-100 mb-2 rounded-md pb-2">
+                <p><strong>Type:</strong> {entry.type}</p>
                 <p><strong>Date:</strong> {new Date(entry.date).toLocaleString()}</p>
                 <p><strong>Modified by:</strong> {entry.modifiedBy}</p>
-                <p><strong>Change Type:</strong> {entry.type}</p>
                 <p><strong>Details:</strong> {entry.details}</p>
               </li>
             ))}

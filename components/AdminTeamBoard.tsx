@@ -44,7 +44,7 @@ const AdminTeamBoard = () => {
   const [openDropdown, setOpenDropdown] = useState<'name' | 'hours' | null>(null);
 
   // Updated state for date range feature
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date(new Date().getTime() + 60 * 60 * 1000));
   const [startDate, setStartDate] = useState<Date>(new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000));
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -91,16 +91,31 @@ const AdminTeamBoard = () => {
     };
 
     getData();
-  }, [memberUpdated, startDate, endDate]);
+  }, [memberUpdated]);
+
+  useEffect(() =>{
+    if(!isLoading){
+      const updatedUsersData = [...usersData];
+      updatedUsersData.forEach((user: any) => {
+        if (user) {
+          user.HoursPerDay = calculateAverageHours(user, startDate, endDate);
+        }
+      });
+      setUsersData(updatedUsersData);
+    }
+  }, [startDate, endDate]);
 
   const calculateAverageHours = (member: any, start: Date, end: Date) => {
     const relevantHours = member.workingHours.filter((log: any) => {
-      const logDate = new Date(log.date);
-      return logDate >= start && logDate <= end;
+      const logDate = log.date ? new Date(log.date) : new Date();
+      const included = logDate >= start && logDate <= end;
+      //if(!included){console.log(member.name, 'log:', log, 'is not included')}
+      return included
     });
 
     const totalHours = relevantHours.reduce((sum: number, log: any) => sum + log.hours, 0);
     const diffInDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    console.log(member.name, "worked for", totalHours, "hours in", diffInDays, "days");
     return totalHours / diffInDays;
   };
 
@@ -156,7 +171,7 @@ const AdminTeamBoard = () => {
 
   return (
     <div className="relative min-h-screen p-8">
-      <div className="absolute top-4 left-4 p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md z-10">
+      <div className="absolute p-4 bg-blue-100 text-blue-800 font-bold text-lg rounded-md shadow-md z-10">
         Team Board
       </div>
 
@@ -181,14 +196,39 @@ const AdminTeamBoard = () => {
             >
               Insights
             </button>
-            <button
+            {/*<button
               className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow-md hover:bg-gray-300"
               onClick={() => setShowDatePicker(!showDatePicker)}
             >
               Set Date Range
-            </button>
+            </button>*/}
           </div>
-          <div className="flex space-x-2">
+        </div>
+        <div className="flex justify-between items-center mb-4 z-20 relative">
+            <div>
+            <div className="text-white my-2 font-semibold text-lg">Select Date Range:</div>
+            <div className="mb-4 flex space-x-4">
+              <DatePicker
+                selected={startDate}
+                onChange={(date: Date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date: Date) => {
+                  setEndDate(date);
+                  //setStartDate(new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000));
+                }}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+              />
+            </div>
+            </div>
+            <div className="flex space-x-2">
             <div className="relative">
               <button
                 onClick={() => toggleDropdown('name')}
@@ -243,30 +283,6 @@ const AdminTeamBoard = () => {
             </div>
           </div>
         </div>
-
-        {showDatePicker && (
-          <div className="mb-4 flex space-x-4">
-            <DatePicker
-              selected={startDate}
-              onChange={(date: Date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date: Date) => {
-                setEndDate(date);
-                setStartDate(new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000));
-              }}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
-            />
-          </div>
-        )}
-
         <div className="w-full flex items-center justify-center font-mono text-sm">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <thead>
