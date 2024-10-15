@@ -12,6 +12,8 @@ export interface TaskData {
     timeLog?    : Log[];
     isDeleted?  : boolean;
     completedAt?: string;
+    createdAt?  : string;
+    taskEditHistory?: TaskEditHistoryEntry[];
 }
 
 export interface SprintData {
@@ -51,3 +53,10 @@ export interface teamBoard {
     endDate: Date;
     memberList: memberData[];
 }
+
+export interface TaskEditHistoryEntry {
+    date: string; 
+    modifiedBy: string; 
+    type: 'status' | 'reassignment' | 'description'; 
+    details: string; 
+  }
