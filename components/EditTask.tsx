@@ -27,25 +27,25 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   const [showTagDropdown, setShowTagDropdown] = useState(false);
   const {currentUser} = useUser();
 
-  const getUsersData = async ()=>{
+  const getUsersData = async () => {
     const users = await fetchUsers();
-    const names:string[] = [];
-    users.forEach((user:UserData)=>{
-      if(user){
-        if(user.name && user.name !== "admin"){
+    const names: string[] = [];
+    users.forEach((user: UserData) => {
+      if (user) {
+        if (user.name && user.name !== "admin") {
           names.push(user.name);
         }
-      } 
+      }
     });
     setMembers(names);
-  }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     getUsersData();
-  }, [])
+  }, []);
 
   const handleSave = async () => {
     const historyEntries: TaskEditHistoryEntry[] = [];
-  
+
     if (taskData.status !== updatedTask.status) {
       historyEntries.push({
         date: new Date().toISOString(),
@@ -54,7 +54,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         details: `Status changed from ${taskData.status} to ${updatedTask.status}`,
       });
     }
-  
+
     if (taskData.assignedTo !== updatedTask.assignedTo) {
       historyEntries.push({
         date: new Date().toISOString(),
@@ -63,7 +63,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         details: `Assigned to changed from ${taskData.assignedTo} to ${updatedTask.assignedTo}`,
       });
     }
-  
+
     if (taskData.description !== updatedTask.description) {
       historyEntries.push({
         date: new Date().toISOString(),
@@ -72,14 +72,19 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         details: `Description updated from "${taskData.description}" to "${updatedTask.description}".`,
       });
     }
-  
-    const updatedTaskEditHistory = [...(updatedTask.taskEditHistory || []), ...historyEntries];
-    const taskToUpdate = { ...updatedTask, taskEditHistory: updatedTaskEditHistory };
-  
+
+    const updatedTaskEditHistory = [
+      ...(updatedTask.taskEditHistory || []),
+      ...historyEntries,
+    ];
+    const taskToUpdate = {
+      ...updatedTask,
+      taskEditHistory: updatedTaskEditHistory,
+    };
+
     await updateTask(taskToUpdate);
     setEditOpen(false);
   };
-  
 
   const handleCancel = () => {
     setEditOpen(false);
@@ -166,11 +171,13 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
           Assigned To
         </label>
         <select
-            value={updatedTask.assignedTo}
-            onChange={(e) => handleChange("assignedTo", e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+          value={updatedTask.assignedTo}
+          onChange={(e) => handleChange("assignedTo", e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2"
         >
-          {members.map((member) => <option value={member}>{member}</option>)}
+          {members.map((member) => (
+            <option value={member}>{member}</option>
+          ))}
         </select>
         {/*<div className="member-input">
           <input
@@ -279,23 +286,31 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         <label htmlFor="tags" className="block mb-1">
           Tags
         </label>
-        <div className="tags-input">
-          <input
-            type="text"
-            id="tags"
-            value={tagInput}
-            onChange={handleTagInputChange}
-            onFocus={() => setShowTagDropdown(true)}
-            onBlur={() => setShowTagDropdown(false)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
+        <div className="relative">
+          <div className="tags-input flex items-center space-x-2">
+            <input
+              type="text"
+              value={tagInput}
+              onChange={handleTagInputChange}
+              onFocus={() => setShowTagDropdown(true)}
+              onBlur={() => setShowTagDropdown(false)}
+              className="flex-grow p-2 border rounded"
+            />
+            <button
+              type="button"
+              onClick={() => handleTagSelect(tagInput)}
+              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Add Tag
+            </button>
+          </div>
           {showTagDropdown && (
-            <ul className="tag-list">
+            <ul className="tag-list absolute left-0 w-full bg-white border border-gray-300 rounded mt-1 z-10">
               {filteredTags.map((tag) => (
                 <li
                   key={tag}
-                  onClick={() => handleTagSelect(tag)}
-                  className="tag-item"
+                  onMouseDown={() => handleTagSelect(tag)}
+                  className="tag-item p-2 hover:bg-gray-100 cursor-pointer"
                 >
                   {tag}
                 </li>
@@ -303,11 +318,14 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
             </ul>
           )}
         </div>
-        <div className="tags-list">
+        <div className="tags-list mt-2">
           {(updatedTask.tags ?? []).map((tag) => (
-            <span key={tag} className="tag">
+            <span
+              key={tag}
+              className="tag inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+            >
               {tag}{" "}
-              <button type="button" onClick={() => handleRemoveTag(tag)}>
+              <button type="button" onMouseDown={() => handleRemoveTag(tag)}>
                 &times;
               </button>
             </span>
