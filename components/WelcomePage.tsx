@@ -20,11 +20,8 @@ const WelcomePage = ({setAdminLogin, setUserLogin}: WelcomePageProps) => {
         const users = await fetchUsers();
         const admin = users.find((user:UserData) => user? user.name === "admin" : false);
         const encrypted = sha256(password).toString();
-        alert(encrypted)
-        alert(admin.hash)
         if(encrypted !== admin.hash.toString()){
             alert("Invalid Password");
-            setAdminLogin(true);
             setLoading(false);
         }else{
             setLoading(false);

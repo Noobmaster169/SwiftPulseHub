@@ -11,10 +11,12 @@ import MediumPopUp from "./MediumPopUp";
 import AddMemberForm from "./AddMemberForm";
 import { FaRegEdit } from "react-icons/fa";
 import EditMember from "./EditMember";
-import { fetchUsers, addUser, deleteUser } from '@/utils/users';
+import { fetchUsers, addUser, deleteUser, updateUser} from '@/utils/users';
 import { fetchTask} from '@/utils/database';
 import TeamInsights from "./TeamInsights";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
+import sha256 from 'crypto-js/sha256';
 
 const AdminTeamBoard = () => {
   const [users, setUsers] = useState<UserData[]>([])
@@ -33,6 +35,7 @@ const AdminTeamBoard = () => {
   const [deleteMemberOpen, setDeleteMemberOpen] = useState(false);
   const [deleteMemberConfirmationOpen, setDeleteMemberConfirmationOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const {setCurrentUser} = useUser();
   const openGraph = (member: memberData) => {
     setSelectedMember(member);
     setMemberOpen(true);
@@ -56,7 +59,6 @@ const AdminTeamBoard = () => {
   };
 
   const getData= async ()=>{
-    setIsLoading(true);
     console.log("Fetching Users")
     const tasks = await fetchTask();
     const users = await fetchUsers();
@@ -64,7 +66,9 @@ const AdminTeamBoard = () => {
     const usersData = users.map((user:UserData) => {
       // Make sure admin is not in the list of users
       if(user.name !== "admin"){return {...user, workingHours:[], assignedTasks:[]}}
-      else{return}
+      else{
+        setCurrentUser(user);
+        return}
     });
     tasks.forEach((task:TaskData) =>{
       const assignedUser = usersData.find((user:UserData) => user? user.name === task.assignedTo : false);
@@ -126,12 +130,9 @@ const AdminTeamBoard = () => {
   const memberAdded = ()=>{
     setMemberUpdated(!memberUpdated);
   }
-  const updateMember = (updatedMember: memberData) => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) =>
-        member.name === updatedMember.name ? updatedMember : member
-      )
-    );
+  const updateMember = async (updatedMember: any) => {
+    await updateUser(updatedMember);
+    memberAdded();
   };
 
 
@@ -148,16 +149,6 @@ const AdminTeamBoard = () => {
       })
     );
   };
-  // const hasAssignedTasks = (member: memberData): boolean => {
-  //   return Array.isArray(member.assignedTasks) && member.assignedTasks.length > 0;
-  // };
-
-  // const handleAssignTask = (memberName: string, task: string) => {
-  //   assignTaskToMember(memberName, task, 'add');
-  // };
-  // const handleUnassignTask = (memberName: string, task: string) => {
-  //   assignTaskToMember(memberName, task, 'remove');
-  // };
 
   const [sortCriteria, setSortCriteria] = useState<'name' | 'hours'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -229,7 +220,7 @@ const AdminTeamBoard = () => {
     setOpenDropdown(null);
   };
 
-  const sortedMembers = [...members].sort((a, b) => {
+  const sortedUsersData = [...usersData].sort((a, b) => {
     if (sortCriteria === 'name') {
       return sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
     } else {
@@ -364,7 +355,7 @@ const AdminTeamBoard = () => {
                   </td>
                 </tr>
               ))*/}
-              {usersData.map((member:any, i: number) => 
+              {sortedUsersData.map((member:any, i: number) => 
                 member ? <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">

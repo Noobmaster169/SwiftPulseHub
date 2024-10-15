@@ -38,6 +38,7 @@ const EditMember: React.FC<EditMemberProps> = ({ members, setIsOpen, deleteMembe
       const updatedMember = { ...memberToEdit, name: editedName, email: editedEmail};
       updateMember(updatedMember);
       setEditMemberOpen(false);
+      setIsOpen(false);
     }
   };
 

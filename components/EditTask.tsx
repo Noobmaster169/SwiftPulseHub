@@ -1,6 +1,7 @@
 import { updateTask } from "@/utils/database";
-import { TaskData } from "@/utils/interface";
-import { useState } from "react";
+import { TaskData, UserData } from "@/utils/interface";
+import { useState, useEffect } from "react";
+import { fetchUsers } from "@/utils/users";
 
 interface EditTaskProps {
   taskData: TaskData;
@@ -9,14 +10,7 @@ interface EditTaskProps {
 
 const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   const [updatedTask, setUpdatedTask] = useState<TaskData>(taskData);
-  const [members, setMembers] = useState<string[]>([
-    "Tadiwa Vambe",
-    "Mario Taning",
-    "Jia Qian Chow",
-    "Shanwu Zhang",
-    "Jonathan Sugondo",
-    "Vanessa Wong",
-  ]);
+  const [members, setMembers] = useState<string[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<string[]>(members);
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
   const [tagInput, setTagInput] = useState("");
@@ -30,6 +24,22 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   ]);
   const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
   const [showTagDropdown, setShowTagDropdown] = useState(false);
+
+  const getUsersData = async ()=>{
+    const users = await fetchUsers();
+    const names:string[] = [];
+    users.forEach((user:UserData)=>{
+      if(user){
+        if(user.name && user.name !== "admin"){
+          names.push(user.name);
+        }
+      } 
+    });
+    setMembers(names);
+  }
+  useEffect(()=>{
+    getUsersData();
+  }, [])
 
   const handleSave = async () => {
     console.log("Saving Tasks");
@@ -122,7 +132,14 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         <label htmlFor="assignedTo" className="block mb-1">
           Assigned To
         </label>
-        <div className="member-input">
+        <select
+            value={updatedTask.assignedTo}
+            onChange={(e) => handleChange("assignedTo", e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+        >
+          {members.map((member) => <option value={member}>{member}</option>)}
+        </select>
+        {/*<div className="member-input">
           <input
             type="text"
             id="assignedTo"
@@ -145,7 +162,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
               ))}
             </ul>
           )}
-        </div>
+        </div>*/}
       </div>
       <div className="mb-4">
         <label htmlFor="status" className="block mb-1">
