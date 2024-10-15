@@ -63,10 +63,8 @@ const AdminTeamBoard = () => {
         assignedUser.assignedTasks.push(task._id);
         task.timeLog?.forEach((log:Log)=>{
           console.log("Log:", log);
-          if(log.date){
-            const logDate = new Date(log.date);
-            assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
-          }
+          const logDate = log.date? new Date(log.date) : new Date();
+          assignedUser.workingHours.push({date: logDate.toString(), hours: log.timeLogged});
         })
       }
       else{console.log("Didn't find user with the name:", task.assignedTo)};
@@ -349,7 +347,7 @@ const AdminTeamBoard = () => {
         <div className="w-full flex items-center justify-center font-mono text-sm">
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500">
             <tbody>
-              {sortedMembers.map((member, i: number) => (
+              {/*sortedMembers.map((member, i: number) => (
                 <tr key={i} className="relative hover:bg-gray-100">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
@@ -366,7 +364,7 @@ const AdminTeamBoard = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))*/}
               {usersData.map((member:any, i: number) => 
                 member ? <tr key={i} className="relative hover:bg-gray-100">
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
