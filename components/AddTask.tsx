@@ -112,7 +112,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   };
 
   const handleTagSelect = (tag: string) => {
-    if (!tags.includes(tag)) {
+    if (tag != "" && !tags.includes(tag)) {
       setTags([...tags, tag]);
       setTagInput("");
       setFilteredTags(availableTags);
@@ -172,29 +172,7 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           >
             {members.map((member) => <option value={member}>{member}</option>)}
           </select>
-          
-          {/*<div className="member-input">
-            <input
-              type="text"
-              value={assignedTo}
-              onChange={handleAssignedToChange}
-              onFocus={() => setShowMemberDropdown(true)}
-              onBlur={() => setShowMemberDropdown(false)}
-            />
-            {showMemberDropdown && (
-              <ul className="member-list">
-                {filteredMembers.map((member) => (
-                  <li
-                    key={member}
-                    onClick={() => handleMemberSelect(member)}
-                    className="member-item"
-                  >
-                    {member}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>*/}
+
         </div>
 
         <div className="form-group">
