@@ -44,11 +44,15 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   const dayCount = differenceInDays(endDate, startDate) + 1;
   const allDates = Array.from({ length: dayCount }, (_, i) => addDays(startDate, i));
 
-  const chartData = allDates.map(date => {
-    const matchingEntry = filteredData.find(entry => isSameDay(new Date(entry.date), date));
+  // Calculate total hours for each day by summing entries per day
+  const chartData = allDates.map((date) => {
+    const matchingEntries = filteredData.filter((entry) =>
+      isSameDay(new Date(entry.date), date)
+    );
+    const totalHours = matchingEntries.reduce((sum, entry) => sum + entry.hours, 0); // Sum all hours for the day
     return {
       date: format(date, "EEE"),
-      hours: matchingEntry ? matchingEntry.hours : 0
+      hours: totalHours,
     };
   });
 
@@ -116,7 +120,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             {hours} hours {minutes} minutes per day
           </div>
         </div>
-        
+
         <div className="flex justify-between mb-4">
           <button
             onClick={handlePreviousWeek}
@@ -131,7 +135,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             Next Period
           </button>
         </div>
-        
+
         {showStartCalendar && (
           <Calendar
             value={startDate}
