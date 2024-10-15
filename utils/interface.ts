@@ -11,6 +11,7 @@ export interface TaskData {
     tags?       : string[];
     timeLog?    : Log[];
     isDeleted?  : boolean;
+    completedAt?: string;
 }
 
 export interface SprintData {

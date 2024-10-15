@@ -9,7 +9,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { format, eachDayOfInterval, addDays } from "date-fns";
+import { format, eachDayOfInterval } from "date-fns";
+import { mockSprintData, mockTaskData } from "@/utils/mockData";
 
 interface BurndownChartProps {
   sprintData: SprintData;
@@ -26,22 +27,34 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
     const startDate = new Date(sprintData.startDate);
     const endDate = new Date(sprintData.endDate);
     const totalDays = eachDayOfInterval({ start: startDate, end: endDate });
-
     const totalStoryPoints = tasks.reduce(
       (sum, task) => sum + parseInt(task.storyPoint || "0"),
       0
     );
     const totalTasks = tasks.length;
 
-    const initialData = totalDays.map((date, index) => ({
-      date: format(date, "MM/dd"),
-      remainingPoints: totalStoryPoints,
-      remainingTasks: totalTasks,
-      completedTasks: 0,
-      idealPoints:
-        totalStoryPoints - (index * totalStoryPoints) / (totalDays.length - 1),
-      idealTasks: totalTasks - (index * totalTasks) / (totalDays.length - 1),
-    }));
+    const initialData = totalDays.map((date, index) => {
+      const completedTasks = tasks.filter(
+        (task) => task.completedAt && new Date(task.completedAt) <= date
+      ).length;
+      const completedStoryPoints = tasks
+        .filter(
+          (task) => task.completedAt && new Date(task.completedAt) <= date
+        )
+        .reduce((sum, task) => sum + parseInt(task.storyPoint || "0"), 0);
+
+      return {
+        date: format(date, "MM/dd"),
+        remainingPoints: totalStoryPoints - completedStoryPoints,
+        remainingTasks: totalTasks - completedTasks,
+        completedTasks,
+        completedStoryPoints,
+        idealPoints:
+          totalStoryPoints -
+          (index * totalStoryPoints) / (totalDays.length - 1),
+        idealTasks: totalTasks - (index * totalTasks) / (totalDays.length - 1),
+      };
+    });
 
     setChartData(initialData);
   }, [sprintData, tasks]);
@@ -90,6 +103,15 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ sprintData, tasks }) => {
         <YAxis />
         <Tooltip content={<CustomTooltip />} />
         <Legend />
+        <Line
+          type="monotone"
+          dataKey={
+            chartView === "storyPoints"
+              ? "completedStoryPoints"
+              : "completedTasks"
+          }
+          stroke="#ff7300"
+        />
         <Line
           type="monotone"
           dataKey={
