@@ -1,5 +1,5 @@
 import { updateTask } from "@/utils/database";
-import { EditHistoryEntry, TaskData, UserData } from "@/utils/interface";
+import { TaskEditHistoryEntry, TaskData, UserData } from "@/utils/interface";
 import { useState, useEffect } from "react";
 import { fetchUsers } from "@/utils/users";
 
@@ -42,7 +42,7 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
   }, [])
 
   const handleSave = async () => {
-    const historyEntries: EditHistoryEntry[] = [];
+    const historyEntries: TaskEditHistoryEntry[] = [];
   
     if (taskData.status !== updatedTask.status) {
       historyEntries.push({
@@ -67,12 +67,12 @@ const EditTask = ({ taskData, setEditOpen }: EditTaskProps) => {
         date: new Date().toISOString(),
         modifiedBy: 'User Name', 
         type: 'description',
-        details: `Description updated.`,
+        details: `Description updated from "${taskData.description}" to "${updatedTask.description}".`,
       });
     }
   
-    const updatedEditHistory = [...(updatedTask.editHistory || []), ...historyEntries];
-    const taskToUpdate = { ...updatedTask, editHistory: updatedEditHistory };
+    const updatedTaskEditHistory = [...(updatedTask.taskEditHistory || []), ...historyEntries];
+    const taskToUpdate = { ...updatedTask, taskEditHistory: updatedTaskEditHistory };
   
     await updateTask(taskToUpdate);
     setEditOpen(false);
