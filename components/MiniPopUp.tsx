@@ -18,6 +18,7 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.1)",
+      zIndex: 9999,
     },
     content: {
       top: "50%",
@@ -34,6 +35,7 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       backgroundColor: "#f9f9f9",
       border: "none",
       overflow:"hidden",
+      zIndex: 10001,
       //boxShadow: "0 0 10px 5px rgba(200, 200, 200, 0.9)", // Add this line for gradient gray outline
     },
   };
@@ -45,7 +47,16 @@ const MiniPopUp = ({ isOpen, setIsOpen, children }: ModalProps) => {
       onRequestClose={() => setIsOpen(false)}
       style={customStyles as Styles}
     >
-      {children}
+      <div className="flex flex-col h-full">
+        <div className="flex justify-end">
+          <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+            <IoMdClose size={24} />
+          </button>
+        </div>
+        <div className="overflow-auto">
+          {children}
+        </div>
+      </div>
     </Modal>
   );
 };

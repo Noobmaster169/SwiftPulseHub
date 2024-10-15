@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { memberData } from "@/utils/interface";
 import PopUp from "./PopUp";
 import {
@@ -9,8 +9,20 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  TooltipProps,
+  ReferenceLine,
 } from "recharts";
-import { format, addDays, subDays, startOfWeek, endOfWeek, isSameDay } from "date-fns";
+import { 
+  format, 
+  addDays, 
+  subDays, 
+  startOfDay, 
+  endOfDay, 
+  isSameDay, 
+  isWithinInterval, 
+  differenceInDays, 
+  isBefore 
+} from "date-fns";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 
@@ -28,8 +40,8 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   setIsOpen,
   member,
 }) => {
-  const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date()));
-  const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date()));
+  const [startDate, setStartDate] = useState<Date>(startOfDay(new Date()));
+  const [endDate, setEndDate] = useState<Date>(addDays(startDate, 6));
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
 
@@ -38,29 +50,34 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   const filteredData =
     member.workingHours?.filter(
       (entry) =>
-        new Date(entry.date) >= startDate && new Date(entry.date) <= endDate
+        new Date(entry.date) >= startOfDay(startDate) && new Date(entry.date) <= endOfDay(endDate)
     ) || [];
 
-  const allDates = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
+  const dayCount = differenceInDays(endDate, startDate) + 1;
+  const allDates = Array.from({ length: dayCount }, (_, i) => addDays(startDate, i));
 
   const chartData = allDates.map(date => {
     const matchingEntry = filteredData.find(entry => isSameDay(new Date(entry.date), date));
     return {
-      date: format(date, "EEE"),
+      date: date,
+      dayOfWeek: format(date, "EEE"),
+      fullDate: format(date, "MMM d, yyyy"),
       hours: matchingEntry ? matchingEntry.hours : 0
     };
   });
 
   const totalHours = filteredData.reduce((sum, entry) => sum + entry.hours, 0);
-  const averageHoursPerDay = totalHours / 7;
+  const averageHoursPerDay = totalHours / dayCount;
   const hours = Math.floor(averageHoursPerDay);
   const minutes = Math.round((averageHoursPerDay - hours) * 60);
 
   const handleStartDateChange = (value: Value) => {
     if (value instanceof Date) {
-      const newStartDate = startOfWeek(value);
+      const newStartDate = startOfDay(value);
       setStartDate(newStartDate);
-      setEndDate(endOfWeek(newStartDate));
+      if (isBefore(endDate, newStartDate) || differenceInDays(endDate, newStartDate) > 6) {
+        setEndDate(addDays(newStartDate, 6));
+      }
       setShowStartCalendar(false);
     }
   };
@@ -75,16 +92,38 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
   };
 
   const handlePreviousWeek = () => {
-    const newStartDate = subDays(startDate, 7);
+    const newStartDate = subDays(startDate, dayCount);
     setStartDate(newStartDate);
-    setEndDate(endOfWeek(newStartDate));
+    setEndDate(subDays(endDate, dayCount));
   };
 
   const handleNextWeek = () => {
-    const newStartDate = addDays(startDate, 7);
+    const newStartDate = addDays(startDate, dayCount);
     setStartDate(newStartDate);
-    setEndDate(endOfWeek(newStartDate));
+    setEndDate(addDays(endDate, dayCount));
   };
+
+  const tileDisabled = ({ date, view }: { date: Date; view: string }) =>
+    view === 'month' && !isWithinInterval(date, { start: startDate, end: addDays(startDate, 6) });
+
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{ backgroundColor: 'white', padding: '5px', border: '1px solid #ccc' }}>
+          <p className="label">{`${payload[0].payload.fullDate}`}</p>
+          <p className="intro">{`Hours: ${payload[0].value}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const resetDates = () => {
+    const currentStartDate = startOfWeek(new Date());
+    const currentEndDate = endOfWeek(new Date());
+    setStartDate(currentStartDate);
+    setEndDate(currentEndDate);
+  }
 
   return (
     <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -115,13 +154,19 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
             onClick={handlePreviousWeek}
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
           >
-            Previous Week
+            Previous Period
           </button>
           <button
             onClick={handleNextWeek}
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
           >
-            Next Week
+            Next Period
+          </button>
+          <button
+            onClick={resetDates}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Reset Dates
           </button>
         </div>
         
@@ -136,6 +181,7 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
           <Calendar
             value={endDate}
             onChange={handleEndDateChange}
+            tileDisabled={tileDisabled}
           />
         )}
 
