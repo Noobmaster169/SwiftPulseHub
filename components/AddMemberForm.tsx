@@ -6,9 +6,10 @@ import {UserData} from '@/utils/interface';
 interface AddMemberFormProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   memberAdded: any;
+  addMember: (name: string, email: string, password: string) => void;
 }
 
-const AddMemberForm: React.FC<AddMemberFormProps> = ({ setIsOpen, memberAdded }) => {
+const AddMemberForm: React.FC<AddMemberFormProps> = ({ setIsOpen, memberAdded , addMember}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +24,7 @@ const AddMemberForm: React.FC<AddMemberFormProps> = ({ setIsOpen, memberAdded })
       hash: encrypted,
     }
     await addUser(newData);
+    addMember(name, email, password);
     setIsOpen(false);
     memberAdded();
   };

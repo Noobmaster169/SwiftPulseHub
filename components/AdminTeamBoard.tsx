@@ -327,7 +327,7 @@ const AdminTeamBoard = () => {
       </PopUp>
       {/* add member */}
       <PopUp isOpen={addMemberOpen} setIsOpen={setAddMemberOpen}>
-        <AddMemberForm setIsOpen={setAddMemberOpen} memberAdded={memberAdded} />
+        <AddMemberForm setIsOpen={setAddMemberOpen} memberAdded={memberAdded} addMember={addMember} />
       </PopUp>
       <PopUp isOpen={editMemberOpen} setIsOpen={setEditMemberOpen}>
         {/*Change members[0] to other data*/}
