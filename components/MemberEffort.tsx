@@ -67,6 +67,10 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
 
   const handleEndDateChange = (value: Value) => {
     if (value instanceof Date) {
+      if (value < startDate) {
+        alert("End date cannot be before start date");
+        return;
+      }
       const newEndDate = endOfWeek(value);
       setEndDate(newEndDate);
       setStartDate(startOfWeek(newEndDate));
@@ -85,6 +89,13 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
     setStartDate(newStartDate);
     setEndDate(endOfWeek(newStartDate));
   };
+
+  const resetDates = () => {
+    const currentStartDate = startOfWeek(new Date());
+    const currentEndDate = endOfWeek(new Date());
+    setStartDate(currentStartDate);
+    setEndDate(currentEndDate);
+  }
 
   return (
     <PopUp isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -123,6 +134,12 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
           >
             Next Week
           </button>
+          <button
+            onClick={resetDates}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Reset Dates
+          </button>
         </div>
         
         {showStartCalendar && (
@@ -139,14 +156,18 @@ const MemberEffort: React.FC<MemberEffortProps> = ({
           />
         )}
 
-        <BarChart width={660} height={440} data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
-        </BarChart>
+        {filteredData.length > 0 ? (
+          <BarChart width={660} height={440} data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="hours" fill="#8884d8" minPointSize={3} />
+          </BarChart>
+        ) : (
+          <p>No data available for the selected date range.</p>
+          )}
       </div>
     </PopUp>
   );
