@@ -11,6 +11,9 @@ export interface TaskData {
     tags?       : string[];
     timeLog?    : Log[];
     isDeleted?  : boolean;
+    completedAt?: string;
+    createdAt?  : string;
+    taskEditHistory?: TaskEditHistoryEntry[];
 }
 
 export interface SprintData {
@@ -24,6 +27,36 @@ export interface SprintData {
 
 export interface Log{
     timeLogged: number;
+    date: Date;
     member: string;
     message: string;
 }
+
+export interface UserData{
+    _id?: string;
+    name: string;
+    email: string;
+    hash: string;
+}
+    
+export interface memberData {
+    name: string;
+    totalHours?: number;
+    HoursPerDay?: number;
+    email: string;
+    workingHours?: Array<{ date: string; hours: number }>;
+    assignedTasks?: string[];
+}
+
+export interface teamBoard {
+    startDate: Date;
+    endDate: Date;
+    memberList: memberData[];
+}
+
+export interface TaskEditHistoryEntry {
+    date: string; 
+    modifiedBy: string; 
+    type: 'status' | 'reassignment' | 'description'; 
+    details: string; 
+  }

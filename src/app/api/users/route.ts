@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     console.log(data);
     try {
-      const result = await client.db("tasks").collection("tasks").insertOne(data);
+      const result = await client.db("tasks").collection("users").insertOne(data);
       return NextResponse.json({status: 200})
     } catch (error) {
       return NextResponse.json({ error: 'Unable to add data' }, {status: 500});
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         //Connect to MongoDB Cluster:
         await client.connect();
         //console.log("Getting Database")
-        const databases = await client.db("tasks").collection("tasks").find({}).toArray();
+        const databases = await client.db("tasks").collection("users").find({}).toArray();
         //console.log(databases);
 
         // Return the list of databases as JSON

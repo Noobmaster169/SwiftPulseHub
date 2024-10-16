@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateTask, addTask, deleteTask, fetchTask } from "@/utils/database";
-import { TaskData } from "@/utils/interface";
+import { TaskData, UserData } from "@/utils/interface";
+import { fetchUsers } from "@/utils/users";
 
 interface AddTaskProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +17,8 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
   const [type, setType] = useState("story");
   const [storyPoint, setStoryPoint] = useState(1);
   const [assignedTo, setAssignedTo] = useState("");
+  const [members, setMembers] = useState<string[]>([]);
+  const [filteredMembers, setFilteredMembers] = useState<string[]>(members);
   const [finishedBy, setFinishedBy] = useState("");
   const [priority, setPriority] = useState("medium");
   const [tags, setTags] = useState<string[]>([]);
@@ -29,6 +32,25 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
     "Bug",
     "Enhancement",
   ]);
+  const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
+  const [showTagDropdown, setShowTagDropdown] = useState(false);
+  const [showMemberDropdown, setShowMemberDropdown] = useState(false);
+
+  const getUsersData = async ()=>{
+    const users = await fetchUsers();
+    const names:string[] = [];
+    users.forEach((user:UserData)=>{
+      if(user){
+        if(user.name && user.name !== "admin"){
+          names.push(user.name);
+        }
+      } 
+    });
+    setMembers(names);
+  }
+  useEffect(()=>{
+    getUsersData();
+  }, [])
 
   const handleAddTag = () => {
     if (tagInput && !tags.includes(tagInput)) {
@@ -41,6 +63,21 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
 
   const handleRemoveTag = (tag: string) => {
     setTags(tags.filter((t) => t !== tag));
+  };
+
+  const handleAssignedToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAssignedTo(value);
+    setFilteredMembers(
+      members.filter((member) =>
+        member.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
+
+  const handleMemberSelect = (member: string) => {
+    setAssignedTo(member);
+    setShowMemberDropdown(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +98,24 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
       setIsOpen(false);
     } catch (e) {
       alert("Error adding task");
+    }
+  };
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTagInput(value);
+    setFilteredTags(
+      availableTags.filter((tag) =>
+        tag.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
+
+  const handleTagSelect = (tag: string) => {
+    if (tag != "" && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+      setTagInput("");
+      setFilteredTags(availableTags);
     }
   };
 
@@ -111,11 +166,13 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
 
         <div className="form-group">
           <label>Assigned to:</label>
-          <input
-            type="text"
+          <select
             value={assignedTo}
             onChange={(e) => setAssignedTo(e.target.value)}
-          />
+          >
+            {members.map((member) => <option value={member}>{member}</option>)}
+          </select>
+
         </div>
 
         <div className="form-group">
@@ -144,38 +201,35 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
 
         <div className="form-group">
           <label>Tag(s):</label>
-          <div className="tags-input">
+          <div className="tags-input flex items-center space-x-2">
             <input
               type="text"
               value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              list="tagOptions"
-              onSelect={(e) => {
-                const selectedTag = e.currentTarget.value;
-                if (selectedTag && !tags.includes(selectedTag)) {
-                  setTags([...tags, selectedTag]);
-                  setTagInput("");
-                }
-              }}
+              onChange={handleTagInputChange}
+              onFocus={() => setShowTagDropdown(true)}
+              onBlur={() => setShowTagDropdown(false)}
+              className="flex-grow p-2 border rounded"
             />
-            <datalist id="tagOptions">
-              {availableTags
-                .filter(
-                  (tag) =>
-                    tag.toLowerCase().includes(tagInput.toLowerCase()) &&
-                    !tags.includes(tag)
-                )
-                .map((tag) => (
-                  <option key={tag} value={tag} />
-                ))}
-            </datalist>
             <button
               type="button"
               onClick={handleAddTag}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="ml-2 px-2 py-1 bg-blue-500 text-white rounded"
             >
-              Add
+              Add Tag
             </button>
+            {showTagDropdown && (
+              <ul className="tag-list">
+                {filteredTags.map((tag) => (
+                  <li
+                    key={tag}
+                    onMouseDown={() => handleTagSelect(tag)}
+                    className="tag-item"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="tags-list">
             {tags.map((tag) => (
@@ -235,25 +289,54 @@ const AddTaskPage = ({ setIsOpen }: AddTaskProps) => {
           border-radius: 4px;
         }
         .tags-input {
-          display: flex;
-          gap: 8px;
+          position: relative;
         }
-        .tags-list {
-          margin-top: 10px;
+        .tag-list {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background-color: white;
+          border: 1px solid #ccc;
+          border-top: none;
+          max-height: 150px;
+          overflow-y: auto;
+          z-index: 1;
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
         }
-        .tag {
-          display: inline-block;
-          background-color: #d0c9f9;
-          padding: 5px 10px;
-          border-radius: 16px;
-          margin-right: 5px;
-        }
-        button {
-          padding: 8px 16px;
-          color: white;
-          border: none;
-          border-radius: 4px;
+        .tag-item {
+          padding: 5px;
           cursor: pointer;
+        }
+        .tag-item:hover {
+          background-color: #f0f0f0;
+        }
+        .member-input {
+          position: relative;
+        }
+        .member-list {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background-color: white;
+          border: 1px solid #ccc;
+          border-top: none;
+          max-height: 150px;
+          overflow-y: auto;
+          z-index: 1;
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+        }
+        .member-item {
+          padding: 5px;
+          cursor: pointer;
+        }
+        .member-item:hover {
+          background-color: #f0f0f0;
         }
       `}</style>
     </div>
