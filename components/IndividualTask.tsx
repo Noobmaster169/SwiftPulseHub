@@ -66,9 +66,9 @@ const IndividualTaskInfo = ({
               </button>
               <button
                 onClick={handleEdit}
-                className="text-gray-400 hover:text-gray-600 mb-2 mr-4"
+                className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
               >
-                <FaRegEdit size={20} />
+                Edit Task
               </button>
             </div>
           </div>
