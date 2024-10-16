@@ -62,7 +62,7 @@ const UserLogin = () => {
                 className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
                 onClick={login}
                 disabled={loading}
-            >Login</button>
+            >{loading?"Logging In": "Login"}</button>
         </div>
     )
 }
