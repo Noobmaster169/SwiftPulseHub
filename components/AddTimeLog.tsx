@@ -62,7 +62,7 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
       taskData.timeLog.push({
         timeLogged: parseFloat(timeLogged.toFixed(2)),
         date: today,
-        member: member,
+        member: taskData.assignedTo? taskData.assignedTo : "",
         message: message,
       });
       await updateTask(taskData);
@@ -92,7 +92,7 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Add Time Log</h2>
-      <div className="mb-4">
+      {/*<div className="mb-4">
         <label htmlFor="member" className="block mb-1">
           Member
           </label>
@@ -103,7 +103,7 @@ const AddTimeLog: React.FC<AddTimeLogProps> = ({ taskData, setIsOpen }) => {
           onChange={(e) => setMember(e.target.value)}
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
-      </div>
+      </div>*/}
       <div className="mb-4 flex space-x-4">
         <div className="flex-1">
           <label htmlFor="hours" className="block mb-1">

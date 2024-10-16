@@ -219,12 +219,12 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
               <tr>
-                <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
+                <th className="py-4 px-8 border-b border-gray-500 text-lg text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
               </tr>
             </thead>
             <tbody>
               {!isLoading && sortedAndFilteredTasks.map((task: TaskData, i: number) => (
-                <tr key={i} className="relative hover:bg-gray-100" onClick={() => { openTask(task) }}>
+                <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50" onClick={() => { openTask(task) }}>
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -261,12 +261,12 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                           {task.status}
                         </span>
                         {/* Edit History Button */}
-                        <button
+                        {/* <button
                           className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
                           onClick={() => { setHistoryOpen(true); setCurrentTask(task); }}
                         >
                           Task Edit History
-                        </button>
+                        </button> */}
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
                         </button>
@@ -306,9 +306,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
         <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
           {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
         </PopUp>
-        <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
+        {/* <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
           {currentTask && <TaskEditHistory taskEditHistory={currentTask.taskEditHistory || []} />}
-        </PopUp>
+        </PopUp> */}
       </div>
     </>
   );
