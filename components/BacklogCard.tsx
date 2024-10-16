@@ -219,12 +219,12 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
           <table className="min-w-full bg-white bg-opacity-40 border border-gray-500 z-0">
             <thead>
               <tr>
-                <th className="py-4 px-4 border-b border-gray-500 text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
+                <th className="py-4 px-8 border-b border-gray-500 text-lg text-left">{isLoading ? "Loading Tasks..." : "Tasks"}</th>
               </tr>
             </thead>
             <tbody>
               {!isLoading && sortedAndFilteredTasks.map((task: TaskData, i: number) => (
-                <tr key={i} className="relative hover:bg-gray-100" onClick={() => { openTask(task) }}>
+                <tr key={i} className="relative hover:bg-gray-100 hover:bg-opacity-50" onClick={() => { openTask(task) }}>
                   <td className="relative py-8 px-8 border-b border-gray-500 text-left">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
