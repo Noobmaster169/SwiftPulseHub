@@ -261,12 +261,12 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
                           {task.status}
                         </span>
                         {/* Edit History Button */}
-                        <button
+                        {/* <button
                           className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
                           onClick={() => { setHistoryOpen(true); setCurrentTask(task); }}
                         >
                           Task Edit History
-                        </button>
+                        </button> */}
                         <button className={isInvisible ? '' : 'invisible'}>
                           <AiOutlineDelete size={20} onClick={() => { setIsOpen(true); setCurrentTask(task); }} />
                         </button>
@@ -306,9 +306,9 @@ const BacklogCard = ({ taskOpen, setTaskOpen, createOpen, setCreateOpen }: Backl
         <PopUp isOpen={editOpen} setIsOpen={setEditOpen}>
           {currentTask && <EditTask taskData={currentTask} setEditOpen={setEditOpen} />}
         </PopUp>
-        <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
+        {/* <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
           {currentTask && <TaskEditHistory taskEditHistory={currentTask.taskEditHistory || []} />}
-        </PopUp>
+        </PopUp> */}
       </div>
     </>
   );

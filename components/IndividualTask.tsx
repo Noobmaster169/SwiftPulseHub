@@ -12,6 +12,7 @@ import AddTimeLog from "@/components/AddTimeLog";
 import PopUp from "@/components/PopUp";
 import MediumPopUp from "@/components/MediumPopUp";
 import {useUser} from '@/context/UserContext';
+import TaskEditHistory from "./TaskEditHistory";
 
 interface IndividualTaskInfoProps {
   taskData: TaskData;
@@ -29,6 +30,8 @@ const IndividualTaskInfo = ({
   const [isEditing, setIsEditing] = useState(false);
   const [updatedTaskData, setUpdatedTaskData] = useState(taskData);
   const [timeLogOpen, setTimeLogOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState<boolean>(false); 
+  const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
 
   const handleEdit = () => {
     setEditOpen(true);
@@ -53,12 +56,21 @@ const IndividualTaskInfo = ({
                 {taskData.taskName ? taskData.taskName : "Unknown task name"}
               </h2>
             </div>
-            <button
-              onClick={handleEdit}
-              className="text-gray-400 hover:text-gray-600 mb-2 mr-4"
-            >
-              <FaRegEdit size={20} />
-            </button>
+            <div className="flex space-x-3">
+              {/* Edit History Button */}
+              <button
+                className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
+                onClick={() => { setHistoryOpen(true); setCurrentTask(taskData); }}
+              >
+                Task Edit History
+              </button>
+              <button
+                onClick={handleEdit}
+                className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-200 text-black hover:bg-gray-300"
+              >
+                Edit Task
+              </button>
+            </div>
           </div>
 
           <p className="mt-4 text-gray-700">
@@ -163,6 +175,9 @@ const IndividualTaskInfo = ({
       <MediumPopUp isOpen={timeLogOpen} setIsOpen={setTimeLogOpen}>
         <AddTimeLog taskData={taskData} setIsOpen={setTimeLogOpen} />
       </MediumPopUp>
+      <PopUp isOpen={historyOpen} setIsOpen={setHistoryOpen}>
+          {currentTask && <TaskEditHistory taskEditHistory={currentTask.taskEditHistory || []} />}
+      </PopUp>
     </div>
   );
 };
