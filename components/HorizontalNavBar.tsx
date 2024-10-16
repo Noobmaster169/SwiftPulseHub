@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
-import 'tailwindcss/tailwind.css';
 
 interface HorizontalNavbarProps {
   setThemeSelectorOpen: (isOpen: boolean) => void;
