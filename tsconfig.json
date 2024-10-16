@@ -3,10 +3,15 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+<<<<<<< HEAD
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "noEmit": false,
+=======
+    "strict": true,
+    "noEmit": true,
+>>>>>>> f247b96924fe436433a61c1b60b6b1a092ad53da
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
