@@ -5,11 +5,11 @@ A Task Managing Application for teams to work on an Agile Teamwork Process, cons
 *This Project was made on a Group Assignment for the unit FIT-2101: "Software Engineering Process & Management" in Monash University Malaysia*
 
 Several Features highlighted:
-- Team Account Management (Admin & Team Login)
-- Product Backlog (Create, Edit, Update, and Delete Tasks for the Team)
-- Sprint (A teamwork process over a period of time, upon which tasks can be completed)
-- Kanban Board (A High UX experience for users to update task progress by dragging each task in a board to update the task's status)
-- Burn Down Chart (Track the progress of task completion within the team)
+- **Team Account Management** (Admin & Team Login)
+- **Product Backlog** (Create, Edit, Update, and Delete Tasks for the Team)
+- **Sprint** (A teamwork process over a period of time, upon which tasks can be completed)
+- **Kanban Board** (A High UX experience for users to update task progress by dragging each task in a board to update the task's status)
+- **Burn Down Chart** (Track the progress of task completion within the team)
 
 ### Tech Stack Used
 - NextJS
