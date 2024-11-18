@@ -1,3 +1,31 @@
+# SwiftPulseHub
+
+A Task Managing Application for teams to work on an Agile Teamwork Process, consisting of features such as Product Backlog, Sprint, and Task Managament
+
+*This Project was made on a Group Assignment for the unit FIT-2101: "Software Engineering Process & Management" in Monash University Malaysia*
+
+Several Features highlighted:
+- Team Account Management (Admin & Team Login)
+- Product Backlog (Create, Edit, Update, and Delete Tasks for the Team)
+- Sprint (A teamwork process over a period of time, upon which tasks can be completed)
+- Kanban Board (A High UX experience for users to update task progress by dragging each task in a board to update the task's status)
+- Burn Down Chart (Track the progress of task completion within the team)
+
+### Tech Stack Used
+- NextJS
+- MongoDB
+- Tailwind CSS
+
+## Live Demo
+
+Visit [https://swift-pulse-hub.vercel.app/](https://swift-pulse-hub.vercel.app/)
+
+Example accounts:
+- Username: 'admin', Password: '12345'
+- Username: 'Mario', Password: '12345'
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
